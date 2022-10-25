@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 import "../interfaces/IBAAL.sol";
 
+// import "hardhat/console.sol";
+
 contract OnboarderShaman is ReentrancyGuard, Initializable {
     event YeetReceived(
         address indexed contributorAddress,
@@ -33,8 +35,8 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     function init(
         address _moloch,
         address payable _token, // use 0 address if token only 
-        uint256 _pricePerUnit,
-        uint256 _lootPerUnit,
+        uint256 _pricePer,
+        uint256 _unitPerUnit,
         uint256 _expiery,
         bool _shares,
         address[] memory _cuts,
@@ -42,8 +44,8 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     ) initializer external {
         baal = IBAAL(_moloch);
         token = IERC20(_token);
-        pricePerUnit = _pricePerUnit;
-        lootPerUnit = _lootPerUnit;
+        pricePerUnit = _pricePer;
+        lootPerUnit = _unitPerUnit;
         expiery = _expiery;
         shares = _shares;
         cuts = _cuts;
@@ -67,6 +69,7 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     function onboarder20(uint256 _value) public nonReentrant {
         require(address(baal) != address(0), "!init");
         require(expiery > block.timestamp, "expiery");
+
         require(baal.isManager(address(this)), "Shaman not manager");
 
         require(_value % pricePerUnit == 0, "!valid amount"); // require value as multiple of units
@@ -109,7 +112,6 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     function onboarder() public payable nonReentrant {
         require(address(token) == address(0), "!native");
         require(expiery > block.timestamp, "expiery");
-
         require(address(baal) != address(0), "!init");
         require(msg.value >= pricePerUnit, "< minimum");
         require(baal.isManager(address(this)), "Shaman not whitelisted");
@@ -187,8 +189,8 @@ contract OnboarderShamanSummoner {
     function summonOnboarder(
         address _moloch,
         address payable _token,
-        uint256 _pricePerUnit,
-        uint256 _lootPerUnit,
+        uint256 _pricePer,
+        uint256 _unitPerUnit,
         uint256 _expiery,
         string calldata _details,
         bool _shares,
@@ -200,8 +202,8 @@ contract OnboarderShamanSummoner {
         onboarder.init(
             _moloch,
             _token,
-            _pricePerUnit,
-            _lootPerUnit,
+            _pricePer,
+            _unitPerUnit,
             _expiery,
             _shares,
             _cuts,
@@ -213,8 +215,8 @@ contract OnboarderShamanSummoner {
             _moloch,
             address(onboarder),
             _token,
-            _pricePerUnit,
-            _lootPerUnit,
+            _pricePer,
+            _unitPerUnit,
             _expiery,
             _details,
             _shares,

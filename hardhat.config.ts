@@ -116,7 +116,31 @@ const config: HardhatUserConfig = {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
     // apiKey: "61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY" // etherscan
-    apiKey: etherscan(),
+    apiKey: {
+      gnosis: "SN711KA5TEDG6JRJ2XGD8AITT7Q3VE58XG",
+      xdai: etherscan(),
+      goerli: etherscan(),
+      mainnet: etherscan(),
+    },
+    customChains: [
+      // {
+      //   network: "gnosis",
+      //   chainId: 100,
+      //   urls: {
+      //     apiURL: "https://api.gnosisscan.io/api",
+      //     browserURL: "https://gnosisscan.io/",
+      //   }
+      // },
+      // can only have one chainId 100 at a time
+      {
+        network: "xdai",
+        chainId: 100,
+        urls: {
+          apiURL: "https://blockscout.com/xdai/mainnet/api",
+          browserURL: "https://blockscout.com/xdai/mainnet/",
+        }
+      }
+    ]
   },
   solidity: {
     compilers: [
