@@ -169,7 +169,7 @@ contract SubscriptionShaman is ReentrancyGuard, Initializable {
                 if(!success){
                     subscribers[idx].isActive = false;
                     subscribers[idx].streak = 0;
-                    continue;
+                    break;
                 }
                 _mintTokens(subscriber);
                 subscribers[idx].streak++;
@@ -184,3 +184,49 @@ contract SubscriptionShaman is ReentrancyGuard, Initializable {
 
 }
 
+contract SubscriptionShamanSummoner {
+    address payable public template;
+
+    event SummonComplete(
+        address indexed baal,
+        address onboarder
+    );
+
+    constructor(address payable _template) {
+        template = _template;
+    }
+
+    function summonSubscription(
+        address _moloch,
+        address payable _token,
+        uint256 _priceActivation,
+        uint256 _pricePer,
+        uint256 _lootPerUnit,
+        uint256 _periodLength,
+        bool _shares,
+        address[] memory _cuts,
+        uint256[] memory _amounts
+    ) public returns (address) {
+        SubscriptionShaman subscriptions = SubscriptionShaman(payable(Clones.clone(template)));
+
+        subscriptions.init(
+            _moloch,
+            _token,
+            _priceActivation,
+            _pricePer,
+            _lootPerUnit,
+            _periodLength,
+            _shares,
+            _cuts,
+            _amounts  
+        );
+
+
+        emit SummonComplete(
+            _moloch,
+            address(subscriptions)
+        );
+
+        return address(subscriptions);
+    }
+}

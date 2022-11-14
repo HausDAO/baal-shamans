@@ -312,6 +312,14 @@ declare module "hardhat/types/runtime" {
       name: "OnboarderShamanSummoner",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnboarderShamanSummoner__factory>;
+    getContractFactory(
+      name: "SubscriptionShaman",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SubscriptionShaman__factory>;
+    getContractFactory(
+      name: "SubscriptionShamanSummoner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SubscriptionShamanSummoner__factory>;
 
     getContractAt(
       name: "FallbackManager",
@@ -688,6 +696,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OnboarderShamanSummoner>;
+    getContractAt(
+      name: "SubscriptionShaman",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SubscriptionShaman>;
+    getContractAt(
+      name: "SubscriptionShamanSummoner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SubscriptionShamanSummoner>;
 
     // default types
     getContractFactory(

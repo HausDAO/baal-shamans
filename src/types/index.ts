@@ -154,3 +154,7 @@ export type { OnboarderShaman } from "./contracts/onboarder/Onboarder.sol/Onboar
 export { OnboarderShaman__factory } from "./factories/contracts/onboarder/Onboarder.sol/OnboarderShaman__factory";
 export type { OnboarderShamanSummoner } from "./contracts/onboarder/Onboarder.sol/OnboarderShamanSummoner";
 export { OnboarderShamanSummoner__factory } from "./factories/contracts/onboarder/Onboarder.sol/OnboarderShamanSummoner__factory";
+export type { SubscriptionShaman } from "./contracts/subscriptions/Subscriptions.sol/SubscriptionShaman";
+export { SubscriptionShaman__factory } from "./factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShaman__factory";
+export type { SubscriptionShamanSummoner } from "./contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner";
+export { SubscriptionShamanSummoner__factory } from "./factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner__factory";

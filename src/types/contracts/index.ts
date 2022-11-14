@@ -9,3 +9,5 @@ import type * as mock from "./mock";
 export type { mock };
 import type * as onboarder from "./onboarder";
 export type { onboarder };
+import type * as subscriptions from "./subscriptions";
+export type { subscriptions };
