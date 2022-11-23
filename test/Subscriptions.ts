@@ -79,18 +79,19 @@ const summonSubscription = async function (
   baal: Baal
 ) {
   let subscriptionAddress;
-  let summonSubscription = await subscriptionSummoner.summonSubscription(
+  let summonSubscriptionTx = await subscriptionSummoner.summonSubscription(
     baal.address,
     subscriptionArgs.token,
-    subscriptionArgs.pricePerUnit,
-    subscriptionArgs.unitPer,
-    subscriptionArgs.expiery,
-    subscriptionArgs.details,
+    subscriptionArgs.priceActivation,
+    subscriptionArgs.pricePer,
+    subscriptionArgs.lootPerUnit,
+    subscriptionArgs.periodLength,
     subscriptionArgs.shares,
     subscriptionArgs.cuts,
     subscriptionArgs.amounts
   );
-  let result = await summonSubscription.wait();
+
+  let result = await summonSubscriptionTx.wait();
   if (
     result &&
     result.events &&
@@ -314,7 +315,7 @@ describe("Subscription", function () {
 
     ERC20 = await ethers.getContractFactory("MyToken");
     token = (await ERC20.deploy(
-      ethers.utils.parseUnits("100.0", "ether")
+      ethers.utils.parseUnits("100000.0", "ether")
     )) as MyToken;
     applicantToken = token.connect(applicant);
 
@@ -390,33 +391,59 @@ describe("Subscription", function () {
   });
 
   describe("subscription", function () {
-    it("mint shares on sending eth", async function () {
+    it.only("mint shares on subscribing", async function () {
       const subscriptionArgs = {
-        moloch: "",
-        token: "anyErc20",
-        priceActivation: (Math.floor(Date.now()/1000)) + (86400 * 365),
-        pricePer: ethers.utils.parseUnits("1.0", "ether"),
-        lootPerUnit: 1,
-        _periodLength: "test",
+        token: token,
+        priceActivation: ethers.utils.parseUnits("0.01", "ether"),
+        pricePer: ethers.utils.parseUnits("1000.0", "ether"),
+        lootPerUnit: 10,
+        periodLength: (86400 * 30),
         shares: true,
         cuts: [],
         amounts: [],
       };
 
-      
+      let subscriptionAddress = await summonSubscription(
+        subscriptionArgs,
+        multisend,
+        subscriptionSingleton,
+        subscriptionSummoner,
+        baal
+      );
+      // const id = await setShamanProposal(baal, multisend, subscriptionAddress, 7);
+      console.log('subscriptionAddress', subscriptionAddress);
+    //   const applicantToken = token.connect(s2);
+    //   await applicantToken.approve(subscriptionAddress, ethers.utils.parseUnits("100000000000.0", "ether"));
+        
+    //   const onboarder = subscriptionSingleton.attach(subscriptionAddress);
+    //   const applicantOnboarder = onboarder.connect(s2);
+
+    //   onboarder.subscribe({
+    //     value: ethers.utils.parseEther("0.01"), // Sends exactly 0.01 ether
+    //   });
+ 
 
     });
     it("mint loot on ...", async function () {
         const subscriptionArgs = {
-          token: zeroAddress,
-          pricePerUnit: ethers.utils.parseUnits("1.0", "ether"),
-          unitPer: ethers.utils.parseUnits("1.0", "ether"),
-          expiery: (Math.floor(Date.now()/1000)) + (86400 * 365),
-          details: "test",
-          shares: false,
-          cuts: [],
-          amounts: [],
+            token: token,
+            priceActivation: ethers.utils.parseUnits("0.01", "ether"),
+            pricePer: ethers.utils.parseUnits("1000.0", "ether"),
+            lootPerUnit: 10,
+            periodLength: (86400 * 30),
+            shares: true,
+            cuts: [],
+            amounts: [],
         };
+
+        let subscriptionAddress = await summonSubscription(
+            subscriptionArgs,
+            multisend,
+            subscriptionSingleton,
+            subscriptionSummoner,
+            baal
+          );
+          const id = await setShamanProposal(baal, multisend, subscriptionAddress, 7);
   
     });
   });
