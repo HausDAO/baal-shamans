@@ -26,9 +26,11 @@ import type {
 export interface IBAALInterface extends utils.Interface {
   functions: {
     "isManager(address)": FunctionFragment;
+    "lootToken()": FunctionFragment;
     "mintLoot(address[],uint256[])": FunctionFragment;
     "mintShares(address[],uint256[])": FunctionFragment;
     "shamans(address)": FunctionFragment;
+    "sharesToken()": FunctionFragment;
     "target()": FunctionFragment;
     "totalSupply()": FunctionFragment;
   };
@@ -36,9 +38,11 @@ export interface IBAALInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "isManager"
+      | "lootToken"
       | "mintLoot"
       | "mintShares"
       | "shamans"
+      | "sharesToken"
       | "target"
       | "totalSupply"
   ): FunctionFragment;
@@ -47,6 +51,7 @@ export interface IBAALInterface extends utils.Interface {
     functionFragment: "isManager",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "lootToken", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mintLoot",
     values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
@@ -59,6 +64,10 @@ export interface IBAALInterface extends utils.Interface {
     functionFragment: "shamans",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "sharesToken",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "target", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -66,9 +75,14 @@ export interface IBAALInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "lootToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintLoot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintShares", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shamans", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "sharesToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "target", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -110,6 +124,8 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    lootToken(overrides?: CallOverrides): Promise<[string]>;
+
     mintLoot(
       to: PromiseOrValue<string>[],
       amount: PromiseOrValue<BigNumberish>[],
@@ -127,6 +143,8 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    sharesToken(overrides?: CallOverrides): Promise<[string]>;
+
     target(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -138,6 +156,8 @@ export interface IBAAL extends BaseContract {
     shaman: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  lootToken(overrides?: CallOverrides): Promise<string>;
 
   mintLoot(
     to: PromiseOrValue<string>[],
@@ -156,6 +176,8 @@ export interface IBAAL extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  sharesToken(overrides?: CallOverrides): Promise<string>;
+
   target(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -167,6 +189,8 @@ export interface IBAAL extends BaseContract {
       shaman: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    lootToken(overrides?: CallOverrides): Promise<string>;
 
     mintLoot(
       to: PromiseOrValue<string>[],
@@ -184,6 +208,8 @@ export interface IBAAL extends BaseContract {
       shaman: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    sharesToken(overrides?: CallOverrides): Promise<string>;
 
     target(overrides?: CallOverrides): Promise<string>;
 
@@ -198,6 +224,8 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    lootToken(overrides?: CallOverrides): Promise<BigNumber>;
+
     mintLoot(
       to: PromiseOrValue<string>[],
       amount: PromiseOrValue<BigNumberish>[],
@@ -214,6 +242,8 @@ export interface IBAAL extends BaseContract {
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    sharesToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     target(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -228,6 +258,8 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    lootToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     mintLoot(
       to: PromiseOrValue<string>[],
       amount: PromiseOrValue<BigNumberish>[],
@@ -244,6 +276,8 @@ export interface IBAAL extends BaseContract {
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    sharesToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     target(
       overrides?: Overrides & { from?: PromiseOrValue<string> }

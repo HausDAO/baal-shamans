@@ -8,4 +8,6 @@ interface IBAAL {
     function isManager(address shaman) external returns(bool);
     function target() external returns(address);
     function totalSupply() external view returns (uint256);
+    function sharesToken() external view returns (address);
+    function lootToken() external view returns (address);
 }
