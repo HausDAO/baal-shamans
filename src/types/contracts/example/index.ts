@@ -3,5 +3,3 @@
 /* eslint-disable */
 import type * as exampleSol from "./Example.sol";
 export type { exampleSol };
-import type * as exampleFlatSol from "./ExampleFlat.sol";
-export type { exampleFlatSol };

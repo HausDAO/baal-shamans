@@ -233,18 +233,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ExampleManagerShaman__factory>;
     getContractFactory(
-      name: "ExampleManagerShaman",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ExampleManagerShaman__factory>;
-    getContractFactory(
-      name: "IBAAL",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IBAAL__factory>;
-    getContractFactory(
-      name: "IERC20",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC20__factory>;
-    getContractFactory(
       name: "Baal",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Baal__factory>;
@@ -612,21 +600,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ExampleManagerShaman>;
-    getContractAt(
-      name: "ExampleManagerShaman",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ExampleManagerShaman>;
-    getContractAt(
-      name: "IBAAL",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IBAAL>;
-    getContractAt(
-      name: "IERC20",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IERC20>;
     getContractAt(
       name: "Baal",
       address: string,

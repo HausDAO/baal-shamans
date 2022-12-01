@@ -116,8 +116,6 @@ export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
 export type { ExampleManagerShaman } from "./contracts/example/Example.sol/ExampleManagerShaman";
 export { ExampleManagerShaman__factory } from "./factories/contracts/example/Example.sol/ExampleManagerShaman__factory";
-export type { IBAAL } from "./contracts/example/ExampleFlat.sol/IBAAL";
-export { IBAAL__factory } from "./factories/contracts/example/ExampleFlat.sol/IBAAL__factory";
 export type { Baal } from "./contracts/fixtures/Baal/contracts/Baal";
 export { Baal__factory } from "./factories/contracts/fixtures/Baal/contracts/Baal__factory";
 export type { BaalSummoner } from "./contracts/fixtures/Baal/contracts/BaalSummoner";
@@ -150,6 +148,8 @@ export type { BaalVotes } from "./contracts/fixtures/Baal/contracts/utils/BaalVo
 export { BaalVotes__factory } from "./factories/contracts/fixtures/Baal/contracts/utils/BaalVotes__factory";
 export type { Poster } from "./contracts/fixtures/Baal/contracts/utils/Poster";
 export { Poster__factory } from "./factories/contracts/fixtures/Baal/contracts/utils/Poster__factory";
+export type { IBAAL } from "./contracts/interfaces/IBAAL";
+export { IBAAL__factory } from "./factories/contracts/interfaces/IBAAL__factory";
 export type { MyToken } from "./contracts/mock/MyToken";
 export { MyToken__factory } from "./factories/contracts/mock/MyToken__factory";
 export type { OnboarderShaman } from "./contracts/onboarder/Onboarder.sol/OnboarderShaman";

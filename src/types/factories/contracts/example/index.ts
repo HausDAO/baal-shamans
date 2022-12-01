@@ -2,4 +2,3 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as exampleSol from "./Example.sol";
-export * as exampleFlatSol from "./ExampleFlat.sol";
