@@ -13,10 +13,10 @@ contract ExampleManagerShaman {
     IBAAL public baal;
     IERC20 public token;
 
-    mapping(address => uint256) public memberClaims;
-    bool shares;
-    uint256 period; // length of period in seconds
-    uint256 perPeriod; // amount of loot or shares to mint
+    mapping(address => uint256) public claims;
+    bool public shares;
+    uint256 public period; // length of period in seconds
+    uint256 public perPeriod; // amount of loot or shares to mint
 
     event SetMember(address account);
     event Claim(address account, uint256 timestamp);
@@ -50,30 +50,20 @@ contract ExampleManagerShaman {
     }
 
     // can be called by any account to claim per period tokens
-    function claim(address account) public {
-        if (memberClaims[account] == 0) {
-            setNewMember(account);
-        }
+    function claim() public {
         require(
-            block.timestamp - memberClaims[account] >= period,
+            block.timestamp - claims[msg.sender] >= period || claims[msg.sender] == 0,
             "Can only claim 1 time per period"
         );
 
         uint256 amount = calculate();
-        _mintTokens(account, amount);
-        memberClaims[account] = block.timestamp;
-        emit Claim(account, block.timestamp);
-    }
-
-    function setNewMember(address account) internal returns (uint256) {
-        // set last claim to one period ago
-        uint256 lastClaim = block.timestamp - period;
-        memberClaims[account] = lastClaim;
-        emit SetMember(account);
-        return lastClaim;
+        _mintTokens(msg.sender, amount);
+        claims[msg.sender] = block.timestamp;
+        emit Claim(msg.sender, block.timestamp);
     }
 
     function calculate() internal view returns (uint256 total) {
         total = perPeriod;
     }
+
 }
