@@ -393,7 +393,7 @@ describe("Onboarder", function () {
     };
   });
 
-  describe.only("onboarder", function () {
+  describe("onboarder", function () {
 
     it("mint shares on sending token", async function () {
       const amount = ethers.utils.parseUnits("5.250", "ether");
