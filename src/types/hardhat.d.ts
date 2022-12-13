@@ -317,6 +317,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnboarderShamanSummoner__factory>;
     getContractFactory(
+      name: "SimpleOnboarderShaman",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SimpleOnboarderShaman__factory>;
+    getContractFactory(
+      name: "SimpleOnboarderShamanSummoner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SimpleOnboarderShamanSummoner__factory>;
+    getContractFactory(
       name: "SubscriptionShaman",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SubscriptionShaman__factory>;
@@ -705,6 +713,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OnboarderShamanSummoner>;
+    getContractAt(
+      name: "SimpleOnboarderShaman",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimpleOnboarderShaman>;
+    getContractAt(
+      name: "SimpleOnboarderShamanSummoner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimpleOnboarderShamanSummoner>;
     getContractAt(
       name: "SubscriptionShaman",
       address: string,

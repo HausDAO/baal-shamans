@@ -6,4 +6,5 @@ export * as fixtures from "./fixtures";
 export * as interfaces from "./interfaces";
 export * as mock from "./mock";
 export * as onboarder from "./onboarder";
+export * as simpleOnboarder from "./simpleOnboarder";
 export * as subscriptions from "./subscriptions";
