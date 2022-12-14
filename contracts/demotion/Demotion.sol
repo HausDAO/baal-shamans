@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IBAAL.sol";
 
 
-// Allow a member to convert thier shares to loot without a proposal
+// Allow an account to convert shares to loot without a proposal
 // this shaman must be set as a manager role in the dao
 contract DemotionShaman {
     IBAAL public baal;
