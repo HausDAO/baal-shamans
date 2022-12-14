@@ -391,7 +391,7 @@ describe("Subscription", function () {
   });
 
   describe("subscription", function () {
-    it.only("mint shares on subscribing", async function () {
+    it("mint shares on subscribing", async function () {
       const subscriptionArgs = {
         token: token,
         priceActivation: ethers.utils.parseUnits("0.01", "ether"),
