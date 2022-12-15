@@ -305,6 +305,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBAAL__factory>;
     getContractFactory(
+      name: "MemberRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MemberRegistry__factory>;
+    getContractFactory(
+      name: "PGRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PGRegistry__factory>;
+    getContractFactory(
       name: "MyToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MyToken__factory>;
@@ -698,6 +706,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IBAAL>;
+    getContractAt(
+      name: "MemberRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MemberRegistry>;
+    getContractAt(
+      name: "PGRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PGRegistry>;
     getContractAt(
       name: "MyToken",
       address: string,

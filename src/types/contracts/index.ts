@@ -7,6 +7,8 @@ import type * as fixtures from "./fixtures";
 export type { fixtures };
 import type * as interfaces from "./interfaces";
 export type { interfaces };
+import type * as memberRegistry from "./memberRegistry";
+export type { memberRegistry };
 import type * as mock from "./mock";
 export type { mock };
 import type * as onboarder from "./onboarder";
