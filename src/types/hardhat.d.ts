@@ -225,6 +225,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
     getContractFactory(
+      name: "IERC721",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721__factory>;
+    getContractFactory(
       name: "IERC165",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
@@ -305,9 +309,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBAAL__factory>;
     getContractFactory(
+      name: "MemberRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MemberRegistry__factory>;
+    getContractFactory(
+      name: "PGRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PGRegistry__factory>;
+    getContractFactory(
       name: "MyToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MyToken__factory>;
+    getContractFactory(
+      name: "ExampleManagerShaman",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ExampleManagerShaman__factory>;
     getContractFactory(
       name: "OnboarderShaman",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -599,6 +615,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20>;
     getContractAt(
+      name: "IERC721",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721>;
+    getContractAt(
       name: "IERC165",
       address: string,
       signer?: ethers.Signer
@@ -699,10 +720,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IBAAL>;
     getContractAt(
+      name: "MemberRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MemberRegistry>;
+    getContractAt(
+      name: "PGRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PGRegistry>;
+    getContractAt(
       name: "MyToken",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.MyToken>;
+    getContractAt(
+      name: "ExampleManagerShaman",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ExampleManagerShaman>;
     getContractAt(
       name: "OnboarderShaman",
       address: string,
