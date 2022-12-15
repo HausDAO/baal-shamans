@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { IBAAL__factory } from "./IBAAL__factory";
+export { IBAALToken__factory } from "./IBAALToken__factory";

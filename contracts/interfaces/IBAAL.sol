@@ -10,4 +10,12 @@ interface IBAAL {
     function totalSupply() external view returns (uint256);
     function sharesToken() external view returns (address);
     function lootToken() external view returns (address);
+
+    function submitVote(uint32 id, bool approved) external;
+    function ragequit(
+        address to,
+        uint256 sharesToBurn,
+        uint256 lootToBurn,
+        address[] calldata tokens
+    ) external;
 }

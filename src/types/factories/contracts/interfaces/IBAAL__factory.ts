@@ -82,6 +82,34 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "sharesToBurn",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "lootToBurn",
+        type: "uint256",
+      },
+      {
+        internalType: "address[]",
+        name: "tokens",
+        type: "address[]",
+      },
+    ],
+    name: "ragequit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "shaman",
         type: "address",
       },
@@ -108,6 +136,24 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint32",
+        name: "id",
+        type: "uint32",
+      },
+      {
+        internalType: "bool",
+        name: "approved",
+        type: "bool",
+      },
+    ],
+    name: "submitVote",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

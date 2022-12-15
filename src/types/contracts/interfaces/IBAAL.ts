@@ -29,8 +29,10 @@ export interface IBAALInterface extends utils.Interface {
     "lootToken()": FunctionFragment;
     "mintLoot(address[],uint256[])": FunctionFragment;
     "mintShares(address[],uint256[])": FunctionFragment;
+    "ragequit(address,uint256,uint256,address[])": FunctionFragment;
     "shamans(address)": FunctionFragment;
     "sharesToken()": FunctionFragment;
+    "submitVote(uint32,bool)": FunctionFragment;
     "target()": FunctionFragment;
     "totalSupply()": FunctionFragment;
   };
@@ -41,8 +43,10 @@ export interface IBAALInterface extends utils.Interface {
       | "lootToken"
       | "mintLoot"
       | "mintShares"
+      | "ragequit"
       | "shamans"
       | "sharesToken"
+      | "submitVote"
       | "target"
       | "totalSupply"
   ): FunctionFragment;
@@ -61,12 +65,25 @@ export interface IBAALInterface extends utils.Interface {
     values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "ragequit",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>[]
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "shamans",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "sharesToken",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "submitVote",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(functionFragment: "target", values?: undefined): string;
   encodeFunctionData(
@@ -78,11 +95,13 @@ export interface IBAALInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "lootToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintLoot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintShares", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "ragequit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shamans", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "sharesToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "submitVote", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "target", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -138,12 +157,26 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    ragequit(
+      to: PromiseOrValue<string>,
+      sharesToBurn: PromiseOrValue<BigNumberish>,
+      lootToBurn: PromiseOrValue<BigNumberish>,
+      tokens: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     shamans(
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     sharesToken(overrides?: CallOverrides): Promise<[string]>;
+
+    submitVote(
+      id: PromiseOrValue<BigNumberish>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     target(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -171,12 +204,26 @@ export interface IBAAL extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  ragequit(
+    to: PromiseOrValue<string>,
+    sharesToBurn: PromiseOrValue<BigNumberish>,
+    lootToBurn: PromiseOrValue<BigNumberish>,
+    tokens: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   shamans(
     shaman: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   sharesToken(overrides?: CallOverrides): Promise<string>;
+
+  submitVote(
+    id: PromiseOrValue<BigNumberish>,
+    approved: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   target(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -204,12 +251,26 @@ export interface IBAAL extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    ragequit(
+      to: PromiseOrValue<string>,
+      sharesToBurn: PromiseOrValue<BigNumberish>,
+      lootToBurn: PromiseOrValue<BigNumberish>,
+      tokens: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     shamans(
       shaman: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     sharesToken(overrides?: CallOverrides): Promise<string>;
+
+    submitVote(
+      id: PromiseOrValue<BigNumberish>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     target(overrides?: CallOverrides): Promise<string>;
 
@@ -238,12 +299,26 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    ragequit(
+      to: PromiseOrValue<string>,
+      sharesToBurn: PromiseOrValue<BigNumberish>,
+      lootToBurn: PromiseOrValue<BigNumberish>,
+      tokens: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     shamans(
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     sharesToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    submitVote(
+      id: PromiseOrValue<BigNumberish>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     target(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -272,12 +347,26 @@ export interface IBAAL extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    ragequit(
+      to: PromiseOrValue<string>,
+      sharesToBurn: PromiseOrValue<BigNumberish>,
+      lootToBurn: PromiseOrValue<BigNumberish>,
+      tokens: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     shamans(
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     sharesToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    submitVote(
+      id: PromiseOrValue<BigNumberish>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     target(
       overrides?: Overrides & { from?: PromiseOrValue<string> }

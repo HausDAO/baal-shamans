@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IBAAL } from "./IBAAL";
+export type { IBAALToken } from "./IBAALToken";
