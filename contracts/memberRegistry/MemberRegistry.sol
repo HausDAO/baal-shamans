@@ -34,19 +34,19 @@ abstract contract MemberRegistry {
     ) internal {
         // require unique?
         require(memberIdxs[_member] == 0, "already registered");
-        members[count-1] = Member(
+        members.push(Member(
             _member,
             uint32(block.timestamp) - _startDate,
             _activityMultiplier
-        );
-        memberIdxs[_member] = count-1;
+        ));
+        memberIdxs[_member] = count;
         emit SetMember(members[count-1]);
         count += 1;
     }
 
     function _updateMember(
         address _member,
-        uint32 _activityMultiplier
+        uint32 _activityMultiplier // todo: need to do something for decimals/perc
         ) internal {
         require(memberIdxs[_member] != 0, "not registered");
         members[memberIdxs[_member]].activityMultiplier = _activityMultiplier;
@@ -93,11 +93,11 @@ abstract contract MemberRegistry {
         // SQRT((Total_Months - Months_on_break)* Time_Multiplier)
     }
 
-    function _distribute(uint256[] memory calculated) virtual internal view returns (uint256) {
+    function _distribute(uint256[] memory calculated) virtual internal returns (bool success) {
         for (uint256 i = 0; i < calculated.length; i++) {
             // todo: store in format for 0xsplits
         }
-        return 1;
+        return true;
     }
 
     function _sync(address _account) virtual internal view returns (uint256) {

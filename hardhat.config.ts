@@ -96,6 +96,14 @@ const config: HardhatUserConfig = {
         mnemonic: mnemonic(),
       },
     },
+    gnosis: {
+      url: "https://rpc.gnosischain.com/",
+      gas: 5000000,
+      gasPrice: 8000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     matic: {
       // url: 'https://rpc-mainnet.maticvigil.com/v1/036f1ba8516f0eee2204a574a960b68437ac8661',
       url: "https://polygon-mainnet.infura.io/v3/cc7ca25d68f246f393d7630842360c47",
@@ -123,23 +131,23 @@ const config: HardhatUserConfig = {
       mainnet: etherscan(),
     },
     customChains: [
-      // {
-      //   network: "gnosis",
-      //   chainId: 100,
-      //   urls: {
-      //     apiURL: "https://api.gnosisscan.io/api",
-      //     browserURL: "https://gnosisscan.io/",
-      //   }
-      // },
-      // can only have one chainId 100 at a time
       {
-        network: "xdai",
+        network: "gnosis",
         chainId: 100,
         urls: {
-          apiURL: "https://blockscout.com/xdai/mainnet/api",
-          browserURL: "https://blockscout.com/xdai/mainnet/",
+          apiURL: "https://api.gnosisscan.io/api",
+          browserURL: "https://gnosisscan.io/",
         }
-      }
+      },
+      // can only have one chainId 100 at a time
+    //   {
+    //     network: "xdai",
+    //     chainId: 100,
+    //     urls: {
+    //       apiURL: "https://blockscout.com/xdai/mainnet/api",
+    //       browserURL: "https://blockscout.com/xdai/mainnet/",
+    //     }
+    //   }
     ]
   },
   solidity: {
