@@ -111,13 +111,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "_updateSecondsActive",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "claim",
     outputs: [],
     stateMutability: "nonpayable",
@@ -213,6 +206,13 @@ const _abi = [
   {
     inputs: [],
     name: "trigger",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "updateSecondsActive",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

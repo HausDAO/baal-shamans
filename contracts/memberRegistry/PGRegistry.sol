@@ -2,16 +2,22 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MemberRegistry.sol";
 
 import "../interfaces/IBAAL.sol";
 
+// import "hardhat/console.sol";
+
 // Register
 contract PGRegistry is MemberRegistry, Ownable {
     IBAAL public moloch;
+    IERC20 public shares;
     
     constructor(address _moloch) {
         moloch = IBAAL(_moloch);
+        shares = IERC20(moloch.sharesToken());
+        lastUpdate = uint32(block.timestamp);
     }
 
     function setNewMember(
@@ -49,18 +55,25 @@ contract PGRegistry is MemberRegistry, Ownable {
             }
     }
 
+    // special to imnt shares
     function _calculate(address _account) internal override view returns (uint256) {
         uint256 activeSeconds = super._calculate(_account);
-        return activeSeconds;
+        // convert to token decimal and subtract current
+        // console.log(activeSeconds * 1 ether);
+        // console.log(shares.balanceOf(_account));
+        return (activeSeconds * 1e18);
         // return member.secondsActive.sqrt(); 
         // SQRT((Total_Months - Months_on_break)* Time_Multiplier)
     }
 
+    // special to imnt shares
     function _distribute(uint256[] memory calculated) internal override returns(bool) {
         address[] memory _receivers = new address[](calculated.length);
  
         for (uint256 i = 0; i < calculated.length; i++) {
-            _receivers[i] = members[i].account;
+            address account = members[i].account;
+            
+            _receivers[i] = account;
 
         }
         moloch.mintShares(_receivers, calculated);

@@ -43,7 +43,6 @@ export declare namespace MemberRegistry {
 
 export interface MemberRegistryInterface extends utils.Interface {
   functions: {
-    "_updateSecondsActive()": FunctionFragment;
     "claim()": FunctionFragment;
     "count()": FunctionFragment;
     "lastTrigger()": FunctionFragment;
@@ -51,11 +50,11 @@ export interface MemberRegistryInterface extends utils.Interface {
     "memberIdxs(address)": FunctionFragment;
     "members(uint256)": FunctionFragment;
     "trigger()": FunctionFragment;
+    "updateSecondsActive()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "_updateSecondsActive"
       | "claim"
       | "count"
       | "lastTrigger"
@@ -63,12 +62,9 @@ export interface MemberRegistryInterface extends utils.Interface {
       | "memberIdxs"
       | "members"
       | "trigger"
+      | "updateSecondsActive"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "_updateSecondsActive",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "claim", values?: undefined): string;
   encodeFunctionData(functionFragment: "count", values?: undefined): string;
   encodeFunctionData(
@@ -88,11 +84,11 @@ export interface MemberRegistryInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "trigger", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "updateSecondsActive",
+    values?: undefined
+  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "_updateSecondsActive",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
   decodeFunctionResult(
@@ -103,6 +99,10 @@ export interface MemberRegistryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "memberIdxs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "trigger", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateSecondsActive",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Claim(address)": EventFragment;
@@ -187,10 +187,6 @@ export interface MemberRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    _updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     claim(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -220,11 +216,11 @@ export interface MemberRegistry extends BaseContract {
     trigger(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-  };
 
-  _updateSecondsActive(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
 
   claim(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -256,9 +252,11 @@ export interface MemberRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  callStatic: {
-    _updateSecondsActive(overrides?: CallOverrides): Promise<void>;
+  updateSecondsActive(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
+  callStatic: {
     claim(overrides?: CallOverrides): Promise<void>;
 
     count(overrides?: CallOverrides): Promise<BigNumber>;
@@ -284,6 +282,8 @@ export interface MemberRegistry extends BaseContract {
     >;
 
     trigger(overrides?: CallOverrides): Promise<void>;
+
+    updateSecondsActive(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -304,10 +304,6 @@ export interface MemberRegistry extends BaseContract {
   };
 
   estimateGas: {
-    _updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     claim(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -331,13 +327,13 @@ export interface MemberRegistry extends BaseContract {
     trigger(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    _updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     claim(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -359,6 +355,10 @@ export interface MemberRegistry extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     trigger(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateSecondsActive(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

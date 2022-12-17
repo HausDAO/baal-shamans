@@ -43,7 +43,6 @@ export declare namespace MemberRegistry {
 
 export interface PGRegistryInterface extends utils.Interface {
   functions: {
-    "_updateSecondsActive()": FunctionFragment;
     "batchNewMember(address[],uint32[],uint32[])": FunctionFragment;
     "batchUpdateMember(address[],uint32[])": FunctionFragment;
     "claim()": FunctionFragment;
@@ -56,14 +55,15 @@ export interface PGRegistryInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setNewMember(address,uint32,uint32)": FunctionFragment;
+    "shares()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "trigger()": FunctionFragment;
     "updateMember(address,uint32)": FunctionFragment;
+    "updateSecondsActive()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "_updateSecondsActive"
       | "batchNewMember"
       | "batchUpdateMember"
       | "claim"
@@ -76,15 +76,13 @@ export interface PGRegistryInterface extends utils.Interface {
       | "owner"
       | "renounceOwnership"
       | "setNewMember"
+      | "shares"
       | "transferOwnership"
       | "trigger"
       | "updateMember"
+      | "updateSecondsActive"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "_updateSecondsActive",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "batchNewMember",
     values: [
@@ -129,6 +127,7 @@ export interface PGRegistryInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "shares", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
@@ -138,11 +137,11 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "updateMember",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateSecondsActive",
+    values?: undefined
+  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "_updateSecondsActive",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "batchNewMember",
     data: BytesLike
@@ -170,6 +169,7 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "setNewMember",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -177,6 +177,10 @@ export interface PGRegistryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "trigger", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "updateMember",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateSecondsActive",
     data: BytesLike
   ): Result;
 
@@ -277,10 +281,6 @@ export interface PGRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    _updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     batchNewMember(
       _members: PromiseOrValue<string>[],
       _activityMultipliers: PromiseOrValue<BigNumberish>[],
@@ -335,6 +335,8 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    shares(overrides?: CallOverrides): Promise<[string]>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -349,11 +351,11 @@ export interface PGRegistry extends BaseContract {
       _activityMultiplier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-  };
 
-  _updateSecondsActive(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
 
   batchNewMember(
     _members: PromiseOrValue<string>[],
@@ -409,6 +411,8 @@ export interface PGRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  shares(overrides?: CallOverrides): Promise<string>;
+
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -424,9 +428,11 @@ export interface PGRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  callStatic: {
-    _updateSecondsActive(overrides?: CallOverrides): Promise<void>;
+  updateSecondsActive(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
+  callStatic: {
     batchNewMember(
       _members: PromiseOrValue<string>[],
       _activityMultipliers: PromiseOrValue<BigNumberish>[],
@@ -477,6 +483,8 @@ export interface PGRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    shares(overrides?: CallOverrides): Promise<string>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -489,6 +497,8 @@ export interface PGRegistry extends BaseContract {
       _activityMultiplier: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateSecondsActive(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -518,10 +528,6 @@ export interface PGRegistry extends BaseContract {
   };
 
   estimateGas: {
-    _updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     batchNewMember(
       _members: PromiseOrValue<string>[],
       _activityMultipliers: PromiseOrValue<BigNumberish>[],
@@ -570,6 +576,8 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    shares(overrides?: CallOverrides): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -584,13 +592,13 @@ export interface PGRegistry extends BaseContract {
       _activityMultiplier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    _updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     batchNewMember(
       _members: PromiseOrValue<string>[],
       _activityMultipliers: PromiseOrValue<BigNumberish>[],
@@ -639,6 +647,8 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    shares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -651,6 +661,10 @@ export interface PGRegistry extends BaseContract {
     updateMember(
       _member: PromiseOrValue<string>,
       _activityMultiplier: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateSecondsActive(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
