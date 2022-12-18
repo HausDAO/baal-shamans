@@ -7,7 +7,7 @@ import "./MemberRegistry.sol";
 
 import "../interfaces/IBAAL.sol";
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 // Register
 contract PGRegistry is MemberRegistry, Ownable {
@@ -40,7 +40,7 @@ contract PGRegistry is MemberRegistry, Ownable {
         uint32[] memory _activityMultipliers,
         uint32[] memory _startDates
     ) public onlyOwner {
-        for (uint256 i = 0; i < members.length; i++) {
+        for (uint256 i = 0; i < _members.length; i++) {
             _setNewMember(_members[i], _activityMultipliers[i], _startDates[i]);
         }
 
@@ -58,16 +58,13 @@ contract PGRegistry is MemberRegistry, Ownable {
     // special to imnt shares
     function _calculate(address _account) internal override view returns (uint256) {
         uint256 activeSeconds = super._calculate(_account);
-        // convert to token decimal and subtract current
-        // console.log(activeSeconds * 1 ether);
-        // console.log(shares.balanceOf(_account));
         return (activeSeconds * 1e18);
         // return member.secondsActive.sqrt(); 
         // SQRT((Total_Months - Months_on_break)* Time_Multiplier)
     }
 
     // special to imnt shares
-    function _distribute(uint256[] memory calculated) internal override returns(bool) {
+    function _distribute(uint256[] memory calculated) internal override view returns(bool) {
         address[] memory _receivers = new address[](calculated.length);
  
         for (uint256 i = 0; i < calculated.length; i++) {
@@ -76,7 +73,8 @@ contract PGRegistry is MemberRegistry, Ownable {
             _receivers[i] = account;
 
         }
-        moloch.mintShares(_receivers, calculated);
+        // comment out for gas test
+        // moloch.mintShares(_receivers, calculated);
         return true;
  
     }

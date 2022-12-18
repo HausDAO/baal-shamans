@@ -173,6 +173,9 @@ const config: HardhatUserConfig = {
     outDir: "src/types",
     target: "ethers-v5",
   },
+  gasReporter: {
+    showTimeSpent: true,
+  }
 };
 
 export default config;
