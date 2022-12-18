@@ -3,3 +3,4 @@
 /* eslint-disable */
 export type { MemberRegistry } from "./MemberRegistry";
 export type { PGRegistry } from "./PGRegistry";
+export type { TestRegistry } from "./TestRegistry";

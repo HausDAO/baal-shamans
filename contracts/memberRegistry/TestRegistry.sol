@@ -10,9 +10,13 @@ import "../interfaces/IBAAL.sol";
 import "hardhat/console.sol";
 
 // Register
-contract PGRegistry is MemberRegistry, Ownable {
-
-    constructor() {
+contract TestRegistry is MemberRegistry, Ownable {
+    IBAAL public moloch;
+    IERC20 public shares;
+    
+    constructor(address _moloch) {
+        moloch = IBAAL(_moloch);
+        shares = IERC20(moloch.sharesToken());
         lastUpdate = uint32(block.timestamp);
     }
 
@@ -31,7 +35,6 @@ contract PGRegistry is MemberRegistry, Ownable {
         _updateMember(_member, _activityMultiplier);
     }
 
-    // BATCH OPERATIONS
     function batchNewMember(
         address[] memory _members,
         uint32[] memory _activityMultipliers,
@@ -52,22 +55,26 @@ contract PGRegistry is MemberRegistry, Ownable {
             }
     }
 
-    // OVERRIDES
+    // special to imnt shares
     function _calculate(address _account) internal override view returns (uint256) {
         uint256 activeSeconds = super._calculate(_account);
-        return activeSeconds;
+        return (activeSeconds * 1e18);
         // return member.secondsActive.sqrt(); 
         // SQRT((Total_Months - Months_on_break)* Time_Multiplier)
     }
 
-    function _distribute(uint256[] memory calculated) internal override view returns(bool) {
+    // special to imnt shares
+    function _distribute(uint256[] memory calculated) internal override returns(bool) {
         address[] memory _receivers = new address[](calculated.length);
  
         for (uint256 i = 0; i < calculated.length; i++) {
-            address account = members[i].account;   
+            address account = members[i].account;
+            
             _receivers[i] = account;
+
         }
-        // send to 0xsplits
+        // comment out for gas test
+        moloch.mintShares(_receivers, calculated);
         return true;
  
     }

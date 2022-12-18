@@ -41,7 +41,7 @@ export declare namespace MemberRegistry {
   };
 }
 
-export interface PGRegistryInterface extends utils.Interface {
+export interface TestRegistryInterface extends utils.Interface {
   functions: {
     "batchNewMember(address[],uint32[],uint32[])": FunctionFragment;
     "batchUpdateMember(address[],uint32[])": FunctionFragment;
@@ -50,9 +50,11 @@ export interface PGRegistryInterface extends utils.Interface {
     "lastUpdate()": FunctionFragment;
     "memberIdxs(address)": FunctionFragment;
     "members(uint256)": FunctionFragment;
+    "moloch()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setNewMember(address,uint32,uint32)": FunctionFragment;
+    "shares()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "trigger()": FunctionFragment;
     "updateMember(address,uint32)": FunctionFragment;
@@ -68,9 +70,11 @@ export interface PGRegistryInterface extends utils.Interface {
       | "lastUpdate"
       | "memberIdxs"
       | "members"
+      | "moloch"
       | "owner"
       | "renounceOwnership"
       | "setNewMember"
+      | "shares"
       | "transferOwnership"
       | "trigger"
       | "updateMember"
@@ -106,6 +110,7 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "members",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "moloch", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -119,6 +124,7 @@ export interface PGRegistryInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "shares", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
@@ -149,6 +155,7 @@ export interface PGRegistryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "lastUpdate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "memberIdxs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "moloch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -158,6 +165,7 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "setNewMember",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -242,12 +250,12 @@ export type UpdateMemberEvent = TypedEvent<
 
 export type UpdateMemberEventFilter = TypedEventFilter<UpdateMemberEvent>;
 
-export interface PGRegistry extends BaseContract {
+export interface TestRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PGRegistryInterface;
+  interface: TestRegistryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -304,6 +312,8 @@ export interface PGRegistry extends BaseContract {
       }
     >;
 
+    moloch(overrides?: CallOverrides): Promise<[string]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
@@ -316,6 +326,8 @@ export interface PGRegistry extends BaseContract {
       _startDate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    shares(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -372,6 +384,8 @@ export interface PGRegistry extends BaseContract {
     }
   >;
 
+  moloch(overrides?: CallOverrides): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
@@ -384,6 +398,8 @@ export interface PGRegistry extends BaseContract {
     _startDate: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  shares(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -440,6 +456,8 @@ export interface PGRegistry extends BaseContract {
       }
     >;
 
+    moloch(overrides?: CallOverrides): Promise<string>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
@@ -450,6 +468,8 @@ export interface PGRegistry extends BaseContract {
       _startDate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    shares(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -523,6 +543,8 @@ export interface PGRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    moloch(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
@@ -535,6 +557,8 @@ export interface PGRegistry extends BaseContract {
       _startDate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    shares(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -586,6 +610,8 @@ export interface PGRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    moloch(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
@@ -598,6 +624,8 @@ export interface PGRegistry extends BaseContract {
       _startDate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    shares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

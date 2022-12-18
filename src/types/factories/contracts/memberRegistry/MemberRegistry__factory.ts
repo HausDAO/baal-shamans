@@ -111,13 +111,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "claim",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "count",
     outputs: [
       {

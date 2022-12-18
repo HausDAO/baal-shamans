@@ -7,27 +7,30 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Register
 abstract contract MemberRegistry {
-    // 20 + 4 + 4
+    // Member struct 20 + 4 + 4 packed
     struct Member {
         address account;
         uint32 secondsActive;
         uint32 activityMultiplier;
     }
 
+    // store when a update happens
     uint32 public lastUpdate;
     uint32 public lastTrigger;
-    Member[] public members;
     // iterable
+    Member[] public members;
     uint256 public count = 1;
     mapping(address => uint256) public memberIdxs;
 
+    // EVENTS
     event SetMember(Member member);
     event UpdateMember(Member member);
     event Update(uint32);
     event Trigger(uint32);
     event Claim(address);
 
-    // todo: batch?
+    // REGISTER MODIFIERS
+
     function _setNewMember(
         address _member,
         uint32 _activityMultiplier,
@@ -58,40 +61,41 @@ abstract contract MemberRegistry {
         emit UpdateMember(members[memberIdxs[_member] - 1]);
     }
 
-    //todo: zero out or delete member
+    //todo: delete member?
 
+    // REGISTER ACTIONS
+
+    // add seconds active to member from last update
     function updateSecondsActive() public virtual {
+        // cache this because it is the same for all members
+        uint32 newSeconds = (uint32(block.timestamp) - lastUpdate);
         for (uint256 i = 0; i < members.length; i++) {
             Member storage _member = members[i];
             // multiple by modifier and divide by 100 to get %
-            _member.secondsActive +=
-                ((uint32(block.timestamp) - lastUpdate) * _member.activityMultiplier) / 100;
+            _member.secondsActive += (newSeconds * _member.activityMultiplier) / 100;
         }
         lastUpdate = uint32(block.timestamp);
         emit Update(lastUpdate);
     }
 
-    // trigger distribute for all members
+    // trigger splits call for all members
+    
     function trigger() public virtual {
         // todo: require tigger to happen after/before update?
+
+        // bound array to hold calculated values
+         // todo: 
         uint256[] memory calculated = new uint256[](members.length);
 
         for (uint256 i = 0; i < members.length; i++) {
-            calculated[i] = _calculate(members[i].account); // todo: store in format for 0xsplits
+            calculated[i] = _calculate(members[i].account);
         }
-        _distribute(calculated); // param of data struct
+        _distribute(calculated); 
         lastTrigger = uint32(block.timestamp);
         emit Trigger(lastTrigger);
     }
 
-    // per member claim
-    function claim() public virtual {
-        require(memberIdxs[msg.sender] != 0, "not registered");
-        _sync(msg.sender);
-        emit Claim(msg.sender);
-    }
-
-    // internal
+    // INTERNAL VIRTUALS
     function _calculate(address _account)
         internal
         view
@@ -101,8 +105,6 @@ abstract contract MemberRegistry {
         uint256 memberIdx = memberIdxs[_account];
         Member storage member = members[memberIdx - 1];
         return member.secondsActive * member.activityMultiplier;
-        // return member.secondsActive.sqrt();
-        // SQRT((Total_Months - Months_on_break)* Time_Multiplier)
     }
 
     function _distribute(uint256[] memory calculated)
@@ -111,7 +113,7 @@ abstract contract MemberRegistry {
         returns (bool success)
     {
         for (uint256 i = 0; i < calculated.length; i++) {
-            // todo: store in format for 0xsplits
+        // todo: interact with external contract
         }
         return true;
     }

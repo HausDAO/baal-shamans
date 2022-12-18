@@ -43,7 +43,6 @@ export declare namespace MemberRegistry {
 
 export interface MemberRegistryInterface extends utils.Interface {
   functions: {
-    "claim()": FunctionFragment;
     "count()": FunctionFragment;
     "lastTrigger()": FunctionFragment;
     "lastUpdate()": FunctionFragment;
@@ -55,7 +54,6 @@ export interface MemberRegistryInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "claim"
       | "count"
       | "lastTrigger"
       | "lastUpdate"
@@ -65,7 +63,6 @@ export interface MemberRegistryInterface extends utils.Interface {
       | "updateSecondsActive"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "claim", values?: undefined): string;
   encodeFunctionData(functionFragment: "count", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "lastTrigger",
@@ -89,7 +86,6 @@ export interface MemberRegistryInterface extends utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastTrigger",
@@ -187,10 +183,6 @@ export interface MemberRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     count(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     lastTrigger(overrides?: CallOverrides): Promise<[number]>;
@@ -221,10 +213,6 @@ export interface MemberRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
-
-  claim(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   count(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -257,8 +245,6 @@ export interface MemberRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    claim(overrides?: CallOverrides): Promise<void>;
-
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastTrigger(overrides?: CallOverrides): Promise<number>;
@@ -304,10 +290,6 @@ export interface MemberRegistry extends BaseContract {
   };
 
   estimateGas: {
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastTrigger(overrides?: CallOverrides): Promise<BigNumber>;
@@ -334,10 +316,6 @@ export interface MemberRegistry extends BaseContract {
   };
 
   populateTransaction: {
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     count(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     lastTrigger(overrides?: CallOverrides): Promise<PopulatedTransaction>;

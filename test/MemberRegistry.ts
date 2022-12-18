@@ -525,9 +525,12 @@ describe("Member registry", function () {
     s5Baal = baal.connect(s5);
     s6Baal = baal.connect(s6);
 
-    memberRegistry = (await MemberRegistryFactory.deploy(
-      addresses.baal
-    )) as PGRegistry;
+    memberRegistry = (await MemberRegistryFactory.deploy()) as PGRegistry;
+
+    // testing other imps
+    // memberRegistry = (await MemberRegistryFactory.deploy(
+    //     addresses.baal
+    //   )) as PGRegistry;
     await memberRegistry.transferOwnership(gnosisSafe.address);
 
     const lootTokenAddress = await baal.lootToken();
