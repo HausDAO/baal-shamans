@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Register
 abstract contract MemberRegistry {
-    // Member struct 20 + 4 + 4 packed
+    // Member struct 20 + 4 + 4 + 4 packed
     struct Member {
         address account;
         uint32 secondsActive;
