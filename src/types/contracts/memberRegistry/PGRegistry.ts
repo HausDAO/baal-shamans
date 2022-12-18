@@ -32,12 +32,14 @@ export declare namespace MemberRegistry {
     account: PromiseOrValue<string>;
     secondsActive: PromiseOrValue<BigNumberish>;
     activityMultiplier: PromiseOrValue<BigNumberish>;
+    startDate: PromiseOrValue<BigNumberish>;
   };
 
-  export type MemberStructOutput = [string, number, number] & {
+  export type MemberStructOutput = [string, number, number, number] & {
     account: string;
     secondsActive: number;
     activityMultiplier: number;
+    startDate: number;
   };
 }
 
@@ -297,10 +299,11 @@ export interface PGRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number] & {
+      [string, number, number, number] & {
         account: string;
         secondsActive: number;
         activityMultiplier: number;
+        startDate: number;
       }
     >;
 
@@ -365,10 +368,11 @@ export interface PGRegistry extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, number, number] & {
+    [string, number, number, number] & {
       account: string;
       secondsActive: number;
       activityMultiplier: number;
+      startDate: number;
     }
   >;
 
@@ -433,10 +437,11 @@ export interface PGRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number] & {
+      [string, number, number, number] & {
         account: string;
         secondsActive: number;
         activityMultiplier: number;
+        startDate: number;
       }
     >;
 

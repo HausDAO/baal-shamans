@@ -43,6 +43,11 @@ const _abi = [
             name: "activityMultiplier",
             type: "uint32",
           },
+          {
+            internalType: "uint32",
+            name: "startDate",
+            type: "uint32",
+          },
         ],
         indexed: false,
         internalType: "struct MemberRegistry.Member",
@@ -97,6 +102,11 @@ const _abi = [
           {
             internalType: "uint32",
             name: "activityMultiplier",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "startDate",
             type: "uint32",
           },
         ],
@@ -190,6 +200,11 @@ const _abi = [
       {
         internalType: "uint32",
         name: "activityMultiplier",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "startDate",
         type: "uint32",
       },
     ],

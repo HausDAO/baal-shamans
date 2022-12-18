@@ -12,6 +12,7 @@ abstract contract MemberRegistry {
         address account;
         uint32 secondsActive;
         uint32 activityMultiplier;
+        uint32 startDate;
     }
 
     // store when a update happens
@@ -21,6 +22,7 @@ abstract contract MemberRegistry {
     Member[] public members;
     uint256 public count = 1;
     mapping(address => uint256) public memberIdxs;
+    // mapping(address => uint256) public start;
 
     // EVENTS
     event SetMember(Member member);
@@ -42,7 +44,8 @@ abstract contract MemberRegistry {
             Member(
                 _member,
                 uint32(block.timestamp) - _startDate,
-                _activityMultiplier
+                _activityMultiplier,
+                _startDate
             )
         );
         memberIdxs[_member] = count;
