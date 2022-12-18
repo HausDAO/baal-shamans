@@ -16,9 +16,7 @@ async function main() {
   }
 
   const PGRegistry = await ethers.getContractFactory("PGRegistry");
-  const registryContract = await PGRegistry.deploy(
-    deployConfig.moloch
-  );
+  const registryContract = await PGRegistry.deploy();
 
   await registryContract.deployed();
 

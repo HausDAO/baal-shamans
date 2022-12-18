@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MemberRegistry.sol";
+
+import "@prb/math/src/UD60x18.sol";
 
 import "../interfaces/IBAAL.sol";
 
@@ -54,10 +56,9 @@ contract PGRegistry is MemberRegistry, Ownable {
 
     // OVERRIDES
     function _calculate(address _account) internal override view returns (uint256) {
-        uint256 activeSeconds = super._calculate(_account);
-        return activeSeconds;
-        // return member.secondsActive.sqrt(); 
-        // SQRT((Total_Months - Months_on_break)* Time_Multiplier)
+        UD60x18 activeSeconds = ud(super._calculate(_account));
+        return unwrap(activeSeconds.sqrt()); 
+        // orig SQRT((Total_Months - Months_on_break)* Time_Multiplier)
     }
 
     function _distribute(uint256[] memory calculated) internal override view returns(bool) {
@@ -67,7 +68,7 @@ contract PGRegistry is MemberRegistry, Ownable {
             address account = members[i].account;   
             _receivers[i] = account;
         }
-        // send to 0xsplits
+        // send to 0xsplits?
         return true;
  
     }
