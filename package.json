@@ -4,7 +4,8 @@
   "description": "Different Shamans that can be used with the Molochv3(Baal) contracts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "hardhat test --network hardhat",
+    "build": "npx hardhat compile"
   },
   "author": "",
   "license": "ISC",
