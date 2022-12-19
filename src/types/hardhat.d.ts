@@ -133,6 +133,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IRelayRecipient__factory>;
     getContractFactory(
+      name: "AccessControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessControlUpgradeable__factory>;
+    getContractFactory(
+      name: "IAccessControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAccessControlUpgradeable__factory>;
+    getContractFactory(
       name: "OwnableUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OwnableUpgradeable__factory>;
@@ -181,6 +189,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.EIP712Upgradeable__factory>;
     getContractFactory(
+      name: "ERC165Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165Upgradeable__factory>;
+    getContractFactory(
+      name: "IERC165Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165Upgradeable__factory>;
+    getContractFactory(
       name: "Ownable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
@@ -228,6 +244,10 @@ declare module "hardhat/types/runtime" {
       name: "IERC165",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
+    getContractFactory(
+      name: "ShamomV1",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ShamomV1__factory>;
     getContractFactory(
       name: "ExampleManagerShaman",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -476,6 +496,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IRelayRecipient>;
     getContractAt(
+      name: "AccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControlUpgradeable>;
+    getContractAt(
+      name: "IAccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControlUpgradeable>;
+    getContractAt(
       name: "OwnableUpgradeable",
       address: string,
       signer?: ethers.Signer
@@ -536,6 +566,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.EIP712Upgradeable>;
     getContractAt(
+      name: "ERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165Upgradeable>;
+    getContractAt(
+      name: "IERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165Upgradeable>;
+    getContractAt(
       name: "Ownable",
       address: string,
       signer?: ethers.Signer
@@ -595,6 +635,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "ShamomV1",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ShamomV1>;
     getContractAt(
       name: "ExampleManagerShaman",
       address: string,

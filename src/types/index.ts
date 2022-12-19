@@ -70,6 +70,10 @@ export type { BaseRelayRecipient } from "./@opengsn/contracts/src/BaseRelayRecip
 export { BaseRelayRecipient__factory } from "./factories/@opengsn/contracts/src/BaseRelayRecipient__factory";
 export type { IRelayRecipient } from "./@opengsn/contracts/src/interfaces/IRelayRecipient";
 export { IRelayRecipient__factory } from "./factories/@opengsn/contracts/src/interfaces/IRelayRecipient__factory";
+export type { AccessControlUpgradeable } from "./@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable";
+export { AccessControlUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable__factory";
+export type { IAccessControlUpgradeable } from "./@openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable";
+export { IAccessControlUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable__factory";
 export type { OwnableUpgradeable } from "./@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable";
 export { OwnableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable__factory";
 export type { Initializable } from "./@openzeppelin/contracts-upgradeable/proxy/utils/Initializable";
@@ -94,6 +98,10 @@ export type { ContextUpgradeable } from "./@openzeppelin/contracts-upgradeable/u
 export { ContextUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable__factory";
 export type { EIP712Upgradeable } from "./@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol/EIP712Upgradeable";
 export { EIP712Upgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol/EIP712Upgradeable__factory";
+export type { ERC165Upgradeable } from "./@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable";
+export { ERC165Upgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable__factory";
+export type { IERC165Upgradeable } from "./@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable";
+export { IERC165Upgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable__factory";
 export type { Ownable } from "./@openzeppelin/contracts/access/Ownable";
 export { Ownable__factory } from "./factories/@openzeppelin/contracts/access/Ownable__factory";
 export type { IERC1822Proxiable } from "./@openzeppelin/contracts/interfaces/draft-IERC1822.sol/IERC1822Proxiable";
@@ -114,6 +122,8 @@ export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/exten
 export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
+export type { ShamomV1 } from "./contracts/cookies/ShamomV1";
+export { ShamomV1__factory } from "./factories/contracts/cookies/ShamomV1__factory";
 export type { ExampleManagerShaman } from "./contracts/example/Example.sol/ExampleManagerShaman";
 export { ExampleManagerShaman__factory } from "./factories/contracts/example/Example.sol/ExampleManagerShaman__factory";
 export type { Baal } from "./contracts/fixtures/Baal/contracts/Baal";
