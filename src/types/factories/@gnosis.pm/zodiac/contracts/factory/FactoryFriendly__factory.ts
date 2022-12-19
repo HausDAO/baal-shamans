@@ -88,7 +88,7 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class FactoryFriendly__factory {
   static readonly abi = _abi;

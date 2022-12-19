@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  Initializable,
-  InitializableInterface,
-} from "../../../../../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable";
+  EIP712Upgradeable,
+  EIP712UpgradeableInterface,
+} from "../../../../../@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable";
 
 const _abi = [
   {
@@ -25,15 +25,15 @@ const _abi = [
   },
 ] as const;
 
-export class Initializable__factory {
+export class EIP712Upgradeable__factory {
   static readonly abi = _abi;
-  static createInterface(): InitializableInterface {
-    return new utils.Interface(_abi) as InitializableInterface;
+  static createInterface(): EIP712UpgradeableInterface {
+    return new utils.Interface(_abi) as EIP712UpgradeableInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): Initializable {
-    return new Contract(address, _abi, signerOrProvider) as Initializable;
+  ): EIP712Upgradeable {
+    return new Contract(address, _abi, signerOrProvider) as EIP712Upgradeable;
   }
 }
