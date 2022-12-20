@@ -526,7 +526,7 @@ describe("Member registry", function () {
     s6Baal = baal.connect(s6);
 
     // todo: mock splits
-    memberRegistry = (await MemberRegistryFactory.deploy(s4.address)) as PGRegistry;
+    memberRegistry = (await MemberRegistryFactory.deploy(s4.address, s3.address)) as PGRegistry;
 
     await memberRegistry.transferOwnership(gnosisSafe.address);
 

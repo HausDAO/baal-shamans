@@ -11,22 +11,33 @@ import "hardhat/console.sol";
 
 interface ISPLITS {
     function createSplit(
-        address[] memory _receivers,
+        address[] memory _accounts,
         uint32[] memory _percentAllocations,
         uint32 _distributorsFee,
         address _controller
     ) external;
+
+    function updateSplit(
+        address split,
+        address[] memory _accounts,
+        uint32[] memory _percentAllocations,
+        uint32 _distributorsFee,
+    ) external;
+
+    function transferControl
 }
 
 // Register
 contract PGRegistry is MemberRegistry, Ownable {
-    ISPLITS public splits;
+    ISPLITS public splitsMain;
+    address public split;
 
     uint32 public constant PERCENTAGE_SCALE = 1e6;
 
-    constructor(address _splits) {
-        splits = ISPLITS(_splits);
+    constructor(address _splitsMain, address _split) {
+        splitsMain = ISPLITS(_splitsMain);
         lastUpdate = uint32(block.timestamp);
+        split = _split;
     }
 
     function setNewMember(
@@ -65,8 +76,6 @@ contract PGRegistry is MemberRegistry, Ownable {
     }
 
     function triggerCalcAndSplits() public {
-        // update member total seconds and seconds in last period
-        updateSecondsActive();
 
         uint256 nonZeroCount;
         uint32 total;
@@ -84,6 +93,7 @@ contract PGRegistry is MemberRegistry, Ownable {
         uint32 _distributorsFee = 0;
         address _controller = address(0);
         
+        uint32 runningTotal;
         // fill arrays
         for (uint256 i = 0; i < members.length; i++) {
             Member memory _member = members[i];
@@ -93,9 +103,19 @@ contract PGRegistry is MemberRegistry, Ownable {
                 _percentAllocations[i] =
                 (uint32(unwrap(udActiveSeconds.sqrt())) * PERCENTAGE_SCALE) /
                 total;
+                runningTotal += _percentAllocations[i];
             }
         }
-        // splits.createSplit(_receivers, _percentAllocations, _distributorsFee, _controller);
-        emit Trigger(uint32(block.timestamp));
+        // if there was any loss add it to the first account.
+        if(runningTotal != PERCENTAGE_SCALE) {
+            _percentAllocations[0] += (PERCENTAGE_SCALE - runningTotal);
+        }
+
+        // run split
+        splitsMain.updateSplit(split, _receivers, _percentAllocations, _distributorsFee);
+        
+        // update member total seconds and seconds in last period
+        // is this happening after?
+        updateSecondsActive();
     }
 }
