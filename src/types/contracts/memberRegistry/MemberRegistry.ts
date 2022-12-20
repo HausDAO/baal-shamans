@@ -7,8 +7,6 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
-  ContractTransaction,
-  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -33,13 +31,15 @@ export declare namespace MemberRegistry {
     secondsActive: PromiseOrValue<BigNumberish>;
     activityMultiplier: PromiseOrValue<BigNumberish>;
     startDate: PromiseOrValue<BigNumberish>;
+    periodSecondsActive: PromiseOrValue<BigNumberish>;
   };
 
-  export type MemberStructOutput = [string, number, number, number] & {
+  export type MemberStructOutput = [string, number, number, number, number] & {
     account: string;
     secondsActive: number;
     activityMultiplier: number;
     startDate: number;
+    periodSecondsActive: number;
   };
 }
 
@@ -50,8 +50,6 @@ export interface MemberRegistryInterface extends utils.Interface {
     "lastUpdate()": FunctionFragment;
     "memberIdxs(address)": FunctionFragment;
     "members(uint256)": FunctionFragment;
-    "trigger()": FunctionFragment;
-    "updateSecondsActive()": FunctionFragment;
   };
 
   getFunction(
@@ -61,8 +59,6 @@ export interface MemberRegistryInterface extends utils.Interface {
       | "lastUpdate"
       | "memberIdxs"
       | "members"
-      | "trigger"
-      | "updateSecondsActive"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "count", values?: undefined): string;
@@ -82,11 +78,6 @@ export interface MemberRegistryInterface extends utils.Interface {
     functionFragment: "members",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "trigger", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "updateSecondsActive",
-    values?: undefined
-  ): string;
 
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
   decodeFunctionResult(
@@ -96,33 +87,19 @@ export interface MemberRegistryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "lastUpdate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "memberIdxs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "trigger", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateSecondsActive",
-    data: BytesLike
-  ): Result;
 
   events: {
-    "Claim(address)": EventFragment;
     "SetMember(tuple)": EventFragment;
     "Trigger(uint32)": EventFragment;
     "Update(uint32)": EventFragment;
     "UpdateMember(tuple)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Claim"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMember"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Trigger"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Update"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateMember"): EventFragment;
 }
-
-export interface ClaimEventObject {
-  arg0: string;
-}
-export type ClaimEvent = TypedEvent<[string], ClaimEventObject>;
-
-export type ClaimEventFilter = TypedEventFilter<ClaimEvent>;
 
 export interface SetMemberEventObject {
   member: MemberRegistry.MemberStructOutput;
@@ -200,21 +177,14 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number, number] & {
+      [string, number, number, number, number] & {
         account: string;
         secondsActive: number;
         activityMultiplier: number;
         startDate: number;
+        periodSecondsActive: number;
       }
     >;
-
-    trigger(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
   };
 
   count(overrides?: CallOverrides): Promise<BigNumber>;
@@ -232,21 +202,14 @@ export interface MemberRegistry extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, number, number, number] & {
+    [string, number, number, number, number] & {
       account: string;
       secondsActive: number;
       activityMultiplier: number;
       startDate: number;
+      periodSecondsActive: number;
     }
   >;
-
-  trigger(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateSecondsActive(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   callStatic: {
     count(overrides?: CallOverrides): Promise<BigNumber>;
@@ -264,23 +227,17 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number, number] & {
+      [string, number, number, number, number] & {
         account: string;
         secondsActive: number;
         activityMultiplier: number;
         startDate: number;
+        periodSecondsActive: number;
       }
     >;
-
-    trigger(overrides?: CallOverrides): Promise<void>;
-
-    updateSecondsActive(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    "Claim(address)"(arg0?: null): ClaimEventFilter;
-    Claim(arg0?: null): ClaimEventFilter;
-
     "SetMember(tuple)"(member?: null): SetMemberEventFilter;
     SetMember(member?: null): SetMemberEventFilter;
 
@@ -310,14 +267,6 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    trigger(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -335,14 +284,6 @@ export interface MemberRegistry extends BaseContract {
     members(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    trigger(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateSecondsActive(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

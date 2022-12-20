@@ -7,14 +7,25 @@ import "./MemberRegistry.sol";
 
 import "@prb/math/src/UD60x18.sol";
 
-import "../interfaces/IBAAL.sol";
-
 import "hardhat/console.sol";
+
+interface ISPLITS {
+    function createSplit(
+        address[] memory _receivers,
+        uint32[] memory _percentAllocations,
+        uint32 _distributorsFee,
+        address _controller
+    ) external;
+}
 
 // Register
 contract PGRegistry is MemberRegistry, Ownable {
+    ISPLITS public splits;
 
-    constructor() {
+    uint32 public constant PERCENTAGE_SCALE = 1e6;
+
+    constructor(address _splits) {
+        splits = ISPLITS(_splits);
         lastUpdate = uint32(block.timestamp);
     }
 
@@ -26,10 +37,10 @@ contract PGRegistry is MemberRegistry, Ownable {
         _setNewMember(_member, _activityMultiplier, _startDate);
     }
 
-    function updateMember(
-        address _member,
-        uint32 _activityMultiplier
-        ) public onlyOwner {
+    function updateMember(address _member, uint32 _activityMultiplier)
+        public
+        onlyOwner
+    {
         _updateMember(_member, _activityMultiplier);
     }
 
@@ -42,34 +53,49 @@ contract PGRegistry is MemberRegistry, Ownable {
         for (uint256 i = 0; i < _members.length; i++) {
             _setNewMember(_members[i], _activityMultipliers[i], _startDates[i]);
         }
-
     }
 
     function batchUpdateMember(
         address[] memory _members,
         uint32[] memory _activityMultipliers
-        ) public onlyOwner {
-            for (uint256 i = 0; i < members.length; i++) {
-                _updateMember(_members[i], _activityMultipliers[i]);
-            }
-    }
-
-    // OVERRIDES
-    function _calculate(address _account) internal override view returns (uint256) {
-        UD60x18 activeSeconds = ud(super._calculate(_account));
-        return unwrap(activeSeconds.sqrt()); 
-        // orig SQRT((Total_Months - Months_on_break)* Time_Multiplier)
-    }
-
-    function _distribute(uint256[] memory calculated) internal override view returns(bool) {
-        address[] memory _receivers = new address[](calculated.length);
- 
-        for (uint256 i = 0; i < calculated.length; i++) {
-            address account = members[i].account;   
-            _receivers[i] = account;
+    ) public onlyOwner {
+        for (uint256 i = 0; i < members.length; i++) {
+            _updateMember(_members[i], _activityMultipliers[i]);
         }
-        // send to 0xsplits?
-        return true;
- 
+    }
+
+    function triggerCalcAndSplits() public {
+        // update member total seconds and seconds in last period
+        updateSecondsActive();
+
+        uint256 nonZeroCount;
+        uint32 total;
+        // get the total of seconds in the last period
+        for (uint256 i = 0; i < members.length; i++) {
+            if(members[i].periodSecondsActive > 0) {
+                total += members[i].periodSecondsActive;
+                nonZeroCount++;
+            }
+        }
+
+        // define variables for split params
+        address[] memory _receivers = new address[](nonZeroCount);
+        uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
+        uint32 _distributorsFee = 0;
+        address _controller = address(0);
+        
+        // fill arrays
+        for (uint256 i = 0; i < members.length; i++) {
+            Member memory _member = members[i];
+            if(members[i].periodSecondsActive > 0) {
+                UD60x18 udActiveSeconds = ud(_member.periodSecondsActive);
+                _receivers[i] = members[i].account;
+                _percentAllocations[i] =
+                (uint32(unwrap(udActiveSeconds.sqrt())) * PERCENTAGE_SCALE) /
+                total;
+            }
+        }
+        splits.createSplit(_receivers, _percentAllocations, _distributorsFee, _controller);
+        emit Trigger(uint32(block.timestamp));
     }
 }

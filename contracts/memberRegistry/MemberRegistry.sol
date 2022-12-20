@@ -13,6 +13,7 @@ abstract contract MemberRegistry {
         uint32 secondsActive;
         uint32 activityMultiplier;
         uint32 startDate;
+        uint32 periodSecondsActive;
     }
 
     // store when a update happens
@@ -29,7 +30,6 @@ abstract contract MemberRegistry {
     event UpdateMember(Member member);
     event Update(uint32);
     event Trigger(uint32);
-    event Claim(address);
 
     // REGISTER MODIFIERS
 
@@ -45,7 +45,8 @@ abstract contract MemberRegistry {
                 _member,
                 uint32(block.timestamp) - _startDate,
                 _activityMultiplier,
-                _startDate
+                _startDate,
+                0
             )
         );
         memberIdxs[_member] = count;
@@ -69,57 +70,19 @@ abstract contract MemberRegistry {
     // REGISTER ACTIONS
 
     // add seconds active to member from last update
-    function updateSecondsActive() public virtual {
+    function updateSecondsActive() internal virtual {
         // cache this because it is the same for all members
         uint32 newSeconds = (uint32(block.timestamp) - lastUpdate);
+        // update struct with total seconds active and seconds in last claim
         for (uint256 i = 0; i < members.length; i++) {
-            Member storage _member = members[i];
+            Member memory _member = members[i];
             // multiple by modifier and divide by 100 to get %
-            _member.secondsActive += (newSeconds * _member.activityMultiplier) / 100;
+            uint32 newSecondsActive = (newSeconds * _member.activityMultiplier) / 100;
+            _member.secondsActive += newSecondsActive;
+            _member.periodSecondsActive = newSecondsActive;
         }
-        lastUpdate = uint32(block.timestamp);
-        emit Update(lastUpdate);
+
+        emit Update(uint32(block.timestamp));
     }
 
-    // trigger splits call for all members
-    
-    function trigger() public virtual {
-        // todo: require tigger to happen after/before update?
-
-        // bound array to hold calculated values
-         // todo: 
-        uint256[] memory calculated = new uint256[](members.length);
-
-        for (uint256 i = 0; i < members.length; i++) {
-            calculated[i] = _calculate(members[i].account);
-        }
-        _distribute(calculated); 
-        lastTrigger = uint32(block.timestamp);
-        emit Trigger(lastTrigger);
-    }
-
-    // INTERNAL VIRTUALS
-    function _calculate(address _account)
-        internal
-        view
-        virtual
-        returns (uint256)
-    {
-        uint256 memberIdx = memberIdxs[_account];
-        Member storage member = members[memberIdx - 1];
-        return member.secondsActive * member.activityMultiplier;
-    }
-
-    function _distribute(uint256[] memory calculated)
-        internal
-        virtual
-        returns (bool success)
-    {
-        for (uint256 i = 0; i < calculated.length; i++) {
-        // todo: interact with external contract
-        }
-        return true;
-    }
-
-    function _sync(address _account) internal view virtual returns (uint256) {}
 }

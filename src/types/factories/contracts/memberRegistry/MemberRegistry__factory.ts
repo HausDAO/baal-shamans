@@ -14,19 +14,6 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "Claim",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         components: [
           {
             internalType: "address",
@@ -46,6 +33,11 @@ const _abi = [
           {
             internalType: "uint32",
             name: "startDate",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "periodSecondsActive",
             type: "uint32",
           },
         ],
@@ -107,6 +99,11 @@ const _abi = [
           {
             internalType: "uint32",
             name: "startDate",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "periodSecondsActive",
             type: "uint32",
           },
         ],
@@ -207,22 +204,13 @@ const _abi = [
         name: "startDate",
         type: "uint32",
       },
+      {
+        internalType: "uint32",
+        name: "periodSecondsActive",
+        type: "uint32",
+      },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "trigger",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "updateSecondsActive",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
 ];

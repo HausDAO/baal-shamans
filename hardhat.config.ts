@@ -131,23 +131,23 @@ const config: HardhatUserConfig = {
       mainnet: etherscan(),
     },
     customChains: [
+      // {
+      //   network: "gnosis",
+      //   chainId: 100,
+      //   urls: {
+      //     apiURL: "https://api.gnosisscan.io/api",
+      //     browserURL: "https://gnosisscan.io/",
+      //   }
+      // },
+      // can only have one chainId 100 at a time
       {
-        network: "gnosis",
+        network: "xdai",
         chainId: 100,
         urls: {
-          apiURL: "https://api.gnosisscan.io/api",
-          browserURL: "https://gnosisscan.io/",
+          apiURL: "https://blockscout.com/xdai/mainnet/api",
+          browserURL: "https://blockscout.com/xdai/mainnet/",
         }
-      },
-      // can only have one chainId 100 at a time
-    //   {
-    //     network: "xdai",
-    //     chainId: 100,
-    //     urls: {
-    //       apiURL: "https://blockscout.com/xdai/mainnet/api",
-    //       browserURL: "https://blockscout.com/xdai/mainnet/",
-    //     }
-    //   }
+      }
     ]
   },
   solidity: {
