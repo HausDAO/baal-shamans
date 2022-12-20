@@ -34,12 +34,18 @@ export declare namespace MemberRegistry {
     periodSecondsActive: PromiseOrValue<BigNumberish>;
   };
 
-  export type MemberStructOutput = [string, number, number, number, number] & {
+  export type MemberStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
     account: string;
-    secondsActive: number;
-    activityMultiplier: number;
-    startDate: number;
-    periodSecondsActive: number;
+    secondsActive: BigNumber;
+    activityMultiplier: BigNumber;
+    startDate: BigNumber;
+    periodSecondsActive: BigNumber;
   };
 }
 
@@ -90,8 +96,8 @@ export interface MemberRegistryInterface extends utils.Interface {
 
   events: {
     "SetMember(tuple)": EventFragment;
-    "Trigger(uint48)": EventFragment;
-    "Update(uint48)": EventFragment;
+    "Trigger(uint64)": EventFragment;
+    "Update(uint64)": EventFragment;
     "UpdateMember(tuple)": EventFragment;
   };
 
@@ -112,16 +118,16 @@ export type SetMemberEvent = TypedEvent<
 export type SetMemberEventFilter = TypedEventFilter<SetMemberEvent>;
 
 export interface TriggerEventObject {
-  arg0: number;
+  arg0: BigNumber;
 }
-export type TriggerEvent = TypedEvent<[number], TriggerEventObject>;
+export type TriggerEvent = TypedEvent<[BigNumber], TriggerEventObject>;
 
 export type TriggerEventFilter = TypedEventFilter<TriggerEvent>;
 
 export interface UpdateEventObject {
-  arg0: number;
+  arg0: BigNumber;
 }
-export type UpdateEvent = TypedEvent<[number], UpdateEventObject>;
+export type UpdateEvent = TypedEvent<[BigNumber], UpdateEventObject>;
 
 export type UpdateEventFilter = TypedEventFilter<UpdateEvent>;
 
@@ -164,9 +170,9 @@ export interface MemberRegistry extends BaseContract {
   functions: {
     count(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<[number]>;
+    lastTrigger(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    lastUpdate(overrides?: CallOverrides): Promise<[number]>;
+    lastUpdate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     memberIdxs(
       arg0: PromiseOrValue<string>,
@@ -177,21 +183,21 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number, number, number] & {
+      [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
         account: string;
-        secondsActive: number;
-        activityMultiplier: number;
-        startDate: number;
-        periodSecondsActive: number;
+        secondsActive: BigNumber;
+        activityMultiplier: BigNumber;
+        startDate: BigNumber;
+        periodSecondsActive: BigNumber;
       }
     >;
   };
 
   count(overrides?: CallOverrides): Promise<BigNumber>;
 
-  lastTrigger(overrides?: CallOverrides): Promise<number>;
+  lastTrigger(overrides?: CallOverrides): Promise<BigNumber>;
 
-  lastUpdate(overrides?: CallOverrides): Promise<number>;
+  lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
 
   memberIdxs(
     arg0: PromiseOrValue<string>,
@@ -202,21 +208,21 @@ export interface MemberRegistry extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, number, number, number, number] & {
+    [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
       account: string;
-      secondsActive: number;
-      activityMultiplier: number;
-      startDate: number;
-      periodSecondsActive: number;
+      secondsActive: BigNumber;
+      activityMultiplier: BigNumber;
+      startDate: BigNumber;
+      periodSecondsActive: BigNumber;
     }
   >;
 
   callStatic: {
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<number>;
+    lastTrigger(overrides?: CallOverrides): Promise<BigNumber>;
 
-    lastUpdate(overrides?: CallOverrides): Promise<number>;
+    lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
 
     memberIdxs(
       arg0: PromiseOrValue<string>,
@@ -227,12 +233,12 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number, number, number] & {
+      [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
         account: string;
-        secondsActive: number;
-        activityMultiplier: number;
-        startDate: number;
-        periodSecondsActive: number;
+        secondsActive: BigNumber;
+        activityMultiplier: BigNumber;
+        startDate: BigNumber;
+        periodSecondsActive: BigNumber;
       }
     >;
   };
@@ -241,10 +247,10 @@ export interface MemberRegistry extends BaseContract {
     "SetMember(tuple)"(member?: null): SetMemberEventFilter;
     SetMember(member?: null): SetMemberEventFilter;
 
-    "Trigger(uint48)"(arg0?: null): TriggerEventFilter;
+    "Trigger(uint64)"(arg0?: null): TriggerEventFilter;
     Trigger(arg0?: null): TriggerEventFilter;
 
-    "Update(uint48)"(arg0?: null): UpdateEventFilter;
+    "Update(uint64)"(arg0?: null): UpdateEventFilter;
     Update(arg0?: null): UpdateEventFilter;
 
     "UpdateMember(tuple)"(member?: null): UpdateMemberEventFilter;

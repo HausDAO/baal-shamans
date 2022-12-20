@@ -573,7 +573,7 @@ describe("Member registry", function () {
       );
 
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
-      expect(s1RegistryMember.secondsActive).to.be.greaterThan(0);
+      expect(s1RegistryMember.secondsActive.toNumber()).to.be.greaterThan(0);
     });
     it("adds new member batch", async function () {
       // console.log(rgaddrs, rgshares, rgmods, rgdates);
@@ -603,7 +603,7 @@ describe("Member registry", function () {
       );
 
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
-      expect(s1RegistryMember.secondsActive).to.be.greaterThan(0);
+      expect(s1RegistryMember.secondsActive.toNumber()).to.be.greaterThan(0);
     });
     it("edits member", async function () {
       const s1proposalId = await newMemberAndProcess(
