@@ -90,8 +90,8 @@ export interface MemberRegistryInterface extends utils.Interface {
 
   events: {
     "SetMember(tuple)": EventFragment;
-    "Trigger(uint32)": EventFragment;
-    "Update(uint32)": EventFragment;
+    "Trigger(uint48)": EventFragment;
+    "Update(uint48)": EventFragment;
     "UpdateMember(tuple)": EventFragment;
   };
 
@@ -241,10 +241,10 @@ export interface MemberRegistry extends BaseContract {
     "SetMember(tuple)"(member?: null): SetMemberEventFilter;
     SetMember(member?: null): SetMemberEventFilter;
 
-    "Trigger(uint32)"(arg0?: null): TriggerEventFilter;
+    "Trigger(uint48)"(arg0?: null): TriggerEventFilter;
     Trigger(arg0?: null): TriggerEventFilter;
 
-    "Update(uint32)"(arg0?: null): UpdateEventFilter;
+    "Update(uint48)"(arg0?: null): UpdateEventFilter;
     Update(arg0?: null): UpdateEventFilter;
 
     "UpdateMember(tuple)"(member?: null): UpdateMemberEventFilter;

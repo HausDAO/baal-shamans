@@ -13,27 +13,99 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "split",
+        type: "address",
+      },
+    ],
+    name: "acceptControl",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "split",
+        type: "address",
+      },
+    ],
+    name: "cancelControlTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address[]",
-        name: "_receivers",
+        name: "accounts",
         type: "address[]",
       },
       {
-        internalType: "uint32[]",
-        name: "_percentAllocations",
-        type: "uint32[]",
+        internalType: "uint48[]",
+        name: "percentAllocations",
+        type: "uint48[]",
       },
       {
-        internalType: "uint32",
-        name: "_distributorsFee",
-        type: "uint32",
+        internalType: "uint48",
+        name: "distributorsFee",
+        type: "uint48",
       },
       {
         internalType: "address",
-        name: "_controller",
+        name: "controller",
         type: "address",
       },
     ],
     name: "createSplit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "split",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "newController",
+        type: "address",
+      },
+    ],
+    name: "transferControl",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "split",
+        type: "address",
+      },
+      {
+        internalType: "address[]",
+        name: "accounts",
+        type: "address[]",
+      },
+      {
+        internalType: "uint48[]",
+        name: "percentAllocations",
+        type: "uint48[]",
+      },
+      {
+        internalType: "uint48",
+        name: "distributorsFee",
+        type: "uint48",
+      },
+    ],
+    name: "updateSplit",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

@@ -25,11 +25,30 @@ import type {
 
 export interface ISPLITSInterface extends utils.Interface {
   functions: {
-    "createSplit(address[],uint32[],uint32,address)": FunctionFragment;
+    "acceptControl(address)": FunctionFragment;
+    "cancelControlTransfer(address)": FunctionFragment;
+    "createSplit(address[],uint48[],uint48,address)": FunctionFragment;
+    "transferControl(address,address)": FunctionFragment;
+    "updateSplit(address,address[],uint48[],uint48)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "createSplit"): FunctionFragment;
+  getFunction(
+    nameOrSignatureOrTopic:
+      | "acceptControl"
+      | "cancelControlTransfer"
+      | "createSplit"
+      | "transferControl"
+      | "updateSplit"
+  ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "acceptControl",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelControlTransfer",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "createSplit",
     values: [
@@ -39,9 +58,38 @@ export interface ISPLITSInterface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferControl",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateSplit",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
 
   decodeFunctionResult(
+    functionFragment: "acceptControl",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelControlTransfer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "createSplit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferControl",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateSplit",
     data: BytesLike
   ): Result;
 
@@ -75,29 +123,101 @@ export interface ISPLITS extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    acceptControl(
+      split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    cancelControlTransfer(
+      split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     createSplit(
-      _receivers: PromiseOrValue<string>[],
-      _percentAllocations: PromiseOrValue<BigNumberish>[],
-      _distributorsFee: PromiseOrValue<BigNumberish>,
-      _controller: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
+      controller: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    transferControl(
+      split: PromiseOrValue<string>,
+      newController: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateSplit(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
+  acceptControl(
+    split: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  cancelControlTransfer(
+    split: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   createSplit(
-    _receivers: PromiseOrValue<string>[],
-    _percentAllocations: PromiseOrValue<BigNumberish>[],
-    _distributorsFee: PromiseOrValue<BigNumberish>,
-    _controller: PromiseOrValue<string>,
+    accounts: PromiseOrValue<string>[],
+    percentAllocations: PromiseOrValue<BigNumberish>[],
+    distributorsFee: PromiseOrValue<BigNumberish>,
+    controller: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  transferControl(
+    split: PromiseOrValue<string>,
+    newController: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateSplit(
+    split: PromiseOrValue<string>,
+    accounts: PromiseOrValue<string>[],
+    percentAllocations: PromiseOrValue<BigNumberish>[],
+    distributorsFee: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    acceptControl(
+      split: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    cancelControlTransfer(
+      split: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     createSplit(
-      _receivers: PromiseOrValue<string>[],
-      _percentAllocations: PromiseOrValue<BigNumberish>[],
-      _distributorsFee: PromiseOrValue<BigNumberish>,
-      _controller: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
+      controller: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferControl(
+      split: PromiseOrValue<string>,
+      newController: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateSplit(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -105,21 +225,69 @@ export interface ISPLITS extends BaseContract {
   filters: {};
 
   estimateGas: {
+    acceptControl(
+      split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    cancelControlTransfer(
+      split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     createSplit(
-      _receivers: PromiseOrValue<string>[],
-      _percentAllocations: PromiseOrValue<BigNumberish>[],
-      _distributorsFee: PromiseOrValue<BigNumberish>,
-      _controller: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
+      controller: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    transferControl(
+      split: PromiseOrValue<string>,
+      newController: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateSplit(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    acceptControl(
+      split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    cancelControlTransfer(
+      split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     createSplit(
-      _receivers: PromiseOrValue<string>[],
-      _percentAllocations: PromiseOrValue<BigNumberish>[],
-      _distributorsFee: PromiseOrValue<BigNumberish>,
-      _controller: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
+      controller: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferControl(
+      split: PromiseOrValue<string>,
+      newController: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateSplit(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorsFee: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

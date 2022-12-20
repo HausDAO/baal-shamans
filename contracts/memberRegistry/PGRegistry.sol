@@ -11,20 +11,22 @@ import "hardhat/console.sol";
 
 interface ISPLITS {
     function createSplit(
-        address[] memory _accounts,
-        uint32[] memory _percentAllocations,
-        uint32 _distributorsFee,
-        address _controller
+        address[] memory accounts,
+        uint48[] memory percentAllocations,
+        uint48 distributorsFee,
+        address controller
     ) external;
 
     function updateSplit(
         address split,
-        address[] memory _accounts,
-        uint32[] memory _percentAllocations,
-        uint32 _distributorsFee,
+        address[] memory accounts,
+        uint48[] memory percentAllocations,
+        uint48 distributorsFee
     ) external;
 
-    function transferControl
+    function transferControl(address split, address newController) external;
+    function acceptControl(address split) external;
+    function cancelControlTransfer(address split) external;
 }
 
 // Register
@@ -32,24 +34,24 @@ contract PGRegistry is MemberRegistry, Ownable {
     ISPLITS public splitsMain;
     address public split;
 
-    uint32 public constant PERCENTAGE_SCALE = 1e6;
+    uint48 public constant PERCENTAGE_SCALE = 1e6;
 
     constructor(address _splitsMain, address _split) {
         splitsMain = ISPLITS(_splitsMain);
-        lastUpdate = uint32(block.timestamp);
+        lastUpdate = uint48(block.timestamp);
         split = _split;
     }
 
     function setNewMember(
         address _member,
-        uint32 _activityMultiplier,
-        uint32 _startDate
-    ) public onlyOwner {
+        uint48 _activityMultiplier,
+        uint48 _startDate
+    ) external onlyOwner {
         _setNewMember(_member, _activityMultiplier, _startDate);
     }
 
-    function updateMember(address _member, uint32 _activityMultiplier)
-        public
+    function updateMember(address _member, uint48 _activityMultiplier)
+        external
         onlyOwner
     {
         _updateMember(_member, _activityMultiplier);
@@ -58,9 +60,9 @@ contract PGRegistry is MemberRegistry, Ownable {
     // BATCH OPERATIONS
     function batchNewMember(
         address[] memory _members,
-        uint32[] memory _activityMultipliers,
-        uint32[] memory _startDates
-    ) public onlyOwner {
+        uint48[] memory _activityMultipliers,
+        uint48[] memory _startDates
+    ) external onlyOwner {
         for (uint256 i = 0; i < _members.length; i++) {
             _setNewMember(_members[i], _activityMultipliers[i], _startDates[i]);
         }
@@ -68,8 +70,8 @@ contract PGRegistry is MemberRegistry, Ownable {
 
     function batchUpdateMember(
         address[] memory _members,
-        uint32[] memory _activityMultipliers
-    ) public onlyOwner {
+        uint48[] memory _activityMultipliers
+    ) external onlyOwner {
         for (uint256 i = 0; i < members.length; i++) {
             _updateMember(_members[i], _activityMultipliers[i]);
         }
@@ -78,7 +80,7 @@ contract PGRegistry is MemberRegistry, Ownable {
     function triggerCalcAndSplits() public {
 
         uint256 nonZeroCount;
-        uint32 total;
+        uint48 total;
         // get the total of seconds in the last period
         for (uint256 i = 0; i < members.length; i++) {
             if(members[i].periodSecondsActive > 0) {
@@ -86,14 +88,14 @@ contract PGRegistry is MemberRegistry, Ownable {
                 nonZeroCount++;
             }
         }
+        console.log('nonZeroCount', nonZeroCount);
 
         // define variables for split params
         address[] memory _receivers = new address[](nonZeroCount);
-        uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
-        uint32 _distributorsFee = 0;
-        address _controller = address(0);
+        uint48[] memory _percentAllocations = new uint48[](nonZeroCount);
+        uint48 _distributorsFee = 0;
         
-        uint32 runningTotal;
+        uint48 runningTotal;
         // fill arrays
         for (uint256 i = 0; i < members.length; i++) {
             Member memory _member = members[i];
@@ -101,21 +103,35 @@ contract PGRegistry is MemberRegistry, Ownable {
                 UD60x18 udActiveSeconds = ud(_member.periodSecondsActive);
                 _receivers[i] = members[i].account;
                 _percentAllocations[i] =
-                (uint32(unwrap(udActiveSeconds.sqrt())) * PERCENTAGE_SCALE) /
+                (uint48(unwrap(udActiveSeconds)) * PERCENTAGE_SCALE) /
                 total;
+                // todo mat is weird here.
+                // (uint48(unwrap(udActiveSeconds.sqrt())) * PERCENTAGE_SCALE) /
+                // total;
                 runningTotal += _percentAllocations[i];
             }
         }
+        console.log('runningTotal', runningTotal);
         // if there was any loss add it to the first account.
         if(runningTotal != PERCENTAGE_SCALE) {
             _percentAllocations[0] += (PERCENTAGE_SCALE - runningTotal);
         }
 
         // run split
-        splitsMain.updateSplit(split, _receivers, _percentAllocations, _distributorsFee);
-        
+        // todo: mock
+        // splitsMain.updateSplit(split, _receivers, _percentAllocations, _distributorsFee);
         // update member total seconds and seconds in last period
         // is this happening after?
         updateSecondsActive();
+    }
+
+    function transferControl(address _split, address _newController) external onlyOwner {
+        splitsMain.transferControl(_split, _newController);
+    }
+    function acceptControl(address _split) external onlyOwner {
+        splitsMain.acceptControl(_split);
+    }
+    function cancelControlTransfer(address _split) external onlyOwner {
+        splitsMain.cancelControlTransfer(_split);
     }
 }
