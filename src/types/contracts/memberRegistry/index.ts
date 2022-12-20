@@ -4,4 +4,3 @@
 import type * as pgRegistrySol from "./PGRegistry.sol";
 export type { pgRegistrySol };
 export type { MemberRegistry } from "./MemberRegistry";
-export type { TestRegistry } from "./TestRegistry";

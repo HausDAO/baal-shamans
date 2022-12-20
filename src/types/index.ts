@@ -156,8 +156,6 @@ export type { ISPLITS } from "./contracts/memberRegistry/PGRegistry.sol/ISPLITS"
 export { ISPLITS__factory } from "./factories/contracts/memberRegistry/PGRegistry.sol/ISPLITS__factory";
 export type { PGRegistry } from "./contracts/memberRegistry/PGRegistry.sol/PGRegistry";
 export { PGRegistry__factory } from "./factories/contracts/memberRegistry/PGRegistry.sol/PGRegistry__factory";
-export type { TestRegistry } from "./contracts/memberRegistry/TestRegistry";
-export { TestRegistry__factory } from "./factories/contracts/memberRegistry/TestRegistry__factory";
 export type { MyToken } from "./contracts/mock/MyToken";
 export { MyToken__factory } from "./factories/contracts/mock/MyToken__factory";
 export type { OnboarderShaman } from "./contracts/onboarder/Onboarder.sol/OnboarderShaman";

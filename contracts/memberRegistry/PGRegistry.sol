@@ -95,7 +95,7 @@ contract PGRegistry is MemberRegistry, Ownable {
                 total;
             }
         }
-        splits.createSplit(_receivers, _percentAllocations, _distributorsFee, _controller);
+        // splits.createSplit(_receivers, _percentAllocations, _distributorsFee, _controller);
         emit Trigger(uint32(block.timestamp));
     }
 }

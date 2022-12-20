@@ -525,12 +525,9 @@ describe("Member registry", function () {
     s5Baal = baal.connect(s5);
     s6Baal = baal.connect(s6);
 
-    memberRegistry = (await MemberRegistryFactory.deploy()) as PGRegistry;
+    // todo: mock splits
+    memberRegistry = (await MemberRegistryFactory.deploy(s4.address)) as PGRegistry;
 
-    // testing other imps
-    // memberRegistry = (await MemberRegistryFactory.deploy(
-    //     addresses.baal
-    //   )) as PGRegistry;
     await memberRegistry.transferOwnership(gnosisSafe.address);
 
     const lootTokenAddress = await baal.lootToken();
@@ -588,11 +585,9 @@ describe("Member registry", function () {
       );
       const count = await memberRegistry.count();
 
-      const tx = await memberRegistry.updateSecondsActive();
+      const tx = await memberRegistry.triggerCalcAndSplits();
       gasStats("batch update secs", tx);
 
-      const tx2 = await memberRegistry.trigger();
-      gasStats("batch trigger", tx2);
     });
     it("adds new member", async function () {
       const proposalId = await newMemberAndProcess(
@@ -651,7 +646,7 @@ describe("Member registry", function () {
       );
       const secsActive = s2RegistryMembera.secondsActive;
 
-      const tx = await memberRegistry.updateSecondsActive();
+      const tx = await memberRegistry.triggerCalcAndSplits();
       gasStats("update seconds", tx);
 
       const s2RegistryMemberb = await memberRegistry.members(
@@ -686,8 +681,7 @@ describe("Member registry", function () {
         s1RegistryId.sub(1)
       );
 
-      await memberRegistry.updateSecondsActive();
-      const tx = await memberRegistry.trigger();
+      const tx = await memberRegistry.triggerCalcAndSplits();
       gasStats("trigger", tx);
 
       const s2RegistryMemberb = await memberRegistry.members(

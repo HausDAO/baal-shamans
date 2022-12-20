@@ -3,4 +3,3 @@
 /* eslint-disable */
 export * as pgRegistrySol from "./PGRegistry.sol";
 export { MemberRegistry__factory } from "./MemberRegistry__factory";
-export { TestRegistry__factory } from "./TestRegistry__factory";
