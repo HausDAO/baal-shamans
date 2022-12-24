@@ -309,6 +309,26 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MyToken__factory>;
     getContractFactory(
+      name: "DIDpkhAdapter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DIDpkhAdapter__factory>;
+    getContractFactory(
+      name: "IDIDpkhAdapter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDIDpkhAdapter__factory>;
+    getContractFactory(
+      name: "DIDStampVcVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DIDStampVcVerifier__factory>;
+    getContractFactory(
+      name: "IDIDStampVcVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDIDStampVcVerifier__factory>;
+    getContractFactory(
+      name: "VcVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VcVerifier__factory>;
+    getContractFactory(
       name: "OnboarderShaman",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnboarderShaman__factory>;
@@ -316,6 +336,14 @@ declare module "hardhat/types/runtime" {
       name: "OnboarderShamanSummoner",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OnboarderShamanSummoner__factory>;
+    getContractFactory(
+      name: "VCOnboarderShaman",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VCOnboarderShaman__factory>;
+    getContractFactory(
+      name: "VCOnboarderShamanSummoner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VCOnboarderShamanSummoner__factory>;
     getContractFactory(
       name: "SimpleOnboarderShaman",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -704,6 +732,31 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MyToken>;
     getContractAt(
+      name: "DIDpkhAdapter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DIDpkhAdapter>;
+    getContractAt(
+      name: "IDIDpkhAdapter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDIDpkhAdapter>;
+    getContractAt(
+      name: "DIDStampVcVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DIDStampVcVerifier>;
+    getContractAt(
+      name: "IDIDStampVcVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDIDStampVcVerifier>;
+    getContractAt(
+      name: "VcVerifier",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VcVerifier>;
+    getContractAt(
       name: "OnboarderShaman",
       address: string,
       signer?: ethers.Signer
@@ -713,6 +766,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OnboarderShamanSummoner>;
+    getContractAt(
+      name: "VCOnboarderShaman",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VCOnboarderShaman>;
+    getContractAt(
+      name: "VCOnboarderShamanSummoner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VCOnboarderShamanSummoner>;
     getContractAt(
       name: "SimpleOnboarderShaman",
       address: string,

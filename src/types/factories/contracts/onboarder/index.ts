@@ -2,3 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as onboarderSol from "./Onboarder.sol";
+export * as vcOnboarderSol from "./VCOnboarder.sol";
+export * as credentials from "./credentials";
