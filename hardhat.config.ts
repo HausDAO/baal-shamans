@@ -1,4 +1,5 @@
 import { task, subtask, HardhatUserConfig } from "hardhat/config";
+import { config as dotenvConfig } from "dotenv";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
 import "hardhat-gas-reporter";
@@ -6,9 +7,12 @@ import "@nomiclabs/hardhat-etherscan";
 import "solidity-coverage";
 import "hardhat-contract-sizer";
 import "hardhat-abi-exporter";
+import { resolve } from "path";
 
 import * as fs from "fs";
 import "@typechain/hardhat";
+
+dotenvConfig({ path: resolve(__dirname, "./.env") });
 
 
 // You need to export an object to set up your config
@@ -19,7 +23,7 @@ const defaultNetwork = "localhost";
 
 function mnemonic() {
   try {
-    return fs.readFileSync("./mnemonic.txt").toString().trim();
+    return process.env.MNEMONIC || fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
     if (defaultNetwork !== "localhost") {
       console.log(
@@ -31,7 +35,7 @@ function mnemonic() {
 }
 function etherscan() {
   try {
-    return fs.readFileSync("./etherscan.txt").toString().trim();
+    return process.env.ETHERSCAN_API_KEY || fs.readFileSync("./etherscan.txt").toString().trim();
   } catch (e) {
     if (defaultNetwork !== "localhost") {
       console.log("☢️ WARNING: No etherscan file");
@@ -69,9 +73,12 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts:
+        process.env.PRIVATE_KEY
+          ? [`0x${process.env.PRIVATE_KEY}`]
+          : {
+            mnemonic: mnemonic(),
+          },
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
@@ -84,17 +91,23 @@ const config: HardhatUserConfig = {
       gas: 5000000,
       gasPrice: 8000000000,
       gasMultiplier: 2,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts:
+        process.env.PRIVATE_KEY
+          ? [`0x${process.env.PRIVATE_KEY}`]
+          : {
+            mnemonic: mnemonic(),
+          },
     },
     xdai: {
       url: "https://rpc.gnosischain.com/",
       gas: 5000000,
       gasPrice: 8000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts:
+        process.env.PRIVATE_KEY
+          ? [`0x${process.env.PRIVATE_KEY}`]
+          : {
+            mnemonic: mnemonic(),
+          },
     },
     matic: {
       // url: 'https://rpc-mainnet.maticvigil.com/v1/036f1ba8516f0eee2204a574a960b68437ac8661',
@@ -164,6 +177,13 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "src/types",
     target: "ethers-v5",
+  },
+  gasReporter: {
+    currency: "USD",
+    enabled: process.env.REPORT_GAS ? true : false,
+    excludeContracts: [],
+    src: "./contracts",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
 };
 
