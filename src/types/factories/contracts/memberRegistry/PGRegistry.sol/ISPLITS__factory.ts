@@ -44,14 +44,14 @@ const _abi = [
         type: "address[]",
       },
       {
-        internalType: "uint64[]",
+        internalType: "uint32[]",
         name: "percentAllocations",
-        type: "uint64[]",
+        type: "uint32[]",
       },
       {
-        internalType: "uint64",
+        internalType: "uint32",
         name: "distributorsFee",
-        type: "uint64",
+        type: "uint32",
       },
       {
         internalType: "address",
@@ -95,14 +95,14 @@ const _abi = [
         type: "address[]",
       },
       {
-        internalType: "uint64[]",
+        internalType: "uint32[]",
         name: "percentAllocations",
-        type: "uint64[]",
+        type: "uint32[]",
       },
       {
-        internalType: "uint64",
+        internalType: "uint32",
         name: "distributorsFee",
-        type: "uint64",
+        type: "uint32",
       },
     ],
     name: "updateSplit",

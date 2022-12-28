@@ -573,9 +573,9 @@ describe("Member registry", function () {
       );
 
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
-      expect(s1RegistryMember.secondsActive.toNumber()).to.be.greaterThan(0);
+      expect(s1RegistryMember.secondsActive).to.be.greaterThan(0);
     });
-    it("adds new member batch", async function () {
+    it("adds new member batch trigger", async function () {
       // console.log(rgaddrs, rgshares, rgmods, rgdates);
 
       const proposalId = await newBatchMemberAndProcess(
@@ -588,22 +588,6 @@ describe("Member registry", function () {
       const tx = await memberRegistry.triggerCalcAndSplits();
       gasStats("batch update secs", tx);
 
-    });
-    it("adds new member", async function () {
-      const proposalId = await newMemberAndProcess(
-        baal,
-        memberRegistry,
-        multisend,
-        s1.address
-      );
-      const s1Balance = await sharesToken.balanceOf(s1.address);
-      const s1RegistryId = await memberRegistry.memberIdxs(s1.address);
-      const s1RegistryMember = await memberRegistry.members(
-        s1RegistryId.sub(1)
-      );
-
-      expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
-      expect(s1RegistryMember.secondsActive.toNumber()).to.be.greaterThan(0);
     });
     it("edits member", async function () {
       const s1proposalId = await newMemberAndProcess(

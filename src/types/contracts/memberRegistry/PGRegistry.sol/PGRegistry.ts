@@ -36,18 +36,12 @@ export declare namespace MemberRegistry {
     periodSecondsActive: PromiseOrValue<BigNumberish>;
   };
 
-  export type MemberStructOutput = [
-    string,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
+  export type MemberStructOutput = [string, number, number, number, number] & {
     account: string;
-    secondsActive: BigNumber;
-    activityMultiplier: BigNumber;
-    startDate: BigNumber;
-    periodSecondsActive: BigNumber;
+    secondsActive: number;
+    activityMultiplier: number;
+    startDate: number;
+    periodSecondsActive: number;
   };
 }
 
@@ -55,8 +49,8 @@ export interface PGRegistryInterface extends utils.Interface {
   functions: {
     "PERCENTAGE_SCALE()": FunctionFragment;
     "acceptControl(address)": FunctionFragment;
-    "batchNewMember(address[],uint64[],uint64[])": FunctionFragment;
-    "batchUpdateMember(address[],uint64[])": FunctionFragment;
+    "batchNewMember(address[],uint32[],uint32[])": FunctionFragment;
+    "batchUpdateMember(address[],uint32[])": FunctionFragment;
     "cancelControlTransfer(address)": FunctionFragment;
     "count()": FunctionFragment;
     "lastTrigger()": FunctionFragment;
@@ -65,13 +59,13 @@ export interface PGRegistryInterface extends utils.Interface {
     "members(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setNewMember(address,uint64,uint64)": FunctionFragment;
+    "setNewMember(address,uint32,uint32)": FunctionFragment;
     "split()": FunctionFragment;
     "splitsMain()": FunctionFragment;
     "transferControl(address,address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "triggerCalcAndSplits()": FunctionFragment;
-    "updateMember(address,uint64)": FunctionFragment;
+    "updateMember(address,uint32)": FunctionFragment;
   };
 
   getFunction(
@@ -232,8 +226,8 @@ export interface PGRegistryInterface extends utils.Interface {
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
     "SetMember(tuple)": EventFragment;
-    "Trigger(uint64)": EventFragment;
-    "Update(uint64)": EventFragment;
+    "Trigger(uint32)": EventFragment;
+    "Update(uint32)": EventFragment;
     "UpdateMember(tuple)": EventFragment;
   };
 
@@ -267,16 +261,16 @@ export type SetMemberEvent = TypedEvent<
 export type SetMemberEventFilter = TypedEventFilter<SetMemberEvent>;
 
 export interface TriggerEventObject {
-  arg0: BigNumber;
+  arg0: number;
 }
-export type TriggerEvent = TypedEvent<[BigNumber], TriggerEventObject>;
+export type TriggerEvent = TypedEvent<[number], TriggerEventObject>;
 
 export type TriggerEventFilter = TypedEventFilter<TriggerEvent>;
 
 export interface UpdateEventObject {
-  arg0: BigNumber;
+  arg0: number;
 }
-export type UpdateEvent = TypedEvent<[BigNumber], UpdateEventObject>;
+export type UpdateEvent = TypedEvent<[number], UpdateEventObject>;
 
 export type UpdateEventFilter = TypedEventFilter<UpdateEvent>;
 
@@ -317,7 +311,7 @@ export interface PGRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<[number]>;
 
     acceptControl(
       _split: PromiseOrValue<string>,
@@ -344,9 +338,9 @@ export interface PGRegistry extends BaseContract {
 
     count(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<[BigNumber]>;
+    lastTrigger(overrides?: CallOverrides): Promise<[number]>;
 
-    lastUpdate(overrides?: CallOverrides): Promise<[BigNumber]>;
+    lastUpdate(overrides?: CallOverrides): Promise<[number]>;
 
     memberIdxs(
       arg0: PromiseOrValue<string>,
@@ -357,12 +351,12 @@ export interface PGRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      [string, number, number, number, number] & {
         account: string;
-        secondsActive: BigNumber;
-        activityMultiplier: BigNumber;
-        startDate: BigNumber;
-        periodSecondsActive: BigNumber;
+        secondsActive: number;
+        activityMultiplier: number;
+        startDate: number;
+        periodSecondsActive: number;
       }
     >;
 
@@ -405,7 +399,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<BigNumber>;
+  PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<number>;
 
   acceptControl(
     _split: PromiseOrValue<string>,
@@ -432,9 +426,9 @@ export interface PGRegistry extends BaseContract {
 
   count(overrides?: CallOverrides): Promise<BigNumber>;
 
-  lastTrigger(overrides?: CallOverrides): Promise<BigNumber>;
+  lastTrigger(overrides?: CallOverrides): Promise<number>;
 
-  lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
+  lastUpdate(overrides?: CallOverrides): Promise<number>;
 
   memberIdxs(
     arg0: PromiseOrValue<string>,
@@ -445,12 +439,12 @@ export interface PGRegistry extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+    [string, number, number, number, number] & {
       account: string;
-      secondsActive: BigNumber;
-      activityMultiplier: BigNumber;
-      startDate: BigNumber;
-      periodSecondsActive: BigNumber;
+      secondsActive: number;
+      activityMultiplier: number;
+      startDate: number;
+      periodSecondsActive: number;
     }
   >;
 
@@ -493,7 +487,7 @@ export interface PGRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<BigNumber>;
+    PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<number>;
 
     acceptControl(
       _split: PromiseOrValue<string>,
@@ -520,9 +514,9 @@ export interface PGRegistry extends BaseContract {
 
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<BigNumber>;
+    lastTrigger(overrides?: CallOverrides): Promise<number>;
 
-    lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
+    lastUpdate(overrides?: CallOverrides): Promise<number>;
 
     memberIdxs(
       arg0: PromiseOrValue<string>,
@@ -533,12 +527,12 @@ export interface PGRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      [string, number, number, number, number] & {
         account: string;
-        secondsActive: BigNumber;
-        activityMultiplier: BigNumber;
-        startDate: BigNumber;
-        periodSecondsActive: BigNumber;
+        secondsActive: number;
+        activityMultiplier: number;
+        startDate: number;
+        periodSecondsActive: number;
       }
     >;
 
@@ -590,10 +584,10 @@ export interface PGRegistry extends BaseContract {
     "SetMember(tuple)"(member?: null): SetMemberEventFilter;
     SetMember(member?: null): SetMemberEventFilter;
 
-    "Trigger(uint64)"(arg0?: null): TriggerEventFilter;
+    "Trigger(uint32)"(arg0?: null): TriggerEventFilter;
     Trigger(arg0?: null): TriggerEventFilter;
 
-    "Update(uint64)"(arg0?: null): UpdateEventFilter;
+    "Update(uint32)"(arg0?: null): UpdateEventFilter;
     Update(arg0?: null): UpdateEventFilter;
 
     "UpdateMember(tuple)"(member?: null): UpdateMemberEventFilter;

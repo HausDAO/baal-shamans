@@ -10,15 +10,15 @@ abstract contract MemberRegistry {
 
     struct Member {
         address account;
-        uint64 secondsActive;
-        uint64 activityMultiplier;
-        uint64 startDate;
-        uint64 periodSecondsActive;
+        uint32 secondsActive;
+        uint32 activityMultiplier;
+        uint32 startDate;
+        uint32 periodSecondsActive;
     }
 
     // store when a update happens
-    uint64 public lastUpdate;
-    uint64 public lastTrigger;
+    uint32 public lastUpdate;
+    uint32 public lastTrigger;
     // iterable
     Member[] public members;
     uint256 public count = 1;
@@ -28,19 +28,19 @@ abstract contract MemberRegistry {
     // EVENTS
     event SetMember(Member member);
     event UpdateMember(Member member);
-    event Update(uint64);
-    event Trigger(uint64);
+    event Update(uint32);
+    event Trigger(uint32);
 
     // REGISTER MODIFIERS
 
     function _setNewMember(
         address _member,
-        uint64 _activityMultiplier,
-        uint64 _startDate
+        uint32 _activityMultiplier,
+        uint32 _startDate
     ) internal {
         // require unique?
         require(memberIdxs[_member] == 0, "already registered");
-        uint64 secsActive = uint64(block.timestamp) - _startDate;
+        uint32 secsActive = uint32(block.timestamp) - _startDate;
         members.push(
             Member(
                 _member,
@@ -57,7 +57,7 @@ abstract contract MemberRegistry {
 
     function _updateMember(
         address _member,
-        uint64 _activityMultiplier // 0-100 %
+        uint32 _activityMultiplier // 0-100 %
     ) internal {
         require(memberIdxs[_member] != 0, "not registered");
         require(_activityMultiplier <= 100, "invalid _activityMultiplier");
@@ -73,17 +73,17 @@ abstract contract MemberRegistry {
     // add seconds active to member from last update
     function updateSecondsActive() internal virtual {
         // cache this because it is the same for all members
-        uint64 newSeconds = (uint64(block.timestamp) - lastUpdate);
+        uint32 newSeconds = (uint32(block.timestamp) - lastUpdate);
         // update struct with total seconds active and seconds in last claim
         for (uint256 i = 0; i < members.length; i++) {
             Member memory _member = members[i];
             // multiple by modifier and divide by 100 to get %
-            uint64 newSecondsActive = (newSeconds * _member.activityMultiplier) / 100;
+            uint32 newSecondsActive = (newSeconds * _member.activityMultiplier) / 100;
             _member.secondsActive += newSecondsActive;
             _member.periodSecondsActive = newSecondsActive;
         }
 
-        emit Update(uint64(block.timestamp));
+        emit Update(uint32(block.timestamp));
     }
 
 }

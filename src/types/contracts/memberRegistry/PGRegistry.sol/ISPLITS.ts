@@ -27,9 +27,9 @@ export interface ISPLITSInterface extends utils.Interface {
   functions: {
     "acceptControl(address)": FunctionFragment;
     "cancelControlTransfer(address)": FunctionFragment;
-    "createSplit(address[],uint64[],uint64,address)": FunctionFragment;
+    "createSplit(address[],uint32[],uint32,address)": FunctionFragment;
     "transferControl(address,address)": FunctionFragment;
-    "updateSplit(address,address[],uint64[],uint64)": FunctionFragment;
+    "updateSplit(address,address[],uint32[],uint32)": FunctionFragment;
   };
 
   getFunction(
