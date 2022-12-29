@@ -114,6 +114,10 @@ export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/exten
 export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
+export type { CappedOnboarderShaman } from "./contracts/cappedOnboarder copy/CappedOnboarder.sol/CappedOnboarderShaman";
+export { CappedOnboarderShaman__factory } from "./factories/contracts/cappedOnboarder copy/CappedOnboarder.sol/CappedOnboarderShaman__factory";
+export type { CappedOnboarderShamanSummoner } from "./contracts/cappedOnboarder copy/CappedOnboarder.sol/CappedOnboarderShamanSummoner";
+export { CappedOnboarderShamanSummoner__factory } from "./factories/contracts/cappedOnboarder copy/CappedOnboarder.sol/CappedOnboarderShamanSummoner__factory";
 export type { ExampleManagerShaman } from "./contracts/example/Example.sol/ExampleManagerShaman";
 export { ExampleManagerShaman__factory } from "./factories/contracts/example/Example.sol/ExampleManagerShaman__factory";
 export type { Baal } from "./contracts/fixtures/Baal/contracts/Baal";
