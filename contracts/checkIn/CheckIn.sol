@@ -2,13 +2,17 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 import "../interfaces/IBAAL.sol";
 
 // Made for use with Baal(Molochv3)
 // Example use of Manager shamans
 // Any account can claim some amount of shares or loot per period
 // this shaman must be set as a manager role in the dao
-contract CheckInShaman {
+contract CheckInShaman is ReentrancyGuard, Initializable {
     IBAAL public baal;
     IERC20 public token;
 
@@ -19,13 +23,15 @@ contract CheckInShaman {
     event SetMember(address account);
     event Claim(address account, uint256 timestamp);
 
-    constructor(
-        address _moloch,
+    constructor() initializer {}
+
+    function init(
+        address _baal,
         bool _shares,
         uint256 _sharesPerMinute,
         uint256 _period
-    ) {
-        baal = IBAAL(_moloch);
+    ) external initializer {
+        baal = IBAAL(_baal);
         shares = _shares;
         // get shares or loot token address from dao based on 'shares' flag
         if (shares) {
@@ -81,5 +87,43 @@ contract CheckInShaman {
         returns (uint256 total)
     {
         total = _minutesWorked * _sharesPerMinute;
+    }
+}
+
+contract CheckInSummoner {
+    address payable public template;
+
+    event CheckInSummonComplete(
+        address indexed baal,
+        address checkIn,
+        bool shares,
+        uint256 sharesPerMinute,
+        uint256 period
+    );
+
+    constructor(address payable _template) {
+        template = _template;
+    }
+
+    function summonCheckInShaman(
+        address _baal,
+        bool _shares,
+        uint256 _sharesPerMinute,
+        uint256 _period
+    ) public returns (address) {
+        CheckInShaman checkInShaman = CheckInShaman(
+            payable(Clones.clone(template))
+        );
+        checkInShaman.init(_baal, _shares, _sharesPerMinute, _period);
+
+        emit CheckInSummonComplete(
+            _baal,
+            address(checkInShaman),
+            _shares,
+            _sharesPerMinute,
+            _period
+        );
+
+        return address(checkInShaman);
     }
 }
