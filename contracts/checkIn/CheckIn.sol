@@ -10,37 +10,45 @@ import "../interfaces/IBAAL.sol";
 
 // Made for use with Baal(Molochv3)
 // Example use of Manager shamans
-// Any account can claim some amount of shares or loot per period
+// Any account can claim some amount of shares or loot per checkInInterval
 // this shaman must be set as a manager role in the dao
 contract CheckInShaman is ReentrancyGuard, Initializable {
     IBAAL public baal;
     IERC20 public token;
 
     mapping(address => uint256) public timeLedger;
-    bool public shares;
-    uint256 public period; // length of period in seconds
+    bool public sharesOrLoot;
+    uint256 public checkInInterval; // length of checkInInterval in seconds
     uint256 public sharesPerMinute; // Amount of shares awarded per hour of work
-    event SetMember(address account);
-    event Claim(address account, uint256 timestamp);
+    uint16 public maxMinutesClaimable;
+
+    event Claim(
+        address account,
+        uint256 timestamp,
+        uint256 tokenAmountClaimed,
+        uint16 minutesWorked
+    );
 
     constructor() initializer {}
 
     function init(
         address _baal,
-        bool _shares,
+        bool _sharesOrLoot,
         uint256 _sharesPerMinute,
-        uint256 _period
+        uint256 _checkInInterval,
+        uint16 _maxMinutesClaimable
     ) external initializer {
         baal = IBAAL(_baal);
-        shares = _shares;
+        sharesOrLoot = _sharesOrLoot;
         // get shares or loot token address from dao based on 'shares' flag
-        if (shares) {
+        if (sharesOrLoot) {
             token = IERC20(baal.sharesToken());
         } else {
             token = IERC20(baal.lootToken());
         }
-        period = _period;
+        checkInInterval = _checkInInterval;
         sharesPerMinute = _sharesPerMinute;
+        maxMinutesClaimable = _maxMinutesClaimable;
     }
 
     // Mint share or loot tokens
@@ -51,25 +59,26 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         uint256[] memory _amounts = new uint256[](1);
         _amounts[0] = amount;
 
-        if (shares) {
+        if (sharesOrLoot) {
             baal.mintShares(_receivers, _amounts); // interface to mint shares
         } else {
             baal.mintLoot(_receivers, _amounts); // interface to mint loot
         }
     }
 
-    // can be called by any account to claim per period tokens
+    // can be called by any account to claim per checkInInterval tokens
     function claim(uint16 _minutesWorked) public {
-        // Not sure if I need this
         require(
-            _minutesWorked > 0,
-            "Must claim shares for more than 0 hours work"
+            _minutesWorked < maxMinutesClaimable,
+            "Minutes worked must be under the maximum amount claimable per period"
         );
+
         require(
-            block.timestamp - timeLedger[msg.sender] >= period ||
+            block.timestamp - timeLedger[msg.sender] >= checkInInterval ||
                 timeLedger[msg.sender] == 0,
-            "Can only claim 1 time per period"
+            "Can only claim 1 time per interval"
         );
+
         require(
             token.balanceOf(msg.sender) > 0,
             "Members Only: Must have DAO tokens in order to claim through this shaman"
@@ -78,7 +87,8 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         uint256 amount = calculate(_minutesWorked, sharesPerMinute);
         _mintTokens(msg.sender, amount);
         timeLedger[msg.sender] = block.timestamp;
-        emit Claim(msg.sender, block.timestamp);
+
+        emit Claim(msg.sender, block.timestamp, amount, _minutesWorked);
     }
 
     function calculate(uint16 _minutesWorked, uint256 _sharesPerMinute)
@@ -96,32 +106,41 @@ contract CheckInSummoner {
     event CheckInSummonComplete(
         address indexed baal,
         address checkIn,
-        bool shares,
+        bool sharesOrLoot,
         uint256 sharesPerMinute,
-        uint256 period
+        uint256 checkInInterval,
+        uint16 maxMinutesClaimable
     );
 
     constructor(address payable _template) {
         template = _template;
     }
 
-    function summonCheckInShaman(
+    function summon(
         address _baal,
-        bool _shares,
+        bool _sharesOrLoot,
         uint256 _sharesPerMinute,
-        uint256 _period
+        uint256 _checkInInterval,
+        uint16 _maxMinutesClaimable
     ) public returns (address) {
         CheckInShaman checkInShaman = CheckInShaman(
             payable(Clones.clone(template))
         );
-        checkInShaman.init(_baal, _shares, _sharesPerMinute, _period);
+        checkInShaman.init(
+            _baal,
+            _sharesOrLoot,
+            _sharesPerMinute,
+            _checkInInterval,
+            _maxMinutesClaimable
+        );
 
         emit CheckInSummonComplete(
             _baal,
             address(checkInShaman),
-            _shares,
+            _sharesOrLoot,
             _sharesPerMinute,
-            _period
+            _checkInInterval,
+            _maxMinutesClaimable
         );
 
         return address(checkInShaman);
