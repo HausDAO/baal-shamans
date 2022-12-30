@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { CheckInShaman } from "./CheckInShaman";
+export type { CheckInSummoner } from "./CheckInSummoner";

@@ -22,6 +22,8 @@ import {
 } from '../src/types/contracts/fixtures/Baal/contracts';
 import { Loot } from '../src/types/contracts/fixtures/Baal/contracts/LootERC20.sol';
 import { Shares } from '../src/types/contracts/fixtures/Baal/contracts/SharesERC20.sol';
+import { CheckInShaman } from '../src/types/contracts/checkIn/CheckIn.sol';
+import { CheckInSummoner } from '../src/types/contracts/checkIn/CheckIn.sol/CheckInSummoner';
 
 use(solidity);
 
@@ -71,41 +73,45 @@ async function moveForwardPeriods(periods: number, extra?: number) {
 //   return proposalId;
 // };
 
-const summonCheckIn = async function (
-  subscriptionArgs: any,
-  multisend: MultiSend,
-  subscriptionSingleton: SubscriptionShaman,
-  subscriptionSummoner: SubscriptionShamanSummoner,
+type CheckInInitArgs = {
+  baalAddress: string;
+  sharesOrLoot: boolean;
+  sharesPerMinute: number;
+  checkInInterval: number;
+  maxMinutesClaimable: number;
+};
+
+const summonCheckInShaman = async function (
+  initArgs: CheckInInitArgs,
+  checkInShaman: CheckInShaman,
+  checkInSummoner: CheckInSummoner,
   baal: Baal
 ) {
-  let subscriptionAddress;
-  let summonSubscriptionTx = await subscriptionSummoner.summonSubscription(
-    baal.address,
-    subscriptionArgs.token,
-    subscriptionArgs.priceActivation,
-    subscriptionArgs.pricePer,
-    subscriptionArgs.lootPerUnit,
-    subscriptionArgs.periodLength,
-    subscriptionArgs.shares,
-    subscriptionArgs.cuts,
-    subscriptionArgs.amounts
+  // let subscriptionAddress;
+
+  const {
+    baalAddress,
+    sharesOrLoot,
+    sharesPerMinute,
+    checkInInterval,
+    maxMinutesClaimable,
+  } = initArgs;
+  const checkInSummonTx = await checkInSummoner.summon(
+    baalAddress,
+    sharesOrLoot,
+    sharesPerMinute,
+    checkInInterval,
+    maxMinutesClaimable
   );
+  const result = await checkInSummonTx.wait();
 
-  let result = await summonSubscriptionTx.wait();
-  if (
-    result &&
-    result.events &&
-    result.events[1] &&
-    result.events[1].args &&
-    result.events[1].args.subscription
-  ) {
-    // console.log("subscription", result.events[1].args.subscription);
-    subscriptionAddress = result.events[1].args.subscription;
+  if (result.events?.[1]?.args?.subscription) {
+    console.log('shamanAddress', result.events[1].args.shamanAddress);
+    const shamanAddress = result.events[1].args.shamanAddress;
+    checkInShaman.attach(shamanAddress);
+    return shamanAddress;
   }
-
-  const subscription = subscriptionSingleton.attach(subscriptionAddress);
-
-  return subscriptionAddress;
+  throw new Error('no shaman address found');
 };
 
 const getNewBaalAddresses = async (
@@ -203,7 +209,7 @@ const getBaalParams = async function (
   };
 };
 
-describe('Example', function () {
+describe('CheckIn Shaman Initialize', function () {
   let baal: Baal;
   let lootSingleton: Loot;
   let LootFactory: ContractFactory;
@@ -241,11 +247,11 @@ describe('Example', function () {
   let gnosisSafeSingleton: GnosisSafe;
   let gnosisSafe: GnosisSafe;
 
-  let SubscriptionFactory: ContractFactory;
-  let subscriptionSingleton: SubscriptionShaman;
+  let CheckInFactory: ContractFactory;
+  let CheckInSingleton: SubscriptionShaman;
   let SubscriptionSummonerFactory: ContractFactory;
   let subscriptionSummoner: SubscriptionShamanSummoner;
-  let subscription: SubscriptionShaman;
+  let CheckIn: SubscriptionShaman;
 
   let proposal: { [key: string]: any };
 
@@ -253,9 +259,6 @@ describe('Example', function () {
   const shares = 100;
   const sharesPaused = false;
   const lootPaused = false;
-
-  const yes = true;
-  const no = false;
 
   const setupBaal = async (
     baal: Baal,

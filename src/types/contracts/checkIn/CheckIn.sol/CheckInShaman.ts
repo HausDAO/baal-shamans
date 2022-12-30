@@ -30,9 +30,11 @@ import type {
 export interface CheckInShamanInterface extends utils.Interface {
   functions: {
     "baal()": FunctionFragment;
+    "checkInInterval()": FunctionFragment;
     "claim(uint16)": FunctionFragment;
-    "period()": FunctionFragment;
-    "shares()": FunctionFragment;
+    "init(address,bool,uint256,uint256,uint16)": FunctionFragment;
+    "maxMinutesClaimable()": FunctionFragment;
+    "sharesOrLoot()": FunctionFragment;
     "sharesPerMinute()": FunctionFragment;
     "timeLedger(address)": FunctionFragment;
     "token()": FunctionFragment;
@@ -41,9 +43,11 @@ export interface CheckInShamanInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "baal"
+      | "checkInInterval"
       | "claim"
-      | "period"
-      | "shares"
+      | "init"
+      | "maxMinutesClaimable"
+      | "sharesOrLoot"
       | "sharesPerMinute"
       | "timeLedger"
       | "token"
@@ -51,11 +55,31 @@ export interface CheckInShamanInterface extends utils.Interface {
 
   encodeFunctionData(functionFragment: "baal", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "checkInInterval",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "claim",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "period", values?: undefined): string;
-  encodeFunctionData(functionFragment: "shares", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "init",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxMinutesClaimable",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sharesOrLoot",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "sharesPerMinute",
     values?: undefined
@@ -67,9 +91,20 @@ export interface CheckInShamanInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "baal", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "checkInInterval",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "period", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "maxMinutesClaimable",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "sharesOrLoot",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "sharesPerMinute",
     data: BytesLike
@@ -78,28 +113,33 @@ export interface CheckInShamanInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
 
   events: {
-    "Claim(address,uint256)": EventFragment;
-    "SetMember(address)": EventFragment;
+    "Claim(address,uint256,uint256,uint16)": EventFragment;
+    "Initialized(uint8)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Claim"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetMember"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
 
 export interface ClaimEventObject {
   account: string;
   timestamp: BigNumber;
+  tokenAmountClaimed: BigNumber;
+  minutesWorked: number;
 }
-export type ClaimEvent = TypedEvent<[string, BigNumber], ClaimEventObject>;
+export type ClaimEvent = TypedEvent<
+  [string, BigNumber, BigNumber, number],
+  ClaimEventObject
+>;
 
 export type ClaimEventFilter = TypedEventFilter<ClaimEvent>;
 
-export interface SetMemberEventObject {
-  account: string;
+export interface InitializedEventObject {
+  version: number;
 }
-export type SetMemberEvent = TypedEvent<[string], SetMemberEventObject>;
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type SetMemberEventFilter = TypedEventFilter<SetMemberEvent>;
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface CheckInShaman extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -130,14 +170,25 @@ export interface CheckInShaman extends BaseContract {
   functions: {
     baal(overrides?: CallOverrides): Promise<[string]>;
 
+    checkInInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     claim(
       _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    period(overrides?: CallOverrides): Promise<[BigNumber]>;
+    init(
+      _baal: PromiseOrValue<string>,
+      _sharesOrLoot: PromiseOrValue<boolean>,
+      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _checkInInterval: PromiseOrValue<BigNumberish>,
+      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    shares(overrides?: CallOverrides): Promise<[boolean]>;
+    maxMinutesClaimable(overrides?: CallOverrides): Promise<[number]>;
+
+    sharesOrLoot(overrides?: CallOverrides): Promise<[boolean]>;
 
     sharesPerMinute(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -151,14 +202,25 @@ export interface CheckInShaman extends BaseContract {
 
   baal(overrides?: CallOverrides): Promise<string>;
 
+  checkInInterval(overrides?: CallOverrides): Promise<BigNumber>;
+
   claim(
     _minutesWorked: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  period(overrides?: CallOverrides): Promise<BigNumber>;
+  init(
+    _baal: PromiseOrValue<string>,
+    _sharesOrLoot: PromiseOrValue<boolean>,
+    _sharesPerMinute: PromiseOrValue<BigNumberish>,
+    _checkInInterval: PromiseOrValue<BigNumberish>,
+    _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
-  shares(overrides?: CallOverrides): Promise<boolean>;
+  maxMinutesClaimable(overrides?: CallOverrides): Promise<number>;
+
+  sharesOrLoot(overrides?: CallOverrides): Promise<boolean>;
 
   sharesPerMinute(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -172,14 +234,25 @@ export interface CheckInShaman extends BaseContract {
   callStatic: {
     baal(overrides?: CallOverrides): Promise<string>;
 
+    checkInInterval(overrides?: CallOverrides): Promise<BigNumber>;
+
     claim(
       _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    period(overrides?: CallOverrides): Promise<BigNumber>;
+    init(
+      _baal: PromiseOrValue<string>,
+      _sharesOrLoot: PromiseOrValue<boolean>,
+      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _checkInInterval: PromiseOrValue<BigNumberish>,
+      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    shares(overrides?: CallOverrides): Promise<boolean>;
+    maxMinutesClaimable(overrides?: CallOverrides): Promise<number>;
+
+    sharesOrLoot(overrides?: CallOverrides): Promise<boolean>;
 
     sharesPerMinute(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -192,27 +265,45 @@ export interface CheckInShaman extends BaseContract {
   };
 
   filters: {
-    "Claim(address,uint256)"(
+    "Claim(address,uint256,uint256,uint16)"(
       account?: null,
-      timestamp?: null
+      timestamp?: null,
+      tokenAmountClaimed?: null,
+      minutesWorked?: null
     ): ClaimEventFilter;
-    Claim(account?: null, timestamp?: null): ClaimEventFilter;
+    Claim(
+      account?: null,
+      timestamp?: null,
+      tokenAmountClaimed?: null,
+      minutesWorked?: null
+    ): ClaimEventFilter;
 
-    "SetMember(address)"(account?: null): SetMemberEventFilter;
-    SetMember(account?: null): SetMemberEventFilter;
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
   };
 
   estimateGas: {
     baal(overrides?: CallOverrides): Promise<BigNumber>;
+
+    checkInInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     claim(
       _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    period(overrides?: CallOverrides): Promise<BigNumber>;
+    init(
+      _baal: PromiseOrValue<string>,
+      _sharesOrLoot: PromiseOrValue<boolean>,
+      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _checkInInterval: PromiseOrValue<BigNumberish>,
+      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
-    shares(overrides?: CallOverrides): Promise<BigNumber>;
+    maxMinutesClaimable(overrides?: CallOverrides): Promise<BigNumber>;
+
+    sharesOrLoot(overrides?: CallOverrides): Promise<BigNumber>;
 
     sharesPerMinute(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -227,14 +318,27 @@ export interface CheckInShaman extends BaseContract {
   populateTransaction: {
     baal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    checkInInterval(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     claim(
       _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    period(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    init(
+      _baal: PromiseOrValue<string>,
+      _sharesOrLoot: PromiseOrValue<boolean>,
+      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _checkInInterval: PromiseOrValue<BigNumberish>,
+      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
-    shares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    maxMinutesClaimable(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    sharesOrLoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     sharesPerMinute(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

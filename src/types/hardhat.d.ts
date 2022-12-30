@@ -233,6 +233,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CheckInShaman__factory>;
     getContractFactory(
+      name: "CheckInSummoner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CheckInSummoner__factory>;
+    getContractFactory(
       name: "Baal",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Baal__factory>;
@@ -608,6 +612,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.CheckInShaman>;
+    getContractAt(
+      name: "CheckInSummoner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CheckInSummoner>;
     getContractAt(
       name: "Baal",
       address: string,

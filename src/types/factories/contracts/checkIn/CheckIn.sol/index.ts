@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { CheckInShaman__factory } from "./CheckInShaman__factory";
+export { CheckInSummoner__factory } from "./CheckInSummoner__factory";
