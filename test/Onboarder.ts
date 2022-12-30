@@ -1,13 +1,13 @@
-import { ethers } from "hardhat";
-import { solidity } from "ethereum-waffle";
-import { use, expect } from "chai";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { ethers } from 'hardhat';
+import { solidity } from 'ethereum-waffle';
+import { use, expect } from 'chai';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
-import { decodeMultiAction, encodeMultiAction } from "../src/util";
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { buildContractCall } from "@gnosis.pm/safe-contracts";
-import { ContractFactory, ContractTransaction } from "ethers";
-import { Test } from "mocha";
+import { decodeMultiAction, encodeMultiAction } from '../src/util';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { buildContractCall } from '@gnosis.pm/safe-contracts';
+import { ContractFactory, ContractTransaction } from 'ethers';
+import { Test } from 'mocha';
 import {
   CompatibilityFallbackHandler,
   GnosisSafe,
@@ -15,25 +15,25 @@ import {
   MyToken,
   OnboarderShaman,
   OnboarderShamanSummoner,
-} from "../src/types";
+} from '../src/types';
 import {
   Baal,
   BaalSummoner,
-} from "../src/types/contracts/fixtures/Baal/contracts";
-import { Loot } from "../src/types/contracts/fixtures/Baal/contracts/LootERC20.sol";
-import { Shares } from "../src/types/contracts/fixtures/Baal/contracts/SharesERC20.sol";
+} from '../src/types/contracts/fixtures/Baal/contracts';
+import { Loot } from '../src/types/contracts/fixtures/Baal/contracts/LootERC20.sol';
+import { Shares } from '../src/types/contracts/fixtures/Baal/contracts/SharesERC20.sol';
 
 use(solidity);
 
-const zeroAddress = "0x0000000000000000000000000000000000000000";
+const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 async function blockTime() {
-  const block = await ethers.provider.getBlock("latest");
+  const block = await ethers.provider.getBlock('latest');
   return block.timestamp;
 }
 
 async function blockNumber() {
-  const block = await ethers.provider.getBlock("latest");
+  const block = await ethers.provider.getBlock('latest');
   return block.number;
 }
 
@@ -42,7 +42,7 @@ async function moveForwardPeriods(periods: number, extra?: number) {
     (await blockTime()) +
     defaultDAOSettings.VOTING_PERIOD_IN_SECONDS * periods +
     (extra ? extra : 0);
-  await ethers.provider.send("evm_mine", [goToTime]);
+  await ethers.provider.send('evm_mine', [goToTime]);
   return true;
 }
 
@@ -52,7 +52,7 @@ const setShamanProposal = async function (
   shaman: string,
   permission: BigNumberish
 ) {
-  const setShaman = await baal.interface.encodeFunctionData("setShamans", [
+  const setShaman = await baal.interface.encodeFunctionData('setShamans', [
     [shaman],
     [permission],
   ]);
@@ -63,7 +63,7 @@ const setShamanProposal = async function (
     [BigNumber.from(0)],
     [0]
   );
-  await baal.submitProposal(setShamanAction, 0, 0, "");
+  await baal.submitProposal(setShamanAction, 0, 0, '');
   const proposalId = await baal.proposalCount();
   await baal.submitVote(proposalId, true);
   await moveForwardPeriods(2);
@@ -113,7 +113,7 @@ const getNewBaalAddresses = async (
   const receipt = await ethers.provider.getTransactionReceipt(tx.hash);
   // console.log({logs: receipt.logs})
   let baalSummonAbi = [
-    "event SummonBaal(address indexed baal, address indexed loot, address indexed shares, address safe, bool existingSafe)",
+    'event SummonBaal(address indexed baal, address indexed loot, address indexed shares, address safe, bool existingSafe)',
   ];
   let iface = new ethers.utils.Interface(baalSummonAbi);
   let log = iface.parseLog(receipt.logs[receipt.logs.length - 1]);
@@ -129,13 +129,13 @@ const defaultDAOSettings = {
   MIN_RETENTION_PERCENT: 0,
   MIN_STAKING_PERCENT: 0,
   QUORUM_PERCENT: 0,
-  TOKEN_NAME: "BAALtests",
-  TOKEN_SYMBOL: "BAAL",
+  TOKEN_NAME: 'BAALtests',
+  TOKEN_SYMBOL: 'BAAL',
 };
 
 const metadataConfig = {
   CONTENT: '{"name":"test"}',
-  TAG: "daohaus.summoner.daoProfile",
+  TAG: 'daohaus.summoner.daoProfile',
 };
 
 const abiCoder = ethers.utils.defaultAbiCoder;
@@ -160,7 +160,7 @@ const getBaalParams = async function (
   loots: [string[], number[]]
 ) {
   const governanceConfig = abiCoder.encode(
-    ["uint32", "uint32", "uint256", "uint256", "uint256", "uint256"],
+    ['uint32', 'uint32', 'uint256', 'uint256', 'uint256', 'uint256'],
     [
       config.VOTING_PERIOD_IN_SECONDS,
       config.GRACE_PERIOD_IN_SECONDS,
@@ -172,19 +172,19 @@ const getBaalParams = async function (
   );
 
   const setAdminConfig = await baal.interface.encodeFunctionData(
-    "setAdminConfig",
+    'setAdminConfig',
     adminConfig
   );
   const setGovernanceConfig = await baal.interface.encodeFunctionData(
-    "setGovernanceConfig",
+    'setGovernanceConfig',
     [governanceConfig]
   );
 
   const mintShares = await baal.interface.encodeFunctionData(
-    "mintShares",
+    'mintShares',
     shares
   );
-  const mintLoot = await baal.interface.encodeFunctionData("mintLoot", loots);
+  const mintLoot = await baal.interface.encodeFunctionData('mintLoot', loots);
 
   const initalizationActions = [
     setAdminConfig,
@@ -195,14 +195,14 @@ const getBaalParams = async function (
 
   return {
     initParams: abiCoder.encode(
-      ["string", "string"],
+      ['string', 'string'],
       [config.TOKEN_NAME, config.TOKEN_SYMBOL]
     ),
     initalizationActions,
   };
 };
 
-describe("Onboarder", function () {
+describe('Onboarder', function () {
   let baal: Baal;
   let lootSingleton: Loot;
   let LootFactory: ContractFactory;
@@ -280,16 +280,16 @@ describe("Onboarder", function () {
   };
 
   this.beforeAll(async function () {
-    LootFactory = await ethers.getContractFactory("Loot");
+    LootFactory = await ethers.getContractFactory('Loot');
     lootSingleton = (await LootFactory.deploy()) as Loot;
-    SharesFactory = await ethers.getContractFactory("Shares");
+    SharesFactory = await ethers.getContractFactory('Shares');
     sharesSingleton = (await SharesFactory.deploy()) as Shares;
-    BaalFactory = await ethers.getContractFactory("Baal");
+    BaalFactory = await ethers.getContractFactory('Baal');
     baalSingleton = (await BaalFactory.deploy()) as Baal;
-    OnboarderFactory = await ethers.getContractFactory("OnboarderShaman");
+    OnboarderFactory = await ethers.getContractFactory('OnboarderShaman');
     onboarderSingleton = (await OnboarderFactory.deploy()) as OnboarderShaman;
     OnboarderSummonerFactory = await ethers.getContractFactory(
-      "OnboarderShamanSummoner"
+      'OnboarderShamanSummoner'
     );
     onboarderSummoner = (await OnboarderSummonerFactory.deploy(
       onboarderSingleton.address
@@ -297,29 +297,32 @@ describe("Onboarder", function () {
   });
 
   beforeEach(async function () {
-    const GnosisSafe = await ethers.getContractFactory("GnosisSafe");
-    const BaalSummoner = await ethers.getContractFactory("BaalSummoner");
+    const GnosisSafe = await ethers.getContractFactory('GnosisSafe');
+    const BaalSummoner = await ethers.getContractFactory('BaalSummoner');
     const CompatibilityFallbackHandler = await ethers.getContractFactory(
-      "CompatibilityFallbackHandler"
+      'CompatibilityFallbackHandler'
     );
-    const BaalContract = await ethers.getContractFactory("Baal");
-    const MultisendContract = await ethers.getContractFactory("MultiSend");
+    const BaalContract = await ethers.getContractFactory('Baal');
+    const MultisendContract = await ethers.getContractFactory('MultiSend');
     const GnosisSafeProxyFactory = await ethers.getContractFactory(
-      "GnosisSafeProxyFactory"
+      'GnosisSafeProxyFactory'
     );
     const ModuleProxyFactory = await ethers.getContractFactory(
-      "ModuleProxyFactory"
+      'ModuleProxyFactory'
     );
     [summoner, applicant, s1, s2, s3, s4, s5, s6] = await ethers.getSigners();
 
-    ERC20 = await ethers.getContractFactory("MyToken");
+    ERC20 = await ethers.getContractFactory('MyToken');
     token = (await ERC20.deploy(
-      ethers.utils.parseUnits("100.0", "ether")
+      ethers.utils.parseUnits('100.0', 'ether')
     )) as MyToken;
     applicantToken = token.connect(applicant);
 
-    await token.transfer(applicant.address, ethers.utils.parseUnits("10.0", "ether"));
-    await token.transfer(s2.address, ethers.utils.parseUnits("10.0", "ether"));
+    await token.transfer(
+      applicant.address,
+      ethers.utils.parseUnits('10.0', 'ether')
+    );
+    await token.transfer(s2.address, ethers.utils.parseUnits('10.0', 'ether'));
 
     multisend = (await MultisendContract.deploy()) as MultiSend;
     gnosisSafeSingleton = (await GnosisSafe.deploy()) as GnosisSafe;
@@ -373,7 +376,7 @@ describe("Onboarder", function () {
 
     const selfTransferAction = encodeMultiAction(
       multisend,
-      ["0x"],
+      ['0x'],
       [baal.address],
       [BigNumber.from(0)],
       [0]
@@ -383,20 +386,20 @@ describe("Onboarder", function () {
       flag: 0,
       account: applicant.address,
       data: selfTransferAction,
-      details: "all hail baal",
+      details: 'all hail baal',
       expiration: 0,
       baalGas: 0,
     };
   });
 
-  describe("onboarder", function () {
-    it("mint shares on sending eth", async function () {
+  describe('onboarder', function () {
+    it('mint shares on sending eth', async function () {
       const onboarderArgs = {
         token: zeroAddress,
-        pricePerUnit: ethers.utils.parseUnits("1.0", "ether"),
-        unitPer: ethers.utils.parseUnits("1.0", "ether"),
-        expiery: (Math.floor(Date.now()/1000)) + (86400 * 365),
-        details: "test",
+        pricePerUnit: ethers.utils.parseUnits('1.0', 'ether'),
+        unitPer: ethers.utils.parseUnits('1.0', 'ether'),
+        expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
+        details: 'test',
         shares: true,
         cuts: [],
         amounts: [],
@@ -417,7 +420,7 @@ describe("Onboarder", function () {
 
       await s2.sendTransaction({
         to: onboarderAddress,
-        value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
+        value: ethers.utils.parseEther('1.0'), // Sends exactly 1.0 ether
       });
 
       const s2BalanceAfter = await s2.getBalance();
@@ -426,132 +429,149 @@ describe("Onboarder", function () {
       const baalTotalShares = await baal.totalShares();
 
       expect(s2SharesAfter).to.equal(s2SharesBefore.add(onboarderArgs.unitPer));
-      expect(baalTotalSupplyAfter).to.equal(baalTotalSupplyBefore.add(onboarderArgs.unitPer));
-
-
+      expect(baalTotalSupplyAfter).to.equal(
+        baalTotalSupplyBefore.add(onboarderArgs.unitPer)
+      );
     });
-    it("mint loot on sending eth", async function () {
-        const onboarderArgs = {
-          token: zeroAddress,
-          pricePerUnit: ethers.utils.parseUnits("1.0", "ether"),
-          unitPer: ethers.utils.parseUnits("1.0", "ether"),
-          expiery: (Math.floor(Date.now()/1000)) + (86400 * 365),
-          details: "test",
-          shares: false,
-          cuts: [],
-          amounts: [],
-        };
-  
-        let onboarderAddress = await summonOnboarder(
-          onboarderArgs,
-          multisend,
-          onboarderSingleton,
-          onboarderSummoner,
-          baal
-        );
-        const id = await setShamanProposal(baal, multisend, onboarderAddress, 7);
-  
-        const s2BalanceBefore = await s2.getBalance();
-        const s2LootBefore = await lootToken.balanceOf(s2.address);
-        const baalTotalSupplyBefore = await baal.totalSupply();
-  
-        await s2.sendTransaction({
-          to: onboarderAddress,
-          value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
-        });
-  
-        const s2BalanceAfter = await s2.getBalance();
-        const s2LootAfter = await lootToken.balanceOf(s2.address);
-        const baalTotalSupplyAfter = await baal.totalSupply();
-        const baalTotalShares = await baal.totalShares();
-  
-        expect(s2LootAfter).to.equal(s2LootBefore.add(onboarderArgs.unitPer));
-        expect(baalTotalSupplyAfter).to.equal(baalTotalSupplyBefore.add(onboarderArgs.unitPer));  
-  
+    it('mint loot on sending eth', async function () {
+      const onboarderArgs = {
+        token: zeroAddress,
+        pricePerUnit: ethers.utils.parseUnits('1.0', 'ether'),
+        unitPer: ethers.utils.parseUnits('1.0', 'ether'),
+        expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
+        details: 'test',
+        shares: false,
+        cuts: [],
+        amounts: [],
+      };
+
+      let onboarderAddress = await summonOnboarder(
+        onboarderArgs,
+        multisend,
+        onboarderSingleton,
+        onboarderSummoner,
+        baal
+      );
+      const id = await setShamanProposal(baal, multisend, onboarderAddress, 7);
+
+      const s2BalanceBefore = await s2.getBalance();
+      const s2LootBefore = await lootToken.balanceOf(s2.address);
+      const baalTotalSupplyBefore = await baal.totalSupply();
+
+      await s2.sendTransaction({
+        to: onboarderAddress,
+        value: ethers.utils.parseEther('1.0'), // Sends exactly 1.0 ether
       });
-      it("mint shares on sending token", async function () {
-        const onboarderArgs = {
-          token: token.address,
-          pricePerUnit: ethers.utils.parseUnits("1.0", "ether"),
-          unitPer: ethers.utils.parseUnits("1.0", "ether"),
-          expiery: (Math.floor(Date.now()/1000)) + (86400 * 365),
-          details: "test",
-          shares: true,
-          cuts: [],
-          amounts: [],
-        };
-  
-        let onboarderAddress = await summonOnboarder(
-          onboarderArgs,
-          multisend,
-          onboarderSingleton,
-          onboarderSummoner,
-          baal
-        );
-        const id = await setShamanProposal(baal, multisend, onboarderAddress, 7);
-        const applicantToken = token.connect(s2);
-        await applicantToken.approve(onboarderAddress, ethers.utils.parseUnits("1.0", "ether"));
-        
-        onboarder = onboarderSingleton.attach(onboarderAddress);
-        const applicantOnboarder = onboarder.connect(s2);
 
-        const s2BalanceBefore = await token.balanceOf(s2.address);
-        const s2SharesBefore = await sharesToken.balanceOf(s2.address);
-        const baalTotalSupplyBefore = await baal.totalSupply();
+      const s2BalanceAfter = await s2.getBalance();
+      const s2LootAfter = await lootToken.balanceOf(s2.address);
+      const baalTotalSupplyAfter = await baal.totalSupply();
+      const baalTotalShares = await baal.totalShares();
 
-        await applicantOnboarder.onboarder20(ethers.utils.parseUnits("1.0", "ether"));
-  
-        const s2BalanceAfter = await token.balanceOf(s2.address);
-        const s2SharesAfter = await sharesToken.balanceOf(s2.address);
-        const baalTotalSupplyAfter = await baal.totalSupply();
-        const baalTotalShares = await baal.totalShares();
-  
-        expect(baalTotalSupplyAfter).to.equal(baalTotalSupplyBefore.add(onboarderArgs.unitPer));  
-        expect(s2BalanceAfter).to.equal(s2BalanceBefore.sub(onboarderArgs.unitPer));  
-        expect(s2SharesAfter).to.equal(s2SharesBefore.add(onboarderArgs.unitPer));
-  
-      });
-      it("mint loot on sending token", async function () {
-        const onboarderArgs = {
-          token: token.address,
-          pricePerUnit: ethers.utils.parseUnits("1.0", "ether"),
-          unitPer: ethers.utils.parseUnits("1.0", "ether"),
-          expiery: (Math.floor(Date.now()/1000)) + (86400 * 365),
-          details: "test",
-          shares: false,
-          cuts: [],
-          amounts: [],
-        };
-  
-        let onboarderAddress = await summonOnboarder(
-          onboarderArgs,
-          multisend,
-          onboarderSingleton,
-          onboarderSummoner,
-          baal
-        );
-        const id = await setShamanProposal(baal, multisend, onboarderAddress, 7);
-        const applicantToken = token.connect(s2);
-        await applicantToken.approve(onboarderAddress, ethers.utils.parseUnits("1.0", "ether"));
-        
-        onboarder = onboarderSingleton.attach(onboarderAddress);
-        const applicantOnboarder = onboarder.connect(s2);
+      expect(s2LootAfter).to.equal(s2LootBefore.add(onboarderArgs.unitPer));
+      expect(baalTotalSupplyAfter).to.equal(
+        baalTotalSupplyBefore.add(onboarderArgs.unitPer)
+      );
+    });
+    it('mint shares on sending token', async function () {
+      const onboarderArgs = {
+        token: token.address,
+        pricePerUnit: ethers.utils.parseUnits('1.0', 'ether'),
+        unitPer: ethers.utils.parseUnits('1.0', 'ether'),
+        expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
+        details: 'test',
+        shares: true,
+        cuts: [],
+        amounts: [],
+      };
 
-        const s2BalanceBefore = await token.balanceOf(s2.address);
-        const s2LootBefore = await lootToken.balanceOf(s2.address);
-        const baalTotalSupplyBefore = await baal.totalSupply();
+      let onboarderAddress = await summonOnboarder(
+        onboarderArgs,
+        multisend,
+        onboarderSingleton,
+        onboarderSummoner,
+        baal
+      );
+      const id = await setShamanProposal(baal, multisend, onboarderAddress, 7);
+      const applicantToken = token.connect(s2);
+      await applicantToken.approve(
+        onboarderAddress,
+        ethers.utils.parseUnits('1.0', 'ether')
+      );
 
-        await applicantOnboarder.onboarder20(ethers.utils.parseUnits("1.0", "ether"));
-  
-        const s2BalanceAfter = await token.balanceOf(s2.address);
-        const s2LootAfter = await lootToken.balanceOf(s2.address);
-        const baalTotalSupplyAfter = await baal.totalSupply();
-        const baalTotalShares = await baal.totalShares();
-  
-        expect(baalTotalSupplyAfter).to.equal(baalTotalSupplyBefore.add(onboarderArgs.unitPer));  
-        expect(s2BalanceAfter).to.equal(s2BalanceBefore.sub(onboarderArgs.unitPer));  
-        expect(s2LootAfter).to.equal(s2LootBefore.add(onboarderArgs.unitPer));
-  
-      });
+      onboarder = onboarderSingleton.attach(onboarderAddress);
+      const applicantOnboarder = onboarder.connect(s2);
+
+      const s2BalanceBefore = await token.balanceOf(s2.address);
+      const s2SharesBefore = await sharesToken.balanceOf(s2.address);
+      const baalTotalSupplyBefore = await baal.totalSupply();
+
+      await applicantOnboarder.onboarder20(
+        ethers.utils.parseUnits('1.0', 'ether')
+      );
+
+      const s2BalanceAfter = await token.balanceOf(s2.address);
+      const s2SharesAfter = await sharesToken.balanceOf(s2.address);
+      const baalTotalSupplyAfter = await baal.totalSupply();
+      const baalTotalShares = await baal.totalShares();
+
+      expect(baalTotalSupplyAfter).to.equal(
+        baalTotalSupplyBefore.add(onboarderArgs.unitPer)
+      );
+      expect(s2BalanceAfter).to.equal(
+        s2BalanceBefore.sub(onboarderArgs.unitPer)
+      );
+      expect(s2SharesAfter).to.equal(s2SharesBefore.add(onboarderArgs.unitPer));
+    });
+    it('mint loot on sending token', async function () {
+      const onboarderArgs = {
+        token: token.address,
+        pricePerUnit: ethers.utils.parseUnits('1.0', 'ether'),
+        unitPer: ethers.utils.parseUnits('1.0', 'ether'),
+        expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
+        details: 'test',
+        shares: false,
+        cuts: [],
+        amounts: [],
+      };
+
+      let onboarderAddress = await summonOnboarder(
+        onboarderArgs,
+        multisend,
+        onboarderSingleton,
+        onboarderSummoner,
+        baal
+      );
+      const id = await setShamanProposal(baal, multisend, onboarderAddress, 7);
+      const applicantToken = token.connect(s2);
+      await applicantToken.approve(
+        onboarderAddress,
+        ethers.utils.parseUnits('1.0', 'ether')
+      );
+
+      onboarder = onboarderSingleton.attach(onboarderAddress);
+      const applicantOnboarder = onboarder.connect(s2);
+
+      const s2BalanceBefore = await token.balanceOf(s2.address);
+      const s2LootBefore = await lootToken.balanceOf(s2.address);
+      const baalTotalSupplyBefore = await baal.totalSupply();
+
+      await applicantOnboarder.onboarder20(
+        ethers.utils.parseUnits('1.0', 'ether')
+      );
+
+      const s2BalanceAfter = await token.balanceOf(s2.address);
+      const s2LootAfter = await lootToken.balanceOf(s2.address);
+      const baalTotalSupplyAfter = await baal.totalSupply();
+      const baalTotalShares = await baal.totalShares();
+
+      expect(baalTotalSupplyAfter).to.equal(
+        baalTotalSupplyBefore.add(onboarderArgs.unitPer)
+      );
+      expect(s2BalanceAfter).to.equal(
+        s2BalanceBefore.sub(onboarderArgs.unitPer)
+      );
+      expect(s2LootAfter).to.equal(s2LootBefore.add(onboarderArgs.unitPer));
+    });
   });
 });

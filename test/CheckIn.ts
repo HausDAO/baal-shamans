@@ -1,13 +1,13 @@
-import { ethers } from "hardhat";
-import { solidity } from "ethereum-waffle";
-import { use, expect } from "chai";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { ethers } from 'hardhat';
+import { solidity } from 'ethereum-waffle';
+import { use, expect } from 'chai';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
-import { decodeMultiAction, encodeMultiAction } from "../src/util";
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { buildContractCall } from "@gnosis.pm/safe-contracts";
-import { ContractFactory, ContractTransaction } from "ethers";
-import { Test } from "mocha";
+import { decodeMultiAction, encodeMultiAction } from '../src/util';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { buildContractCall } from '@gnosis.pm/safe-contracts';
+import { ContractFactory, ContractTransaction } from 'ethers';
+import { Test } from 'mocha';
 import {
   CompatibilityFallbackHandler,
   GnosisSafe,
@@ -15,63 +15,63 @@ import {
   MyToken,
   SubscriptionShaman,
   SubscriptionShamanSummoner,
-} from "../src/types";
+} from '../src/types';
 import {
   Baal,
   BaalSummoner,
-} from "../src/types/contracts/fixtures/Baal/contracts";
-import { Loot } from "../src/types/contracts/fixtures/Baal/contracts/LootERC20.sol";
-import { Shares } from "../src/types/contracts/fixtures/Baal/contracts/SharesERC20.sol";
+} from '../src/types/contracts/fixtures/Baal/contracts';
+import { Loot } from '../src/types/contracts/fixtures/Baal/contracts/LootERC20.sol';
+import { Shares } from '../src/types/contracts/fixtures/Baal/contracts/SharesERC20.sol';
 
 use(solidity);
 
-const zeroAddress = "0x0000000000000000000000000000000000000000";
+const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 async function blockTime() {
-  const block = await ethers.provider.getBlock("latest");
+  const block = await ethers.provider.getBlock('latest');
   return block.timestamp;
 }
 
-async function blockNumber() {
-  const block = await ethers.provider.getBlock("latest");
-  return block.number;
-}
+// async function blockNumber() {
+//   const block = await ethers.provider.getBlock('latest');
+//   return block.number;
+// }
 
 async function moveForwardPeriods(periods: number, extra?: number) {
   const goToTime =
     (await blockTime()) +
     defaultDAOSettings.VOTING_PERIOD_IN_SECONDS * periods +
     (extra ? extra : 0);
-  await ethers.provider.send("evm_mine", [goToTime]);
+  await ethers.provider.send('evm_mine', [goToTime]);
   return true;
 }
 
-const setShamanProposal = async function (
-  baal: Baal,
-  multisend: MultiSend,
-  shaman: string,
-  permission: BigNumberish
-) {
-  const setShaman = await baal.interface.encodeFunctionData("setShamans", [
-    [shaman],
-    [permission],
-  ]);
-  const setShamanAction = encodeMultiAction(
-    multisend,
-    [setShaman],
-    [baal.address],
-    [BigNumber.from(0)],
-    [0]
-  );
-  await baal.submitProposal(setShamanAction, 0, 0, "");
-  const proposalId = await baal.proposalCount();
-  await baal.submitVote(proposalId, true);
-  await moveForwardPeriods(2);
-  await baal.processProposal(proposalId, setShamanAction);
-  return proposalId;
-};
+// const setShamanProposal = async function (
+//   baal: Baal,
+//   multisend: MultiSend,
+//   shaman: string,
+//   permission: BigNumberish
+// ) {
+//   const setShaman = await baal.interface.encodeFunctionData('setShamans', [
+//     [shaman],
+//     [permission],
+//   ]);
+//   const setShamanAction = encodeMultiAction(
+//     multisend,
+//     [setShaman],
+//     [baal.address],
+//     [BigNumber.from(0)],
+//     [0]
+//   );
+//   await baal.submitProposal(setShamanAction, 0, 0, '');
+//   const proposalId = await baal.proposalCount();
+//   await baal.submitVote(proposalId, true);
+//   await moveForwardPeriods(2);
+//   await baal.processProposal(proposalId, setShamanAction);
+//   return proposalId;
+// };
 
-const summonSubscription = async function (
+const summonCheckIn = async function (
   subscriptionArgs: any,
   multisend: MultiSend,
   subscriptionSingleton: SubscriptionShaman,
@@ -114,7 +114,7 @@ const getNewBaalAddresses = async (
   const receipt = await ethers.provider.getTransactionReceipt(tx.hash);
   // console.log({logs: receipt.logs})
   let baalSummonAbi = [
-    "event SummonBaal(address indexed baal, address indexed loot, address indexed shares, address safe, bool existingSafe)",
+    'event SummonBaal(address indexed baal, address indexed loot, address indexed shares, address safe, bool existingSafe)',
   ];
   let iface = new ethers.utils.Interface(baalSummonAbi);
   let log = iface.parseLog(receipt.logs[receipt.logs.length - 1]);
@@ -130,14 +130,14 @@ const defaultDAOSettings = {
   MIN_RETENTION_PERCENT: 0,
   MIN_STAKING_PERCENT: 0,
   QUORUM_PERCENT: 0,
-  TOKEN_NAME: "BAALtests",
-  TOKEN_SYMBOL: "BAAL",
+  TOKEN_NAME: 'BAALtests',
+  TOKEN_SYMBOL: 'BAAL',
 };
 
-const metadataConfig = {
-  CONTENT: '{"name":"test"}',
-  TAG: "daohaus.summoner.daoProfile",
-};
+// const metadataConfig = {
+//   CONTENT: '{"name":"test"}',
+//   TAG: 'daohaus.summoner.daoProfile',
+// };
 
 const abiCoder = ethers.utils.defaultAbiCoder;
 
@@ -161,7 +161,7 @@ const getBaalParams = async function (
   loots: [string[], number[]]
 ) {
   const governanceConfig = abiCoder.encode(
-    ["uint32", "uint32", "uint256", "uint256", "uint256", "uint256"],
+    ['uint32', 'uint32', 'uint256', 'uint256', 'uint256', 'uint256'],
     [
       config.VOTING_PERIOD_IN_SECONDS,
       config.GRACE_PERIOD_IN_SECONDS,
@@ -173,19 +173,19 @@ const getBaalParams = async function (
   );
 
   const setAdminConfig = await baal.interface.encodeFunctionData(
-    "setAdminConfig",
+    'setAdminConfig',
     adminConfig
   );
   const setGovernanceConfig = await baal.interface.encodeFunctionData(
-    "setGovernanceConfig",
+    'setGovernanceConfig',
     [governanceConfig]
   );
 
   const mintShares = await baal.interface.encodeFunctionData(
-    "mintShares",
+    'mintShares',
     shares
   );
-  const mintLoot = await baal.interface.encodeFunctionData("mintLoot", loots);
+  const mintLoot = await baal.interface.encodeFunctionData('mintLoot', loots);
 
   const initalizationActions = [
     setAdminConfig,
@@ -196,14 +196,14 @@ const getBaalParams = async function (
 
   return {
     initParams: abiCoder.encode(
-      ["string", "string"],
+      ['string', 'string'],
       [config.TOKEN_NAME, config.TOKEN_SYMBOL]
     ),
     initalizationActions,
   };
 };
 
-describe("Subscription", function () {
+describe('Example', function () {
   let baal: Baal;
   let lootSingleton: Loot;
   let LootFactory: ContractFactory;
@@ -281,16 +281,17 @@ describe("Subscription", function () {
   };
 
   this.beforeAll(async function () {
-    LootFactory = await ethers.getContractFactory("Loot");
+    LootFactory = await ethers.getContractFactory('Loot');
     lootSingleton = (await LootFactory.deploy()) as Loot;
-    SharesFactory = await ethers.getContractFactory("Shares");
+    SharesFactory = await ethers.getContractFactory('Shares');
     sharesSingleton = (await SharesFactory.deploy()) as Shares;
-    BaalFactory = await ethers.getContractFactory("Baal");
+    BaalFactory = await ethers.getContractFactory('Baal');
     baalSingleton = (await BaalFactory.deploy()) as Baal;
-    SubscriptionFactory = await ethers.getContractFactory("SubscriptionShaman");
-    subscriptionSingleton = (await SubscriptionFactory.deploy()) as SubscriptionShaman;
+    SubscriptionFactory = await ethers.getContractFactory('SubscriptionShaman');
+    subscriptionSingleton =
+      (await SubscriptionFactory.deploy()) as SubscriptionShaman;
     SubscriptionSummonerFactory = await ethers.getContractFactory(
-      "SubscriptionShamanSummoner"
+      'SubscriptionShamanSummoner'
     );
     subscriptionSummoner = (await SubscriptionSummonerFactory.deploy(
       subscriptionSingleton.address
@@ -298,29 +299,32 @@ describe("Subscription", function () {
   });
 
   beforeEach(async function () {
-    const GnosisSafe = await ethers.getContractFactory("GnosisSafe");
-    const BaalSummoner = await ethers.getContractFactory("BaalSummoner");
+    const GnosisSafe = await ethers.getContractFactory('GnosisSafe');
+    const BaalSummoner = await ethers.getContractFactory('BaalSummoner');
     const CompatibilityFallbackHandler = await ethers.getContractFactory(
-      "CompatibilityFallbackHandler"
+      'CompatibilityFallbackHandler'
     );
-    const BaalContract = await ethers.getContractFactory("Baal");
-    const MultisendContract = await ethers.getContractFactory("MultiSend");
+    const BaalContract = await ethers.getContractFactory('Baal');
+    const MultisendContract = await ethers.getContractFactory('MultiSend');
     const GnosisSafeProxyFactory = await ethers.getContractFactory(
-      "GnosisSafeProxyFactory"
+      'GnosisSafeProxyFactory'
     );
     const ModuleProxyFactory = await ethers.getContractFactory(
-      "ModuleProxyFactory"
+      'ModuleProxyFactory'
     );
     [summoner, applicant, s1, s2, s3, s4, s5, s6] = await ethers.getSigners();
 
-    ERC20 = await ethers.getContractFactory("MyToken");
+    ERC20 = await ethers.getContractFactory('MyToken');
     token = (await ERC20.deploy(
-      ethers.utils.parseUnits("100000.0", "ether")
+      ethers.utils.parseUnits('100000.0', 'ether')
     )) as MyToken;
     applicantToken = token.connect(applicant);
 
-    await token.transfer(applicant.address, ethers.utils.parseUnits("10.0", "ether"));
-    await token.transfer(s2.address, ethers.utils.parseUnits("10.0", "ether"));
+    await token.transfer(
+      applicant.address,
+      ethers.utils.parseUnits('10.0', 'ether')
+    );
+    await token.transfer(s2.address, ethers.utils.parseUnits('10.0', 'ether'));
 
     multisend = (await MultisendContract.deploy()) as MultiSend;
     gnosisSafeSingleton = (await GnosisSafe.deploy()) as GnosisSafe;
@@ -374,7 +378,7 @@ describe("Subscription", function () {
 
     const selfTransferAction = encodeMultiAction(
       multisend,
-      ["0x"],
+      ['0x'],
       [baal.address],
       [BigNumber.from(0)],
       [0]
@@ -384,19 +388,16 @@ describe("Subscription", function () {
       flag: 0,
       account: applicant.address,
       data: selfTransferAction,
-      details: "all hail baal",
+      details: 'all hail baal',
       expiration: 0,
       baalGas: 0,
     };
   });
 
-  describe("subscription", function () {
-    it("mint shares on claim", async function () {
- 
-
+  describe('example', function () {
+    it('mint shares on claim', async function () {
+      expect(true);
     });
-    it("mint loot on ...", async function () {
-        
-    });
+    it('mint loot on ...', async function () {});
   });
 });

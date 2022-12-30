@@ -114,8 +114,8 @@ export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/exten
 export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
-export type { ExampleManagerShaman } from "./contracts/example/Example.sol/ExampleManagerShaman";
-export { ExampleManagerShaman__factory } from "./factories/contracts/example/Example.sol/ExampleManagerShaman__factory";
+export type { CheckInShaman } from "./contracts/checkIn/CheckIn.sol/CheckInShaman";
+export { CheckInShaman__factory } from "./factories/contracts/checkIn/CheckIn.sol/CheckInShaman__factory";
 export type { Baal } from "./contracts/fixtures/Baal/contracts/Baal";
 export { Baal__factory } from "./factories/contracts/fixtures/Baal/contracts/Baal__factory";
 export type { BaalSummoner } from "./contracts/fixtures/Baal/contracts/BaalSummoner";

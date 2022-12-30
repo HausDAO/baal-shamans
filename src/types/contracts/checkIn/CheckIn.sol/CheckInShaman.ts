@@ -4,6 +4,7 @@
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -26,14 +27,14 @@ import type {
   PromiseOrValue,
 } from "../../../common";
 
-export interface ExampleManagerShamanInterface extends utils.Interface {
+export interface CheckInShamanInterface extends utils.Interface {
   functions: {
     "baal()": FunctionFragment;
-    "claim(address)": FunctionFragment;
-    "memberClaims(address)": FunctionFragment;
-    "perPeriod()": FunctionFragment;
+    "claim(uint16)": FunctionFragment;
     "period()": FunctionFragment;
     "shares()": FunctionFragment;
+    "sharesPerMinute()": FunctionFragment;
+    "timeLedger(address)": FunctionFragment;
     "token()": FunctionFragment;
   };
 
@@ -41,36 +42,39 @@ export interface ExampleManagerShamanInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "baal"
       | "claim"
-      | "memberClaims"
-      | "perPeriod"
       | "period"
       | "shares"
+      | "sharesPerMinute"
+      | "timeLedger"
       | "token"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "baal", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "claim",
-    values: [PromiseOrValue<string>]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "memberClaims",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(functionFragment: "perPeriod", values?: undefined): string;
   encodeFunctionData(functionFragment: "period", values?: undefined): string;
   encodeFunctionData(functionFragment: "shares", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "sharesPerMinute",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "timeLedger",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "baal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "memberClaims",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "perPeriod", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "period", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "sharesPerMinute",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "timeLedger", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
 
   events: {
@@ -97,12 +101,12 @@ export type SetMemberEvent = TypedEvent<[string], SetMemberEventObject>;
 
 export type SetMemberEventFilter = TypedEventFilter<SetMemberEvent>;
 
-export interface ExampleManagerShaman extends BaseContract {
+export interface CheckInShaman extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ExampleManagerShamanInterface;
+  interface: CheckInShamanInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -127,20 +131,20 @@ export interface ExampleManagerShaman extends BaseContract {
     baal(overrides?: CallOverrides): Promise<[string]>;
 
     claim(
-      account: PromiseOrValue<string>,
+      _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    memberClaims(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    perPeriod(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     period(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     shares(overrides?: CallOverrides): Promise<[boolean]>;
+
+    sharesPerMinute(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    timeLedger(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
   };
@@ -148,20 +152,20 @@ export interface ExampleManagerShaman extends BaseContract {
   baal(overrides?: CallOverrides): Promise<string>;
 
   claim(
-    account: PromiseOrValue<string>,
+    _minutesWorked: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  memberClaims(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  perPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
   period(overrides?: CallOverrides): Promise<BigNumber>;
 
   shares(overrides?: CallOverrides): Promise<boolean>;
+
+  sharesPerMinute(overrides?: CallOverrides): Promise<BigNumber>;
+
+  timeLedger(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
@@ -169,20 +173,20 @@ export interface ExampleManagerShaman extends BaseContract {
     baal(overrides?: CallOverrides): Promise<string>;
 
     claim(
-      account: PromiseOrValue<string>,
+      _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    memberClaims(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    perPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
     period(overrides?: CallOverrides): Promise<BigNumber>;
 
     shares(overrides?: CallOverrides): Promise<boolean>;
+
+    sharesPerMinute(overrides?: CallOverrides): Promise<BigNumber>;
+
+    timeLedger(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<string>;
   };
@@ -202,20 +206,20 @@ export interface ExampleManagerShaman extends BaseContract {
     baal(overrides?: CallOverrides): Promise<BigNumber>;
 
     claim(
-      account: PromiseOrValue<string>,
+      _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    memberClaims(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    perPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
     period(overrides?: CallOverrides): Promise<BigNumber>;
 
     shares(overrides?: CallOverrides): Promise<BigNumber>;
+
+    sharesPerMinute(overrides?: CallOverrides): Promise<BigNumber>;
+
+    timeLedger(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
   };
@@ -224,20 +228,20 @@ export interface ExampleManagerShaman extends BaseContract {
     baal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claim(
-      account: PromiseOrValue<string>,
+      _minutesWorked: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    memberClaims(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    perPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     period(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     shares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    sharesPerMinute(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    timeLedger(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
