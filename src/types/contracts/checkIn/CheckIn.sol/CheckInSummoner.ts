@@ -29,7 +29,7 @@ import type {
 
 export interface CheckInSummonerInterface extends utils.Interface {
   functions: {
-    "summon(address,bool,uint256,uint256,uint16)": FunctionFragment;
+    "summon(address,bool,uint256,uint256)": FunctionFragment;
     "template()": FunctionFragment;
   };
 
@@ -41,7 +41,6 @@ export interface CheckInSummonerInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<boolean>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -51,7 +50,7 @@ export interface CheckInSummonerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "template", data: BytesLike): Result;
 
   events: {
-    "CheckInSummonComplete(address,address,bool,uint256,uint256,uint16)": EventFragment;
+    "CheckInSummonComplete(address,address,bool,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CheckInSummonComplete"): EventFragment;
@@ -59,14 +58,13 @@ export interface CheckInSummonerInterface extends utils.Interface {
 
 export interface CheckInSummonCompleteEventObject {
   baal: string;
-  checkIn: string;
+  shamanAddress: string;
   sharesOrLoot: boolean;
-  sharesPerMinute: BigNumber;
+  sharesPerSecond: BigNumber;
   checkInInterval: BigNumber;
-  maxMinutesClaimable: number;
 }
 export type CheckInSummonCompleteEvent = TypedEvent<
-  [string, string, boolean, BigNumber, BigNumber, number],
+  [string, string, boolean, BigNumber, BigNumber],
   CheckInSummonCompleteEventObject
 >;
 
@@ -103,9 +101,8 @@ export interface CheckInSummoner extends BaseContract {
     summon(
       _baal: PromiseOrValue<string>,
       _sharesOrLoot: PromiseOrValue<boolean>,
-      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _sharesPerSecond: PromiseOrValue<BigNumberish>,
       _checkInInterval: PromiseOrValue<BigNumberish>,
-      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -115,9 +112,8 @@ export interface CheckInSummoner extends BaseContract {
   summon(
     _baal: PromiseOrValue<string>,
     _sharesOrLoot: PromiseOrValue<boolean>,
-    _sharesPerMinute: PromiseOrValue<BigNumberish>,
+    _sharesPerSecond: PromiseOrValue<BigNumberish>,
     _checkInInterval: PromiseOrValue<BigNumberish>,
-    _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -127,9 +123,8 @@ export interface CheckInSummoner extends BaseContract {
     summon(
       _baal: PromiseOrValue<string>,
       _sharesOrLoot: PromiseOrValue<boolean>,
-      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _sharesPerSecond: PromiseOrValue<BigNumberish>,
       _checkInInterval: PromiseOrValue<BigNumberish>,
-      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -137,21 +132,19 @@ export interface CheckInSummoner extends BaseContract {
   };
 
   filters: {
-    "CheckInSummonComplete(address,address,bool,uint256,uint256,uint16)"(
+    "CheckInSummonComplete(address,address,bool,uint256,uint256)"(
       baal?: PromiseOrValue<string> | null,
-      checkIn?: null,
+      shamanAddress?: null,
       sharesOrLoot?: null,
-      sharesPerMinute?: null,
-      checkInInterval?: null,
-      maxMinutesClaimable?: null
+      sharesPerSecond?: null,
+      checkInInterval?: null
     ): CheckInSummonCompleteEventFilter;
     CheckInSummonComplete(
       baal?: PromiseOrValue<string> | null,
-      checkIn?: null,
+      shamanAddress?: null,
       sharesOrLoot?: null,
-      sharesPerMinute?: null,
-      checkInInterval?: null,
-      maxMinutesClaimable?: null
+      sharesPerSecond?: null,
+      checkInInterval?: null
     ): CheckInSummonCompleteEventFilter;
   };
 
@@ -159,9 +152,8 @@ export interface CheckInSummoner extends BaseContract {
     summon(
       _baal: PromiseOrValue<string>,
       _sharesOrLoot: PromiseOrValue<boolean>,
-      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _sharesPerSecond: PromiseOrValue<BigNumberish>,
       _checkInInterval: PromiseOrValue<BigNumberish>,
-      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -172,9 +164,8 @@ export interface CheckInSummoner extends BaseContract {
     summon(
       _baal: PromiseOrValue<string>,
       _sharesOrLoot: PromiseOrValue<boolean>,
-      _sharesPerMinute: PromiseOrValue<BigNumberish>,
+      _sharesPerSecond: PromiseOrValue<BigNumberish>,
       _checkInInterval: PromiseOrValue<BigNumberish>,
-      _maxMinutesClaimable: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

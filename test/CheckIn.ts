@@ -76,9 +76,8 @@ async function moveForwardPeriods(periods: number, extra?: number) {
 type CheckInInitArgs = {
   baalAddress: string;
   sharesOrLoot: boolean;
-  sharesPerMinute: number;
+  sharesPerSecond: number;
   checkInInterval: number;
-  maxMinutesClaimable: number;
 };
 
 const summonCheckInShaman = async function (
@@ -89,19 +88,13 @@ const summonCheckInShaman = async function (
 ) {
   // let subscriptionAddress;
 
-  const {
-    baalAddress,
-    sharesOrLoot,
-    sharesPerMinute,
-    checkInInterval,
-    maxMinutesClaimable,
-  } = initArgs;
+  const { baalAddress, sharesOrLoot, sharesPerSecond, checkInInterval } =
+    initArgs;
   const checkInSummonTx = await checkInSummoner.summon(
     baalAddress,
     sharesOrLoot,
-    sharesPerMinute,
-    checkInInterval,
-    maxMinutesClaimable
+    sharesPerSecond,
+    checkInInterval
   );
   const result = await checkInSummonTx.wait();
 
@@ -248,10 +241,10 @@ describe('CheckIn Shaman Initialize', function () {
   let gnosisSafe: GnosisSafe;
 
   let CheckInFactory: ContractFactory;
-  let CheckInSingleton: SubscriptionShaman;
-  let SubscriptionSummonerFactory: ContractFactory;
-  let subscriptionSummoner: SubscriptionShamanSummoner;
-  let CheckIn: SubscriptionShaman;
+  let checkInSingleton: CheckInShaman;
+
+  let CheckInSummonerFactory: ContractFactory;
+  let checkInSummonerSingleton: CheckInSummoner;
 
   let proposal: { [key: string]: any };
 
@@ -290,15 +283,13 @@ describe('CheckIn Shaman Initialize', function () {
     sharesSingleton = (await SharesFactory.deploy()) as Shares;
     BaalFactory = await ethers.getContractFactory('Baal');
     baalSingleton = (await BaalFactory.deploy()) as Baal;
-    SubscriptionFactory = await ethers.getContractFactory('SubscriptionShaman');
-    subscriptionSingleton =
-      (await SubscriptionFactory.deploy()) as SubscriptionShaman;
-    SubscriptionSummonerFactory = await ethers.getContractFactory(
-      'SubscriptionShamanSummoner'
-    );
-    subscriptionSummoner = (await SubscriptionSummonerFactory.deploy(
-      subscriptionSingleton.address
-    )) as SubscriptionShamanSummoner;
+
+    CheckInFactory = await ethers.getContractFactory('CheckInShaman');
+    checkInSingleton = (await CheckInFactory.deploy()) as CheckInShaman;
+
+    CheckInSummonerFactory = await ethers.getContractFactory('CheckInSummoner');
+    checkInSummonerSingleton =
+      (await CheckInSummonerFactory.deploy()) as CheckInSummoner;
   });
 
   beforeEach(async function () {

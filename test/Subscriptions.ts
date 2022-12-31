@@ -394,25 +394,28 @@ describe('Subscription', function () {
     };
   });
 
+
+
+
   describe('subscription', function () {
     it('mint shares on subscribing', async function () {
-      // const subscriptionArgs = {
-      //   token: token,
-      //   priceActivation: ethers.utils.parseUnits("0.01", "ether"),
-      //   pricePer: ethers.utils.parseUnits("1000.0", "ether"),
-      //   lootPerUnit: 10,
-      //   periodLength: (86400 * 30),
-      //   shares: true,
-      //   cuts: [],
-      //   amounts: [],
-      // };
-      // let subscriptionAddress = await summonSubscription(
-      //   subscriptionArgs,
-      //   multisend,
-      //   subscriptionSingleton,
-      //   subscriptionSummoner,
-      //   baal
-      // );
+      const subscriptionArgs = {
+        token: token,
+        priceActivation: ethers.utils.parseUnits("0.01", "ether"),
+        pricePer: ethers.utils.parseUnits("1000.0", "ether"),
+        lootPerUnit: 10,
+        periodLength: (86400 * 30),
+        shares: true,
+        cuts: [],
+        amounts: [],
+      };
+      let subscriptionAddress = await summonSubscription(
+        subscriptionArgs,
+        multisend,
+        subscriptionSingleton,
+        subscriptionSummoner,
+        baal
+      );
       // const id = await setShamanProposal(baal, multisend, subscriptionAddress, 7);
       // console.log('subscriptionAddress', subscriptionAddress);
       //   const applicantToken = token.connect(s2);

@@ -19,8 +19,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     mapping(address => uint256) public timeLedger;
     bool public sharesOrLoot;
     uint256 public checkInInterval; // length of checkInInterval in seconds
-    uint256 public sharesPerMinute; // Amount of shares awarded per hour of work
-    uint16 public maxMinutesClaimable;
+    uint256 public sharesPerSecond; // Amount of shares awarded per second of work
 
     event Claim(
         address account,
@@ -34,9 +33,8 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     function init(
         address _baal,
         bool _sharesOrLoot,
-        uint256 _sharesPerMinute,
-        uint256 _checkInInterval,
-        uint16 _maxMinutesClaimable
+        uint256 _sharesPerSecond,
+        uint256 _checkInInterval
     ) external initializer {
         baal = IBAAL(_baal);
         sharesOrLoot = _sharesOrLoot;
@@ -47,8 +45,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
             token = IERC20(baal.lootToken());
         }
         checkInInterval = _checkInInterval;
-        sharesPerMinute = _sharesPerMinute;
-        maxMinutesClaimable = _maxMinutesClaimable;
+        sharesPerSecond = _sharesPerSecond;
     }
 
     // Mint share or loot tokens
@@ -67,10 +64,10 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     }
 
     // can be called by any account to claim per checkInInterval tokens
-    function claim(uint16 _minutesWorked) public {
+    function claim(uint16 _secondsWorked) public {
         require(
-            _minutesWorked < maxMinutesClaimable,
-            "Minutes worked must be under the maximum amount claimable per period"
+            _secondsWorked < checkInInterval,
+            "Claimable work period must be less than the check in interval"
         );
 
         require(
@@ -84,19 +81,19 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
             "Members Only: Must have DAO tokens in order to claim through this shaman"
         );
 
-        uint256 amount = calculate(_minutesWorked, sharesPerMinute);
+        uint256 amount = calculate(_secondsWorked, sharesPerSecond);
         _mintTokens(msg.sender, amount);
         timeLedger[msg.sender] = block.timestamp;
 
-        emit Claim(msg.sender, block.timestamp, amount, _minutesWorked);
+        emit Claim(msg.sender, block.timestamp, amount, _secondsWorked);
     }
 
-    function calculate(uint16 _minutesWorked, uint256 _sharesPerMinute)
+    function calculate(uint16 _secondsWorked, uint256 _sharesPerSecond)
         internal
         pure
         returns (uint256 total)
     {
-        total = _minutesWorked * _sharesPerMinute;
+        total = _secondsWorked * _sharesPerSecond;
     }
 }
 
@@ -105,11 +102,10 @@ contract CheckInSummoner {
 
     event CheckInSummonComplete(
         address indexed baal,
-        address checkIn,
+        address shamanAddress,
         bool sharesOrLoot,
-        uint256 sharesPerMinute,
-        uint256 checkInInterval,
-        uint16 maxMinutesClaimable
+        uint256 sharesPerSecond,
+        uint256 checkInInterval
     );
 
     constructor(address payable _template) {
@@ -119,9 +115,8 @@ contract CheckInSummoner {
     function summon(
         address _baal,
         bool _sharesOrLoot,
-        uint256 _sharesPerMinute,
-        uint256 _checkInInterval,
-        uint16 _maxMinutesClaimable
+        uint256 _sharesPerSecond,
+        uint256 _checkInInterval
     ) public returns (address) {
         CheckInShaman checkInShaman = CheckInShaman(
             payable(Clones.clone(template))
@@ -129,18 +124,16 @@ contract CheckInSummoner {
         checkInShaman.init(
             _baal,
             _sharesOrLoot,
-            _sharesPerMinute,
-            _checkInInterval,
-            _maxMinutesClaimable
+            _sharesPerSecond,
+            _checkInInterval
         );
 
         emit CheckInSummonComplete(
             _baal,
             address(checkInShaman),
             _sharesOrLoot,
-            _sharesPerMinute,
-            _checkInInterval,
-            _maxMinutesClaimable
+            _sharesPerSecond,
+            _checkInInterval
         );
 
         return address(checkInShaman);
