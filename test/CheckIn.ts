@@ -509,5 +509,29 @@ describe('CheckIn Shaman Initialize', function () {
         daoMemberCheckIn.claim(THREE_HOURS_WORKED)
       ).to.be.revertedWith('Can only claim 1 time per interval');
     });
+    it('should revert if claimer is not a member', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        sharesOrLoot: true,
+        sharesPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShaman;
+      const daoMemberCheckIn = checkInShaman.connect(s2);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
+      await expect(
+        daoMemberCheckIn.claim(THREE_HOURS_WORKED)
+      ).to.be.revertedWith(
+        'Members Only: Must have DAO tokens in order to claim through this shaman'
+      );
+    });
   });
 });
