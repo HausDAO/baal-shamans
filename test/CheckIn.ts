@@ -13,8 +13,6 @@ import {
   GnosisSafe,
   MultiSend,
   MyToken,
-  SubscriptionShaman,
-  SubscriptionShamanSummoner,
 } from '../src/types';
 import {
   Baal,
@@ -37,7 +35,7 @@ const SECONDS = {
 };
 // BASE UNITS WEI PER SECOND
 
-const ONE_SHARE_PER_HOUR = 11574074070000;
+const ONE_SHARE_PER_HOUR = 277777777777778;
 
 async function blockTime() {
   const block = await ethers.provider.getBlock('latest');
@@ -64,7 +62,7 @@ const setShamanProposal = async function (
   shamanAddress: string,
   permission: BigNumberish
 ) {
-  const setShaman = await baal.interface.encodeFunctionData('setShamans', [
+  const setShaman = baal.interface.encodeFunctionData('setShamans', [
     [shamanAddress],
     [permission],
   ]);
@@ -95,8 +93,6 @@ const summonCheckInShaman = async function (
   checkInShaman: CheckInShaman,
   checkInSummoner: CheckInSummoner
 ) {
-  // let subscriptionAddress;
-
   const { baalAddress, sharesOrLoot, sharesPerSecond, checkInInterval } =
     initArgs;
   const checkInSummonTx = await checkInSummoner.summon(
@@ -107,8 +103,8 @@ const summonCheckInShaman = async function (
   );
   const result = await checkInSummonTx.wait();
 
-  if (result.events?.[1]?.args?.subscription) {
-    console.log('shamanAddress', result.events[1].args.shamanAddress);
+  console.log('shamanAddress', result.events?.[1]?.args?.shamanAddress);
+  if (result.events?.[1]?.args?.shamanAddress) {
     const shamanAddress = result.events[1].args.shamanAddress;
     checkInShaman.attach(shamanAddress);
     return shamanAddress;
@@ -211,6 +207,30 @@ const getBaalParams = async function (
   };
 };
 
+const setupBaal = async (
+  baal: Baal,
+  config: DAOSettings,
+  adminConfig: [boolean, boolean],
+  shares: [string[], number[]],
+  loots: [string[], number[]],
+  baalSummoner: BaalSummoner
+) => {
+  const saltNonce = (Math.random() * 1000).toFixed(0);
+  const encodedInitParams = await getBaalParams(
+    baal,
+    config,
+    adminConfig,
+    shares,
+    loots
+  );
+  const tx = await baalSummoner.summonBaalAndSafe(
+    encodedInitParams.initParams,
+    encodedInitParams.initalizationActions,
+    saltNonce
+  );
+  return await getNewBaalAddresses(tx);
+};
+
 describe('CheckIn Shaman Initialize', function () {
   let baal: Baal;
   let lootSingleton: Loot;
@@ -262,29 +282,6 @@ describe('CheckIn Shaman Initialize', function () {
   const shares = 100;
   const sharesPaused = false;
   const lootPaused = false;
-
-  const setupBaal = async (
-    baal: Baal,
-    config: DAOSettings,
-    adminConfig: [boolean, boolean],
-    shares: [string[], number[]],
-    loots: [string[], number[]]
-  ) => {
-    const saltNonce = (Math.random() * 1000).toFixed(0);
-    const encodedInitParams = await getBaalParams(
-      baal,
-      config,
-      adminConfig,
-      shares,
-      loots
-    );
-    const tx = await baalSummoner.summonBaalAndSafe(
-      encodedInitParams.initParams,
-      encodedInitParams.initalizationActions,
-      saltNonce
-    );
-    return await getNewBaalAddresses(tx);
-  };
 
   this.beforeAll(async function () {
     LootFactory = await ethers.getContractFactory('Loot');
@@ -357,13 +354,14 @@ describe('CheckIn Shaman Initialize', function () {
       defaultDAOSettings,
       [sharesPaused, lootPaused],
       [
-        [summoner.address, applicant.address],
-        [shares, shares],
+        [summoner.address, applicant.address, s1.address],
+        [shares, shares, shares],
       ],
       [
-        [summoner.address, applicant.address],
-        [loot, loot],
-      ]
+        [summoner.address, applicant.address, s1.address],
+        [loot, loot, loot],
+      ],
+      baalSummoner
     );
 
     baal = BaalFactory.attach(addresses.baal) as Baal;
@@ -402,7 +400,7 @@ describe('CheckIn Shaman Initialize', function () {
     };
   });
 
-  describe('example', function () {
+  describe('CheckIn', function () {
     it('mint shares on claim', async function () {
       const checkInSummonArgs: CheckInInitArgs = {
         baalAddress: baal.address,
@@ -418,27 +416,26 @@ describe('CheckIn Shaman Initialize', function () {
 
       checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShaman;
       const daoMemberCheckIn = checkInShaman.connect(s1);
-      const proposalId = await setShamanProposal(
-        baal,
-        multisend,
-        checkInAddress,
-        2
-      );
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
 
       const s1SharesBefore = await sharesToken.balanceOf(s1.address);
+      console.log('s1SharesBefore', s1SharesBefore);
       const sharesTotalSupplyBefore = await sharesToken.totalSupply();
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
+      console.log('THREE_HOURS_WORKED', THREE_HOURS_WORKED);
 
       await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
 
       const s1SharesAfter = await sharesToken.balanceOf(s1.address);
+      console.log('s1SharesAfter', s1SharesAfter);
       const sharesTotalSupplyAfter = await sharesToken.totalSupply();
 
-      const AMT_MINTED = Number(
+      const AMT_MINTED = (
         BigInt(THREE_HOURS_WORKED) * BigInt(ONE_SHARE_PER_HOUR)
-      );
+      ).toString();
 
+      console.log('AMT_MINTED', AMT_MINTED);
       expect(s1SharesAfter.sub(s1SharesBefore)).to.equal(AMT_MINTED);
       expect(sharesTotalSupplyAfter.sub(sharesTotalSupplyBefore)).to.equal(
         AMT_MINTED
