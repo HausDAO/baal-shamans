@@ -103,7 +103,6 @@ const summonCheckInShaman = async function (
   );
   const result = await checkInSummonTx.wait();
 
-  console.log('shamanAddress', result.events?.[1]?.args?.shamanAddress);
   if (result.events?.[1]?.args?.shamanAddress) {
     const shamanAddress = result.events[1].args.shamanAddress;
     checkInShaman.attach(shamanAddress);
@@ -400,8 +399,8 @@ describe('CheckIn Shaman Initialize', function () {
     };
   });
 
-  describe('CheckIn', function () {
-    it('mint shares on claim', async function () {
+  describe('CheckIn Shaman Claim', function () {
+    it('Mints shares if initialized with shares', async function () {
       const checkInSummonArgs: CheckInInitArgs = {
         baalAddress: baal.address,
         sharesOrLoot: true,
@@ -419,28 +418,96 @@ describe('CheckIn Shaman Initialize', function () {
       await setShamanProposal(baal, multisend, checkInAddress, 2);
 
       const s1SharesBefore = await sharesToken.balanceOf(s1.address);
-      console.log('s1SharesBefore', s1SharesBefore);
+      const s1LootBefore = await lootToken.balanceOf(s1.address);
+      const lootTotalSupplyBefore = await lootToken.totalSupply();
+
       const sharesTotalSupplyBefore = await sharesToken.totalSupply();
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
-      console.log('THREE_HOURS_WORKED', THREE_HOURS_WORKED);
-
       await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
 
       const s1SharesAfter = await sharesToken.balanceOf(s1.address);
-      console.log('s1SharesAfter', s1SharesAfter);
+      const s1LootAfter = await lootToken.balanceOf(s1.address);
+
       const sharesTotalSupplyAfter = await sharesToken.totalSupply();
+      const lootTotalSupplyAfter = await lootToken.totalSupply();
 
       const AMT_MINTED = (
         BigInt(THREE_HOURS_WORKED) * BigInt(ONE_SHARE_PER_HOUR)
       ).toString();
 
-      console.log('AMT_MINTED', AMT_MINTED);
       expect(s1SharesAfter.sub(s1SharesBefore)).to.equal(AMT_MINTED);
       expect(sharesTotalSupplyAfter.sub(sharesTotalSupplyBefore)).to.equal(
         AMT_MINTED
       );
+      expect(s1LootBefore).to.equal(s1LootAfter);
+      expect(lootTotalSupplyBefore).to.equal(lootTotalSupplyAfter);
     });
-    it('mint loot on ...', async function () {});
+    it('mints loot if initialized with loot', async function () {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        sharesOrLoot: false,
+        sharesPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShaman;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const s1SharesBefore = await sharesToken.balanceOf(s1.address);
+      const s1LootBefore = await lootToken.balanceOf(s1.address);
+
+      const sharesTotalSupplyBefore = await sharesToken.totalSupply();
+      const lootTotalSupplyBefore = await lootToken.totalSupply();
+      const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
+
+      await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
+
+      const s1SharesAfter = await sharesToken.balanceOf(s1.address);
+      const s1LootAfter = await lootToken.balanceOf(s1.address);
+
+      const sharesTotalSupplyAfter = await sharesToken.totalSupply();
+      const lootTotalSupplyAfter = await lootToken.totalSupply();
+      const AMT_MINTED = (
+        BigInt(THREE_HOURS_WORKED) * BigInt(ONE_SHARE_PER_HOUR)
+      ).toString();
+
+      expect(s1LootAfter.sub(s1LootBefore)).to.equal(AMT_MINTED);
+      expect(lootTotalSupplyAfter.sub(lootTotalSupplyBefore)).to.equal(
+        AMT_MINTED
+      );
+      expect(s1SharesBefore).to.equal(s1SharesAfter);
+      expect(sharesTotalSupplyAfter).to.equal(sharesTotalSupplyBefore);
+    });
+    it('revert if a user tries a doublespend', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        sharesOrLoot: true,
+        sharesPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShaman;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
+      await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
+
+      await expect(
+        daoMemberCheckIn.claim(THREE_HOURS_WORKED)
+      ).to.be.revertedWith('Can only claim 1 time per interval');
+    });
   });
 });
