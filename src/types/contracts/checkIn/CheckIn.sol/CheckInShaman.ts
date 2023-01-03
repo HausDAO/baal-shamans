@@ -31,7 +31,7 @@ export interface CheckInShamanInterface extends utils.Interface {
   functions: {
     "baal()": FunctionFragment;
     "checkInInterval()": FunctionFragment;
-    "claim(uint16)": FunctionFragment;
+    "claim(uint32)": FunctionFragment;
     "init(address,bool,uint256,uint256)": FunctionFragment;
     "sharesOrLoot()": FunctionFragment;
     "sharesPerSecond()": FunctionFragment;
@@ -102,7 +102,7 @@ export interface CheckInShamanInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
 
   events: {
-    "Claim(address,uint256,uint256,uint16)": EventFragment;
+    "Claim(address,uint256,uint256,uint32)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
@@ -245,7 +245,7 @@ export interface CheckInShaman extends BaseContract {
   };
 
   filters: {
-    "Claim(address,uint256,uint256,uint16)"(
+    "Claim(address,uint256,uint256,uint32)"(
       account?: null,
       timestamp?: null,
       tokenAmountClaimed?: null,

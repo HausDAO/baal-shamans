@@ -25,7 +25,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         address account,
         uint256 timestamp,
         uint256 tokenAmountClaimed,
-        uint16 minutesWorked
+        uint32 minutesWorked
     );
 
     constructor() initializer {}
@@ -64,7 +64,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     }
 
     // can be called by any account to claim per checkInInterval tokens
-    function claim(uint16 _secondsWorked) public {
+    function claim(uint32 _secondsWorked) public {
         require(
             _secondsWorked < checkInInterval,
             "Claimable work period must be less than the check in interval"
@@ -88,7 +88,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         emit Claim(msg.sender, block.timestamp, amount, _secondsWorked);
     }
 
-    function calculate(uint16 _secondsWorked, uint256 _sharesPerSecond)
+    function calculate(uint32 _secondsWorked, uint256 _sharesPerSecond)
         internal
         pure
         returns (uint256 total)

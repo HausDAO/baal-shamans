@@ -533,5 +533,29 @@ describe('CheckIn Shaman Initialize', function () {
         'Members Only: Must have DAO tokens in order to claim through this shaman'
       );
     });
+    it('should revert if claimer tries to claim more than the interval', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        sharesOrLoot: true,
+        sharesPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShaman;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      await expect(daoMemberCheckIn.claim(SECONDS.DAY)).to.be.revertedWith(
+        'Claimable work period must be less than the check in interval'
+      );
+      await expect(daoMemberCheckIn.claim(SECONDS.DAY + 1)).to.be.revertedWith(
+        'Claimable work period must be less than the check in interval'
+      );
+    });
   });
 });
