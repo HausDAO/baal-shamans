@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { BaalVotes__factory } from "./BaalVotes__factory";
+export { DelegationEIP712Upgradeable__factory } from "./DelegationEIP712Upgradeable__factory";
 export { Poster__factory } from "./Poster__factory";

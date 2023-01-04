@@ -25,12 +25,12 @@ import type {
 
 export declare namespace IBaalToken {
   export type CheckpointStruct = {
-    fromTimeStamp: PromiseOrValue<BigNumberish>;
+    fromTimePoint: PromiseOrValue<BigNumberish>;
     votes: PromiseOrValue<BigNumberish>;
   };
 
   export type CheckpointStructOutput = [number, BigNumber] & {
-    fromTimeStamp: number;
+    fromTimePoint: number;
     votes: BigNumber;
   };
 }
@@ -40,8 +40,9 @@ export interface IBaalTokenInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "burn(address,uint256)": FunctionFragment;
     "getCheckpoint(address,uint256)": FunctionFragment;
-    "getCurrentVotes(address)": FunctionFragment;
-    "getPriorVotes(address,uint256)": FunctionFragment;
+    "getCurrentSnapshotId()": FunctionFragment;
+    "getPastVotes(address,uint256)": FunctionFragment;
+    "getVotes(address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "numCheckpoints(address)": FunctionFragment;
@@ -49,8 +50,10 @@ export interface IBaalTokenInterface extends utils.Interface {
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "setUp(string,string)": FunctionFragment;
+    "snapshot()": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
+    "totalSupplyAt(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unpause()": FunctionFragment;
   };
@@ -60,8 +63,9 @@ export interface IBaalTokenInterface extends utils.Interface {
       | "balanceOf"
       | "burn"
       | "getCheckpoint"
-      | "getCurrentVotes"
-      | "getPriorVotes"
+      | "getCurrentSnapshotId"
+      | "getPastVotes"
+      | "getVotes"
       | "mint"
       | "name"
       | "numCheckpoints"
@@ -69,8 +73,10 @@ export interface IBaalTokenInterface extends utils.Interface {
       | "pause"
       | "paused"
       | "setUp"
+      | "snapshot"
       | "symbol"
       | "totalSupply"
+      | "totalSupplyAt"
       | "transferOwnership"
       | "unpause"
   ): FunctionFragment;
@@ -88,12 +94,16 @@ export interface IBaalTokenInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCurrentVotes",
-    values: [PromiseOrValue<string>]
+    functionFragment: "getCurrentSnapshotId",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getPriorVotes",
+    functionFragment: "getPastVotes",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotes",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -111,10 +121,15 @@ export interface IBaalTokenInterface extends utils.Interface {
     functionFragment: "setUp",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "snapshot", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalSupplyAt",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -129,13 +144,14 @@ export interface IBaalTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCurrentVotes",
+    functionFragment: "getCurrentSnapshotId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPriorVotes",
+    functionFragment: "getPastVotes",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getVotes", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
@@ -146,9 +162,14 @@ export interface IBaalTokenInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setUp", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "snapshot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupplyAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -204,14 +225,18 @@ export interface IBaalToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[IBaalToken.CheckpointStructOutput]>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -242,9 +267,18 @@ export interface IBaalToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    snapshot(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -273,14 +307,18 @@ export interface IBaalToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IBaalToken.CheckpointStructOutput>;
 
-  getCurrentVotes(
+  getCurrentSnapshotId(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  getPastVotes(
     account: PromiseOrValue<string>,
+    timePoint: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getPriorVotes(
+  getVotes(
     account: PromiseOrValue<string>,
-    timeStamp: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -311,9 +349,18 @@ export interface IBaalToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  snapshot(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  totalSupplyAt(
+    snapshotId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -342,14 +389,16 @@ export interface IBaalToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IBaalToken.CheckpointStructOutput>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -378,9 +427,16 @@ export interface IBaalToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    snapshot(overrides?: CallOverrides): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -410,14 +466,18 @@ export interface IBaalToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -448,9 +508,18 @@ export interface IBaalToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    snapshot(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -480,14 +549,18 @@ export interface IBaalToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -518,9 +591,18 @@ export interface IBaalToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    snapshot(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

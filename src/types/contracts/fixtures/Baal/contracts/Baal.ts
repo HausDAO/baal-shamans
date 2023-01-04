@@ -580,6 +580,7 @@ export interface BaalInterface extends utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "ProcessProposal(uint256,bool,bool)": EventFragment;
     "Ragequit(address,address,uint256,uint256,address[])": EventFragment;
+    "SetTrustedForwarder(address)": EventFragment;
     "SetupComplete(bool,bool,uint32,uint32,uint256,uint256,uint256,uint256,string,string,uint256,uint256)": EventFragment;
     "ShamanSet(address,uint256)": EventFragment;
     "SharesPaused(bool)": EventFragment;
@@ -602,6 +603,7 @@ export interface BaalInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProcessProposal"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Ragequit"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetTrustedForwarder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetupComplete"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ShamanSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SharesPaused"): EventFragment;
@@ -736,6 +738,17 @@ export type RagequitEvent = TypedEvent<
 >;
 
 export type RagequitEventFilter = TypedEventFilter<RagequitEvent>;
+
+export interface SetTrustedForwarderEventObject {
+  forwarder: string;
+}
+export type SetTrustedForwarderEvent = TypedEvent<
+  [string],
+  SetTrustedForwarderEventObject
+>;
+
+export type SetTrustedForwarderEventFilter =
+  TypedEventFilter<SetTrustedForwarderEvent>;
 
 export interface SetupCompleteEventObject {
   lootPaused: boolean;
@@ -1016,6 +1029,7 @@ export interface Baal extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         string,
         string
       ] & {
@@ -1028,7 +1042,8 @@ export interface Baal extends BaseContract {
         baalGas: BigNumber;
         yesVotes: BigNumber;
         noVotes: BigNumber;
-        maxTotalSharesAndLootAtYesVote: BigNumber;
+        maxTotalSharesAndLootAtVote: BigNumber;
+        maxTotalSharesAtSponsor: BigNumber;
         sponsor: string;
         proposalDataHash: string;
       }
@@ -1299,6 +1314,7 @@ export interface Baal extends BaseContract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       string,
       string
     ] & {
@@ -1311,7 +1327,8 @@ export interface Baal extends BaseContract {
       baalGas: BigNumber;
       yesVotes: BigNumber;
       noVotes: BigNumber;
-      maxTotalSharesAndLootAtYesVote: BigNumber;
+      maxTotalSharesAndLootAtVote: BigNumber;
+      maxTotalSharesAtSponsor: BigNumber;
       sponsor: string;
       proposalDataHash: string;
     }
@@ -1576,6 +1593,7 @@ export interface Baal extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         string,
         string
       ] & {
@@ -1588,7 +1606,8 @@ export interface Baal extends BaseContract {
         baalGas: BigNumber;
         yesVotes: BigNumber;
         noVotes: BigNumber;
-        maxTotalSharesAndLootAtYesVote: BigNumber;
+        maxTotalSharesAndLootAtVote: BigNumber;
+        maxTotalSharesAtSponsor: BigNumber;
         sponsor: string;
         proposalDataHash: string;
       }
@@ -1815,6 +1834,13 @@ export interface Baal extends BaseContract {
       sharesToBurn?: PromiseOrValue<BigNumberish> | null,
       tokens?: null
     ): RagequitEventFilter;
+
+    "SetTrustedForwarder(address)"(
+      forwarder?: PromiseOrValue<string> | null
+    ): SetTrustedForwarderEventFilter;
+    SetTrustedForwarder(
+      forwarder?: PromiseOrValue<string> | null
+    ): SetTrustedForwarderEventFilter;
 
     "SetupComplete(bool,bool,uint32,uint32,uint256,uint256,uint256,uint256,string,string,uint256,uint256)"(
       lootPaused?: null,

@@ -72,8 +72,16 @@ export type { IRelayRecipient } from "./@opengsn/contracts/src/interfaces/IRelay
 export { IRelayRecipient__factory } from "./factories/@opengsn/contracts/src/interfaces/IRelayRecipient__factory";
 export type { OwnableUpgradeable } from "./@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable";
 export { OwnableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable__factory";
+export type { IERC1822ProxiableUpgradeable } from "./@openzeppelin/contracts-upgradeable/interfaces/draft-IERC1822Upgradeable.sol/IERC1822ProxiableUpgradeable";
+export { IERC1822ProxiableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/interfaces/draft-IERC1822Upgradeable.sol/IERC1822ProxiableUpgradeable__factory";
+export type { IBeaconUpgradeable } from "./@openzeppelin/contracts-upgradeable/proxy/beacon/IBeaconUpgradeable";
+export { IBeaconUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/beacon/IBeaconUpgradeable__factory";
+export type { ERC1967UpgradeUpgradeable } from "./@openzeppelin/contracts-upgradeable/proxy/ERC1967/ERC1967UpgradeUpgradeable";
+export { ERC1967UpgradeUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/ERC1967/ERC1967UpgradeUpgradeable__factory";
 export type { Initializable } from "./@openzeppelin/contracts-upgradeable/proxy/utils/Initializable";
 export { Initializable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable__factory";
+export type { UUPSUpgradeable } from "./@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable";
+export { UUPSUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable__factory";
 export type { PausableUpgradeable } from "./@openzeppelin/contracts-upgradeable/security/PausableUpgradeable";
 export { PausableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable__factory";
 export type { ReentrancyGuardUpgradeable } from "./@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable";
@@ -106,8 +114,6 @@ export type { ERC1967Upgrade } from "./@openzeppelin/contracts/proxy/ERC1967/ERC
 export { ERC1967Upgrade__factory } from "./factories/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade__factory";
 export type { Proxy } from "./@openzeppelin/contracts/proxy/Proxy";
 export { Proxy__factory } from "./factories/@openzeppelin/contracts/proxy/Proxy__factory";
-export type { UUPSUpgradeable } from "./@openzeppelin/contracts/proxy/utils/UUPSUpgradeable";
-export { UUPSUpgradeable__factory } from "./factories/@openzeppelin/contracts/proxy/utils/UUPSUpgradeable__factory";
 export type { ERC20 } from "./@openzeppelin/contracts/token/ERC20/ERC20";
 export { ERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
 export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata";
@@ -146,6 +152,8 @@ export type { TributeMinion } from "./contracts/fixtures/Baal/contracts/tools/Tr
 export { TributeMinion__factory } from "./factories/contracts/fixtures/Baal/contracts/tools/TributeMinion.sol/TributeMinion__factory";
 export type { BaalVotes } from "./contracts/fixtures/Baal/contracts/utils/BaalVotes";
 export { BaalVotes__factory } from "./factories/contracts/fixtures/Baal/contracts/utils/BaalVotes__factory";
+export type { DelegationEIP712Upgradeable } from "./contracts/fixtures/Baal/contracts/utils/DelegationEIP712Upgradeable";
+export { DelegationEIP712Upgradeable__factory } from "./factories/contracts/fixtures/Baal/contracts/utils/DelegationEIP712Upgradeable__factory";
 export type { Poster } from "./contracts/fixtures/Baal/contracts/utils/Poster";
 export { Poster__factory } from "./factories/contracts/fixtures/Baal/contracts/utils/Poster__factory";
 export type { IBAAL } from "./contracts/interfaces/IBAAL";
@@ -164,3 +172,9 @@ export type { SubscriptionShaman } from "./contracts/subscriptions/Subscriptions
 export { SubscriptionShaman__factory } from "./factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShaman__factory";
 export type { SubscriptionShamanSummoner } from "./contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner";
 export { SubscriptionShamanSummoner__factory } from "./factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner__factory";
+export type { DhSignalTCR } from "./contracts/tcr/SignalTCR.sol/DhSignalTCR";
+export { DhSignalTCR__factory } from "./factories/contracts/tcr/SignalTCR.sol/DhSignalTCR__factory";
+export type { DhSignalTCRSumoner } from "./contracts/tcr/SignalTCR.sol/DhSignalTCRSumoner";
+export { DhSignalTCRSumoner__factory } from "./factories/contracts/tcr/SignalTCR.sol/DhSignalTCRSumoner__factory";
+export type { IBAALTOKEN } from "./contracts/tcr/SignalTCR.sol/IBAALTOKEN";
+export { IBAALTOKEN__factory } from "./factories/contracts/tcr/SignalTCR.sol/IBAALTOKEN__factory";

@@ -38,6 +38,7 @@ export interface LootInterface extends utils.Interface {
     "burn(address,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "getCurrentSnapshotId()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
@@ -71,6 +72,7 @@ export interface LootInterface extends utils.Interface {
       | "burn"
       | "decimals"
       | "decreaseAllowance"
+      | "getCurrentSnapshotId"
       | "increaseAllowance"
       | "mint"
       | "name"
@@ -122,6 +124,10 @@ export interface LootInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentSnapshotId",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
@@ -214,6 +220,10 @@ export interface LootInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentSnapshotId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -445,6 +455,8 @@ export interface Loot extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -580,6 +592,8 @@ export interface Loot extends BaseContract {
     subtractedValue: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
 
   increaseAllowance(
     spender: PromiseOrValue<string>,
@@ -717,6 +731,8 @@ export interface Loot extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -763,7 +779,7 @@ export interface Loot extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    snapshot(overrides?: CallOverrides): Promise<void>;
+    snapshot(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -914,6 +930,8 @@ export interface Loot extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -1049,6 +1067,10 @@ export interface Loot extends BaseContract {
       spender: PromiseOrValue<string>,
       subtractedValue: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getCurrentSnapshotId(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     increaseAllowance(

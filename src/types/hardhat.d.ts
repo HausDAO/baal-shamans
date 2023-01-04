@@ -137,9 +137,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OwnableUpgradeable__factory>;
     getContractFactory(
+      name: "IERC1822ProxiableUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1822ProxiableUpgradeable__factory>;
+    getContractFactory(
+      name: "IBeaconUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBeaconUpgradeable__factory>;
+    getContractFactory(
+      name: "ERC1967UpgradeUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1967UpgradeUpgradeable__factory>;
+    getContractFactory(
       name: "Initializable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Initializable__factory>;
+    getContractFactory(
+      name: "UUPSUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UUPSUpgradeable__factory>;
     getContractFactory(
       name: "PausableUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -297,6 +313,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BaalVotes__factory>;
     getContractFactory(
+      name: "DelegationEIP712Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DelegationEIP712Upgradeable__factory>;
+    getContractFactory(
       name: "Poster",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Poster__factory>;
@@ -332,6 +352,22 @@ declare module "hardhat/types/runtime" {
       name: "SubscriptionShamanSummoner",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SubscriptionShamanSummoner__factory>;
+    getContractFactory(
+      name: "DhSignalTCR",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DhSignalTCR__factory>;
+    getContractFactory(
+      name: "DhSignalTCRSumoner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DhSignalTCRSumoner__factory>;
+    getContractFactory(
+      name: "IBAAL",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBAAL__factory>;
+    getContractFactory(
+      name: "IBAALTOKEN",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBAALTOKEN__factory>;
 
     getContractAt(
       name: "FallbackManager",
@@ -489,10 +525,30 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.OwnableUpgradeable>;
     getContractAt(
+      name: "IERC1822ProxiableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1822ProxiableUpgradeable>;
+    getContractAt(
+      name: "IBeaconUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBeaconUpgradeable>;
+    getContractAt(
+      name: "ERC1967UpgradeUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1967UpgradeUpgradeable>;
+    getContractAt(
       name: "Initializable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Initializable>;
+    getContractAt(
+      name: "UUPSUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UUPSUpgradeable>;
     getContractAt(
       name: "PausableUpgradeable",
       address: string,
@@ -689,6 +745,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.BaalVotes>;
     getContractAt(
+      name: "DelegationEIP712Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DelegationEIP712Upgradeable>;
+    getContractAt(
       name: "Poster",
       address: string,
       signer?: ethers.Signer
@@ -733,6 +794,26 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.SubscriptionShamanSummoner>;
+    getContractAt(
+      name: "DhSignalTCR",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DhSignalTCR>;
+    getContractAt(
+      name: "DhSignalTCRSumoner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DhSignalTCRSumoner>;
+    getContractAt(
+      name: "IBAAL",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBAAL>;
+    getContractAt(
+      name: "IBAALTOKEN",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBAALTOKEN>;
 
     // default types
     getContractFactory(

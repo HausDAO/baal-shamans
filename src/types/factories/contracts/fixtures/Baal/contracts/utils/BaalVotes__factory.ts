@@ -220,7 +220,7 @@ const _abi = [
     outputs: [
       {
         internalType: "uint32",
-        name: "fromTimeStamp",
+        name: "fromTimePoint",
         type: "uint32",
       },
       {
@@ -343,6 +343,25 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "delegationNonces",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "delegatee",
         type: "address",
       },
@@ -358,7 +377,7 @@ const _abi = [
         components: [
           {
             internalType: "uint32",
-            name: "fromTimeStamp",
+            name: "fromTimePoint",
             type: "uint32",
           },
           {
@@ -382,8 +401,13 @@ const _abi = [
         name: "account",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "timePoint",
+        type: "uint256",
+      },
     ],
-    name: "getCurrentVotes",
+    name: "getPastVotes",
     outputs: [
       {
         internalType: "uint256",
@@ -401,13 +425,8 @@ const _abi = [
         name: "account",
         type: "address",
       },
-      {
-        internalType: "uint256",
-        name: "timeStamp",
-        type: "uint256",
-      },
     ],
-    name: "getPriorVotes",
+    name: "getVotes",
     outputs: [
       {
         internalType: "uint256",
@@ -468,6 +487,19 @@ const _abi = [
       {
         internalType: "uint256",
         name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "now",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "timePoint",
         type: "uint256",
       },
     ],

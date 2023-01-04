@@ -30,12 +30,12 @@ import type {
 
 export declare namespace BaalVotes {
   export type CheckpointStruct = {
-    fromTimeStamp: PromiseOrValue<BigNumberish>;
+    fromTimePoint: PromiseOrValue<BigNumberish>;
     votes: PromiseOrValue<BigNumberish>;
   };
 
   export type CheckpointStructOutput = [number, BigNumber] & {
-    fromTimeStamp: number;
+    fromTimePoint: number;
     votes: BigNumber;
   };
 }
@@ -46,6 +46,7 @@ export interface SharesInterface extends utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "balanceOfAt(address,uint256)": FunctionFragment;
     "burn(address,uint256)": FunctionFragment;
     "checkpoints(address,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
@@ -53,13 +54,16 @@ export interface SharesInterface extends utils.Interface {
     "delegate(address)": FunctionFragment;
     "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "delegates(address)": FunctionFragment;
+    "delegationNonces(address)": FunctionFragment;
     "getCheckpoint(address,uint256)": FunctionFragment;
-    "getCurrentVotes(address)": FunctionFragment;
-    "getPriorVotes(address,uint256)": FunctionFragment;
+    "getCurrentSnapshotId()": FunctionFragment;
+    "getPastVotes(address,uint256)": FunctionFragment;
+    "getVotes(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
+    "now()": FunctionFragment;
     "numCheckpoints(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "pause()": FunctionFragment;
@@ -68,8 +72,10 @@ export interface SharesInterface extends utils.Interface {
     "proxiableUUID()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setUp(string,string)": FunctionFragment;
+    "snapshot()": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
+    "totalSupplyAt(uint256)": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -84,6 +90,7 @@ export interface SharesInterface extends utils.Interface {
       | "allowance"
       | "approve"
       | "balanceOf"
+      | "balanceOfAt"
       | "burn"
       | "checkpoints"
       | "decimals"
@@ -91,13 +98,16 @@ export interface SharesInterface extends utils.Interface {
       | "delegate"
       | "delegateBySig"
       | "delegates"
+      | "delegationNonces"
       | "getCheckpoint"
-      | "getCurrentVotes"
-      | "getPriorVotes"
+      | "getCurrentSnapshotId"
+      | "getPastVotes"
+      | "getVotes"
       | "increaseAllowance"
       | "mint"
       | "name"
       | "nonces"
+      | "now"
       | "numCheckpoints"
       | "owner"
       | "pause"
@@ -106,8 +116,10 @@ export interface SharesInterface extends utils.Interface {
       | "proxiableUUID"
       | "renounceOwnership"
       | "setUp"
+      | "snapshot"
       | "symbol"
       | "totalSupply"
+      | "totalSupplyAt"
       | "transfer"
       | "transferFrom"
       | "transferOwnership"
@@ -131,6 +143,10 @@ export interface SharesInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balanceOfAt",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "burn",
@@ -165,16 +181,24 @@ export interface SharesInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "delegationNonces",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getCheckpoint",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCurrentVotes",
-    values: [PromiseOrValue<string>]
+    functionFragment: "getCurrentSnapshotId",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getPriorVotes",
+    functionFragment: "getPastVotes",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotes",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
@@ -189,6 +213,7 @@ export interface SharesInterface extends utils.Interface {
     functionFragment: "nonces",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "now", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "numCheckpoints",
     values: [PromiseOrValue<string>]
@@ -220,10 +245,15 @@ export interface SharesInterface extends utils.Interface {
     functionFragment: "setUp",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "snapshot", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalSupplyAt",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "transfer",
@@ -258,6 +288,10 @@ export interface SharesInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "balanceOfAt",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "checkpoints",
@@ -275,17 +309,22 @@ export interface SharesInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "delegates", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "delegationNonces",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getCheckpoint",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCurrentVotes",
+    functionFragment: "getCurrentSnapshotId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPriorVotes",
+    functionFragment: "getPastVotes",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getVotes", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
@@ -293,6 +332,7 @@ export interface SharesInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "now", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "numCheckpoints",
     data: BytesLike
@@ -310,9 +350,14 @@ export interface SharesInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setUp", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "snapshot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupplyAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
@@ -340,6 +385,7 @@ export interface SharesInterface extends utils.Interface {
     "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
+    "Snapshot(uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "Upgraded(address)": EventFragment;
@@ -353,6 +399,7 @@ export interface SharesInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Snapshot"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Upgraded"): EventFragment;
@@ -442,6 +489,13 @@ export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
 
+export interface SnapshotEventObject {
+  id: BigNumber;
+}
+export type SnapshotEvent = TypedEvent<[BigNumber], SnapshotEventObject>;
+
+export type SnapshotEventFilter = TypedEventFilter<SnapshotEvent>;
+
 export interface TransferEventObject {
   from: string;
   to: string;
@@ -514,6 +568,12 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    balanceOfAt(
+      account: PromiseOrValue<string>,
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     burn(
       account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -525,7 +585,7 @@ export interface Shares extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [number, BigNumber] & { fromTimeStamp: number; votes: BigNumber }
+      [number, BigNumber] & { fromTimePoint: number; votes: BigNumber }
     >;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
@@ -556,20 +616,27 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    delegationNonces(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getCheckpoint(
       delegatee: PromiseOrValue<string>,
       nCheckpoints: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BaalVotes.CheckpointStructOutput]>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { votes: BigNumber }>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { votes: BigNumber }>;
 
@@ -591,6 +658,10 @@ export interface Shares extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    now(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { timePoint: BigNumber }>;
 
     numCheckpoints(
       arg0: PromiseOrValue<string>,
@@ -628,9 +699,18 @@ export interface Shares extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    snapshot(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     transfer(
       to: PromiseOrValue<string>,
@@ -685,6 +765,12 @@ export interface Shares extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  balanceOfAt(
+    account: PromiseOrValue<string>,
+    snapshotId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   burn(
     account: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
@@ -695,7 +781,7 @@ export interface Shares extends BaseContract {
     arg0: PromiseOrValue<string>,
     arg1: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<[number, BigNumber] & { fromTimeStamp: number; votes: BigNumber }>;
+  ): Promise<[number, BigNumber] & { fromTimePoint: number; votes: BigNumber }>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -725,20 +811,27 @@ export interface Shares extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  delegationNonces(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getCheckpoint(
     delegatee: PromiseOrValue<string>,
     nCheckpoints: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BaalVotes.CheckpointStructOutput>;
 
-  getCurrentVotes(
+  getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getPastVotes(
     account: PromiseOrValue<string>,
+    timePoint: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getPriorVotes(
+  getVotes(
     account: PromiseOrValue<string>,
-    timeStamp: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -760,6 +853,8 @@ export interface Shares extends BaseContract {
     owner: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  now(overrides?: CallOverrides): Promise<BigNumber>;
 
   numCheckpoints(
     arg0: PromiseOrValue<string>,
@@ -797,9 +892,18 @@ export interface Shares extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  snapshot(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  totalSupplyAt(
+    snapshotId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   transfer(
     to: PromiseOrValue<string>,
@@ -854,6 +958,12 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    balanceOfAt(
+      account: PromiseOrValue<string>,
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     burn(
       account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -865,7 +975,7 @@ export interface Shares extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [number, BigNumber] & { fromTimeStamp: number; votes: BigNumber }
+      [number, BigNumber] & { fromTimePoint: number; votes: BigNumber }
     >;
 
     decimals(overrides?: CallOverrides): Promise<number>;
@@ -896,20 +1006,27 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    delegationNonces(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getCheckpoint(
       delegatee: PromiseOrValue<string>,
       nCheckpoints: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BaalVotes.CheckpointStructOutput>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -931,6 +1048,8 @@ export interface Shares extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    now(overrides?: CallOverrides): Promise<BigNumber>;
 
     numCheckpoints(
       arg0: PromiseOrValue<string>,
@@ -964,9 +1083,16 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    snapshot(overrides?: CallOverrides): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     transfer(
       to: PromiseOrValue<string>,
@@ -1065,6 +1191,9 @@ export interface Shares extends BaseContract {
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
+    "Snapshot(uint256)"(id?: null): SnapshotEventFilter;
+    Snapshot(id?: null): SnapshotEventFilter;
+
     "Transfer(address,address,uint256)"(
       from?: PromiseOrValue<string> | null,
       to?: PromiseOrValue<string> | null,
@@ -1104,6 +1233,12 @@ export interface Shares extends BaseContract {
 
     balanceOf(
       account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    balanceOfAt(
+      account: PromiseOrValue<string>,
+      snapshotId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1147,20 +1282,27 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    delegationNonces(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getCheckpoint(
       delegatee: PromiseOrValue<string>,
       nCheckpoints: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCurrentVotes(
+    getCurrentSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPastVotes(
       account: PromiseOrValue<string>,
+      timePoint: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPriorVotes(
+    getVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1182,6 +1324,8 @@ export interface Shares extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    now(overrides?: CallOverrides): Promise<BigNumber>;
 
     numCheckpoints(
       arg0: PromiseOrValue<string>,
@@ -1219,9 +1363,18 @@ export interface Shares extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    snapshot(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     transfer(
       to: PromiseOrValue<string>,
@@ -1277,6 +1430,12 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    balanceOfAt(
+      account: PromiseOrValue<string>,
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     burn(
       account: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1317,20 +1476,29 @@ export interface Shares extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    delegationNonces(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getCheckpoint(
       delegatee: PromiseOrValue<string>,
       nCheckpoints: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCurrentVotes(
-      account: PromiseOrValue<string>,
+    getCurrentSnapshotId(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getPriorVotes(
+    getPastVotes(
       account: PromiseOrValue<string>,
-      timeStamp: PromiseOrValue<BigNumberish>,
+      timePoint: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVotes(
+      account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1352,6 +1520,8 @@ export interface Shares extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    now(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     numCheckpoints(
       arg0: PromiseOrValue<string>,
@@ -1389,9 +1559,18 @@ export interface Shares extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    snapshot(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalSupplyAt(
+      snapshotId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     transfer(
       to: PromiseOrValue<string>,

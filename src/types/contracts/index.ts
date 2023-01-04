@@ -15,3 +15,5 @@ import type * as simpleOnboarder from "./simpleOnboarder";
 export type { simpleOnboarder };
 import type * as subscriptions from "./subscriptions";
 export type { subscriptions };
+import type * as tcr from "./tcr";
+export type { tcr };
