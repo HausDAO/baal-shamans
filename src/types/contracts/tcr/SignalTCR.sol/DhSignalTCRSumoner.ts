@@ -49,7 +49,7 @@ export interface DhSignalTCRSumonerInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "SummonDaoStake(address,address,string)": EventFragment;
+    "SummonDaoStake(address,address,uint256,string)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "SummonDaoStake"): EventFragment;
@@ -58,10 +58,11 @@ export interface DhSignalTCRSumonerInterface extends utils.Interface {
 export interface SummonDaoStakeEventObject {
   signal: string;
   baal: string;
+  date: BigNumber;
   details: string;
 }
 export type SummonDaoStakeEvent = TypedEvent<
-  [string, string, string],
+  [string, string, BigNumber, string],
   SummonDaoStakeEventObject
 >;
 
@@ -122,14 +123,16 @@ export interface DhSignalTCRSumoner extends BaseContract {
   };
 
   filters: {
-    "SummonDaoStake(address,address,string)"(
+    "SummonDaoStake(address,address,uint256,string)"(
       signal?: PromiseOrValue<string> | null,
       baal?: PromiseOrValue<string> | null,
+      date?: null,
       details?: null
     ): SummonDaoStakeEventFilter;
     SummonDaoStake(
       signal?: PromiseOrValue<string> | null,
       baal?: PromiseOrValue<string> | null,
+      date?: null,
       details?: null
     ): SummonDaoStakeEventFilter;
   };

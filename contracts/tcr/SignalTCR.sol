@@ -34,6 +34,11 @@ error TOKENS_ALREADY_CLAIMED();
 /**
 @title DAO Signal Conviction Contract
 @notice Signal with a snapshot of current loot and shares on a MolochV3 DAO
+naive TCR implementation
+A dao should deploy and initialize this after taking a snapshot on shares/loot
+grant ids can map to a offchain db or onchain dhdb
+
+TODO: PLCR secret voting, add actions and zodiac module for execution
 */
 contract DhSignalTCR is Initializable {
     event VoteCasted(
@@ -237,6 +242,7 @@ contract DhSignalTCRSumoner {
     event SummonDaoStake(
         address indexed signal,
         address indexed baal,
+        uint256 date,
         string details
     );
 
@@ -257,7 +263,7 @@ contract DhSignalTCRSumoner {
 
         // set as module on baal avatar
 
-        emit SummonDaoStake(address(signal), address(baal), details);
+        emit SummonDaoStake(address(signal), address(baal), block.timestamp, details);
 
         return (address(signal));
     }
