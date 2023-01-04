@@ -55,6 +55,11 @@ contract DhSignalTCR is Initializable {
         uint48 grantId
     );
 
+    event ClaimTokens(
+        address indexed voter,
+        uint256 amount
+    );
+
     /// @notice dao staking token contract instance.
     IBAAL public baal;
     IBAALTOKEN public baalShares;
@@ -125,6 +130,7 @@ contract DhSignalTCR is Initializable {
         voterBalances[account].balance =
             baalShares.balanceOfAt(account, sharesSnapshotId) +
             baalLoot.balanceOfAt(account, lootSnapshotId);
+        emit ClaimTokens(account, voterBalances[account].balance);
         return voterBalances[account].balance;
     }
 
