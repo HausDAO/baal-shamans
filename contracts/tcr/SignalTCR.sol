@@ -36,7 +36,7 @@ error TOKENS_ALREADY_CLAIMED();
 @notice Signal with a snapshot of current loot and shares on a MolochV3 DAO
 naive TCR implementation
 A dao should deploy and initialize this after taking a snapshot on shares/loot
-grant ids can map to a offchain db or onchain dhdb
+choice ids can map to a offchain db or onchain dhdb
 
 TODO: PLCR secret voting, add actions and zodiac module for execution
 */
@@ -45,14 +45,14 @@ contract DhSignalTCR is Initializable {
         uint56 voteId,
         address indexed voter,
         uint152 amount,
-        uint48 grantId
+        uint48 choiceId
     );
 
     event TokensReleased(
         uint56 voteId,
         address indexed voter,
         uint152 amount,
-        uint48 grantId
+        uint48 choiceId
     );
 
     event ClaimTokens(
@@ -75,13 +75,13 @@ contract DhSignalTCR is Initializable {
         bool released;
         address voter;
         uint152 amount;
-        uint48 grantId;
+        uint48 choiceId;
         uint56 voteId;
     }
 
     /// @notice BatchVote struct.
     struct BatchVoteParam {
-        uint48 grantId;
+        uint48 choiceId;
         uint152 amount;
     }
 
@@ -108,6 +108,7 @@ contract DhSignalTCR is Initializable {
         // get current snapshot ids
         sharesSnapshotId = baalShares.getCurrentSnapshotId();
         lootSnapshotId = baalLoot.getCurrentSnapshotId();
+        // emit event with snapshot ids
     }
 
     /**
@@ -162,10 +163,10 @@ contract DhSignalTCR is Initializable {
 
     /**
     @dev Stake and get Voting rights.
-    @param _grantId grant id.
+    @param _choiceId choice id.
     @param _amount amount of tokens to lock.
     */
-    function _vote(uint48 _grantId, uint152 _amount) internal {
+    function _vote(uint48 _choiceId, uint152 _amount) internal {
         if (
             _amount == 0 ||
             voterBalances[msg.sender].balance == 0 ||
@@ -183,35 +184,35 @@ contract DhSignalTCR is Initializable {
                 voteId: voteId,
                 voter: msg.sender,
                 amount: _amount,
-                grantId: _grantId,
+                choiceId: _choiceId,
                 released: false
             })
         );
 
         voterToVoteIds[msg.sender].push(voteId);
 
-        // todo: index, maybe push grant id to dhdb
-        emit VoteCasted(voteId, msg.sender, _amount, _grantId);
+        // todo: index, maybe push choice id to dhdb
+        emit VoteCasted(voteId, msg.sender, _amount, _choiceId);
     }
 
     /**
     @dev Stake and get Voting rights in batch.
-    @param _batch array of struct to stake into multiple grants.
+    @param _batch array of struct to stake into multiple choices.
     */
     function vote(BatchVoteParam[] calldata _batch) external {
         for (uint256 i = 0; i < _batch.length; i++) {
-            _vote(_batch[i].grantId, _batch[i].amount);
+            _vote(_batch[i].choiceId, _batch[i].amount);
         }
     }
 
     /**
     @dev Sender claim and stake in batch
-    @param _batch array of struct to stake into multiple grants.
+    @param _batch array of struct to stake into multiple choices.
     */
     function claimAndVote(BatchVoteParam[] calldata _batch) external {
         claim(msg.sender);
         for (uint256 i = 0; i < _batch.length; i++) {
-            _vote(_batch[i].grantId, _batch[i].amount);
+            _vote(_batch[i].choiceId, _batch[i].amount);
         }
     }
 
@@ -236,7 +237,7 @@ contract DhSignalTCR is Initializable {
                 uint56(_voteIds[i]),
                 msg.sender,
                 votes[_voteIds[i]].amount,
-                votes[_voteIds[i]].grantId
+                votes[_voteIds[i]].choiceId
             );
         }
     }
@@ -260,14 +261,12 @@ contract DhSignalTCRSumoner {
         external
         returns (address)
     {
-        // proposals start time
-        // create snapshot (baal tokens shares/loot)
 
         DhSignalTCR signal = DhSignalTCR(Clones.clone(_template));
 
         signal.setUp(baal);
 
-        // set as module on baal avatar
+        // todo: set as module on baal avatar
 
         emit SummonDaoStake(address(signal), address(baal), block.timestamp, details);
 

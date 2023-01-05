@@ -552,13 +552,13 @@ describe("Signal TCR", function () {
 
       console.log(balance);
 
-      user1.vote([{grantId: "0x1234", amount: "100"}, {grantId: "0x3456", amount: "50"}])
+      user1.vote([{choiceId: "0x1234", amount: "100"}, {choiceId: "0x3456", amount: "50"}])
 
       const balance1 = await user1.voterBalances(summoner.address);
 
       console.log(balance1);
 
-      user1.vote([{grantId: "0x1234", amount: "10"}, {grantId: "0x3456", amount: "10"}])
+      user1.vote([{choiceId: "0x1234", amount: "10"}, {choiceId: "0x3456", amount: "10"}])
 
       const balance2 = await user1.voterBalances(summoner.address);
 

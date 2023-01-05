@@ -29,12 +29,12 @@ import type {
 
 export declare namespace DhSignalTCR {
   export type BatchVoteParamStruct = {
-    grantId: PromiseOrValue<BigNumberish>;
+    choiceId: PromiseOrValue<BigNumberish>;
     amount: PromiseOrValue<BigNumberish>;
   };
 
   export type BatchVoteParamStructOutput = [number, BigNumber] & {
-    grantId: number;
+    choiceId: number;
     amount: BigNumber;
   };
 
@@ -42,7 +42,7 @@ export declare namespace DhSignalTCR {
     released: PromiseOrValue<boolean>;
     voter: PromiseOrValue<string>;
     amount: PromiseOrValue<BigNumberish>;
-    grantId: PromiseOrValue<BigNumberish>;
+    choiceId: PromiseOrValue<BigNumberish>;
     voteId: PromiseOrValue<BigNumberish>;
   };
 
@@ -56,7 +56,7 @@ export declare namespace DhSignalTCR {
     released: boolean;
     voter: string;
     amount: BigNumber;
-    grantId: number;
+    choiceId: number;
     voteId: BigNumber;
   };
 }
@@ -205,15 +205,28 @@ export interface DhSignalTCRInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "votes", data: BytesLike): Result;
 
   events: {
+    "ClaimTokens(address,uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "TokensReleased(uint56,address,uint152,uint48)": EventFragment;
     "VoteCasted(uint56,address,uint152,uint48)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "ClaimTokens"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokensReleased"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VoteCasted"): EventFragment;
 }
+
+export interface ClaimTokensEventObject {
+  voter: string;
+  amount: BigNumber;
+}
+export type ClaimTokensEvent = TypedEvent<
+  [string, BigNumber],
+  ClaimTokensEventObject
+>;
+
+export type ClaimTokensEventFilter = TypedEventFilter<ClaimTokensEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -226,7 +239,7 @@ export interface TokensReleasedEventObject {
   voteId: BigNumber;
   voter: string;
   amount: BigNumber;
-  grantId: number;
+  choiceId: number;
 }
 export type TokensReleasedEvent = TypedEvent<
   [BigNumber, string, BigNumber, number],
@@ -239,7 +252,7 @@ export interface VoteCastedEventObject {
   voteId: BigNumber;
   voter: string;
   amount: BigNumber;
-  grantId: number;
+  choiceId: number;
 }
 export type VoteCastedEvent = TypedEvent<
   [BigNumber, string, BigNumber, number],
@@ -341,7 +354,7 @@ export interface DhSignalTCR extends BaseContract {
         released: boolean;
         voter: string;
         amount: BigNumber;
-        grantId: number;
+        choiceId: number;
         voteId: BigNumber;
       }
     >;
@@ -413,7 +426,7 @@ export interface DhSignalTCR extends BaseContract {
       released: boolean;
       voter: string;
       amount: BigNumber;
-      grantId: number;
+      choiceId: number;
       voteId: BigNumber;
     }
   >;
@@ -485,13 +498,22 @@ export interface DhSignalTCR extends BaseContract {
         released: boolean;
         voter: string;
         amount: BigNumber;
-        grantId: number;
+        choiceId: number;
         voteId: BigNumber;
       }
     >;
   };
 
   filters: {
+    "ClaimTokens(address,uint256)"(
+      voter?: PromiseOrValue<string> | null,
+      amount?: null
+    ): ClaimTokensEventFilter;
+    ClaimTokens(
+      voter?: PromiseOrValue<string> | null,
+      amount?: null
+    ): ClaimTokensEventFilter;
+
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
@@ -499,26 +521,26 @@ export interface DhSignalTCR extends BaseContract {
       voteId?: null,
       voter?: PromiseOrValue<string> | null,
       amount?: null,
-      grantId?: null
+      choiceId?: null
     ): TokensReleasedEventFilter;
     TokensReleased(
       voteId?: null,
       voter?: PromiseOrValue<string> | null,
       amount?: null,
-      grantId?: null
+      choiceId?: null
     ): TokensReleasedEventFilter;
 
     "VoteCasted(uint56,address,uint152,uint48)"(
       voteId?: null,
       voter?: PromiseOrValue<string> | null,
       amount?: null,
-      grantId?: null
+      choiceId?: null
     ): VoteCastedEventFilter;
     VoteCasted(
       voteId?: null,
       voter?: PromiseOrValue<string> | null,
       amount?: null,
-      grantId?: null
+      choiceId?: null
     ): VoteCastedEventFilter;
   };
 
