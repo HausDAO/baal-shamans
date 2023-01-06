@@ -2,6 +2,10 @@ import { ethers } from "hardhat";
 
 async function main() {
 
+  const [deployer] = await ethers.getSigners();
+	const address = await deployer.getAddress();
+	console.log('Account address:', address);
+
   const DhSignalTCR = await ethers.getContractFactory("DhSignalTCR");
   const dhSignalTCRsingleton = await DhSignalTCR.deploy();
 
@@ -9,7 +13,7 @@ async function main() {
 
   console.log(`DhSignalTCR deployed to ${dhSignalTCRsingleton.address}`);
 
-  const DhSignalTCRSummoner = await ethers.getContractFactory("DhSignalTCRFactory");
+  const DhSignalTCRSummoner = await ethers.getContractFactory("DhSignalTCRSumoner");
   const dhSignalTCRSummoner = await DhSignalTCRSummoner.deploy(dhSignalTCRsingleton.address);
 
   await dhSignalTCRSummoner.deployed();
