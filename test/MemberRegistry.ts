@@ -28,17 +28,16 @@ import { Shares } from "../src/types/contracts/fixtures/Baal/contracts/SharesERC
 
 use(solidity);
 
-const rgaddrs = [
+const rgaddrsUnsorted = [
     "0xced608aa29bb92185d9b6340adcbfa263dae075b",
     "0xd26a3f686d43f2a62ba9eae2ff77e9f516d945b9",
     "0x83ab8e31df35aa3281d630529c6f4bf5ac7f7abf",
+    "0x146cfed833cc926b16b0da9257e8a281c2add9f3",
+    "0x131fde92e4e88fa0746d9aba3dd4ec8aac1786a6",
+    "0x0f10f27fbe3622e7d4bdf1f141c6e50ed8845af6",
     "0x66b1de0f14a0ce971f7f248415063d44caf19398",
     "0x6b0b5a413286c98ef8bc6de3dc2541e42863c43b",
     "0x8f942eced007bd3976927b7958b50df126feecb5",
-    "0xbfc7cae0fad9b346270ae8fde24827d2d779ef07",
-    "0x1dac51886d5b461fccc784ad3813a5969dd42e6f",
-    "0x5a9e792143bf2708b4765c144451dca54f559a19",
-    "0xe68967c95f5a9bccfdd711a2cbc23ec958f147ef",
     "0x20efcd9b9ade8bd586f840c83a6d8dd8c1d6623b",
     "0xdf73fe01dfddb55a900b947c5726b2e54dddd95a",
     "0xa3564677fc4907a15c9a7eae1dbc1ae9ac57b8e1",
@@ -58,6 +57,13 @@ const rgaddrs = [
     "0xe775f37efe72d5a695b23e6ea7769f98cfbfaeb4",
     "0xe4cc688726dd0a1f8c464054ea1a1218d0cd9fc4",
     "0xda5b2cd0d0bb26e79fb3210233ddabdb7de131c9",
+    "0x865c2f85c9fea1c6ac7f53de07554d68cb92ed88",
+    "0x851fb899da7f80c211d9b8e5f231fb3bc9eca41a",
+    "0x81aaa9a7a8358cc2971b9b8de72acce6d7862bc8",
+    "0x818ff73a5d881c27a945be944973156c01141232",
+    "0x756ee8b8e898d497043c2320d9909f1dd5a7077f",
+    "0x710e2f9d630516d3afdd053de584f1fa421e84bc",
+    "0x70c58b28f5e39da89bee0e6e8623e3faf51f0ed1",
     "0xd8c1f97348da216c2ded7a3a92274f2ff5cf37b2",
     "0xd714dd60e22bbb1cbafd0e40de5cfa7bbdd3f3c8",
     "0xd3e9d60e4e4de615124d5239219f32946d10151d",
@@ -73,14 +79,11 @@ const rgaddrs = [
     "0xa5741cb7cfba784bcd07196d862558bc0c42a890",
     "0xa15ca74e65bf72730811abf95163e89ad9b9dff6",
     "0x9d06abcb6bf6ba8284255ce1d4cf965a04810336",
+    "0xbfc7cae0fad9b346270ae8fde24827d2d779ef07",
+    "0x1dac51886d5b461fccc784ad3813a5969dd42e6f",
+    "0x5a9e792143bf2708b4765c144451dca54f559a19",
+    "0xe68967c95f5a9bccfdd711a2cbc23ec958f147ef",
     "0x956d5740b3477f0b46dae26753b07ecbd8055908",
-    "0x865c2f85c9fea1c6ac7f53de07554d68cb92ed88",
-    "0x851fb899da7f80c211d9b8e5f231fb3bc9eca41a",
-    "0x81aaa9a7a8358cc2971b9b8de72acce6d7862bc8",
-    "0x818ff73a5d881c27a945be944973156c01141232",
-    "0x756ee8b8e898d497043c2320d9909f1dd5a7077f",
-    "0x710e2f9d630516d3afdd053de584f1fa421e84bc",
-    "0x70c58b28f5e39da89bee0e6e8623e3faf51f0ed1",
     "0x6dc43be93a8b5fd37dc16f24872babc6da5e5e3e",
     "0x6d97d65adff6771b31671443a6b9512104312d3d",
     "0x5f350bf5fee8e254d6077f8661e9c7b83a30364e",
@@ -100,19 +103,21 @@ const rgaddrs = [
     "0x1c0aa8ccd568d90d61659f060d1bfb1e6f855a20",
     "0x1a9cee6e1d21c3c09fb83a980ea54299f01920cd",
     "0x164ba6d1e6dd5f937908c34137d271ea3852c214",
-    "0x146cfed833cc926b16b0da9257e8a281c2add9f3",
-    "0x131fde92e4e88fa0746d9aba3dd4ec8aac1786a6",
-    "0x0f10f27fbe3622e7d4bdf1f141c6e50ed8845af6",
     "0x0eabffd8ce94ab2387fc44ba32642af0c58af433",
     "0x08913515803c69ee3c2b8bdff49cf53baa1694d6",
     "0x06535a967d958dea135f6b50056362947ae5754b",
     "0xb4c3a698874b625df289e97f718206701c1f4c0f",
     "0x60959ed8307ee2b0d04306f6b319aeee8864f1ee",
   ];
+  const rgsorted = rgaddrsUnsorted.slice()
+  rgsorted.sort((a, b) => {
+    return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
+  });
   
-  const rgshares = rgaddrs.map(() => ethers.utils.parseUnits("1.0", "ether"));
-  const rgmods = rgaddrs.map(() => 100);
-  const rgdates = rgaddrs.map(() => Math.floor(Date.now() / 1000) - 60 * 60 * 24);
+  const rgshares = rgaddrsUnsorted.map(() => ethers.utils.parseUnits("1.0", "ether"));
+  const rgmods = rgaddrsUnsorted.map(() => 100);
+  const rgdates = rgaddrsUnsorted.map(() => Math.floor(Date.now() / 1000) - 60 * 60 * 24);
+  
   
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
@@ -178,13 +183,13 @@ const newBatchMemberAndProcess = async function (
   multisend: MultiSend
 ) {
   const newDaoMember = await baal.interface.encodeFunctionData("mintShares", [
-    rgaddrs,
+    rgaddrsUnsorted,
     rgshares, //
   ]);
   const newRegistryMember = await memberRegistry.interface.encodeFunctionData(
     "batchNewMember",
     [
-      rgaddrs,
+      rgaddrsUnsorted,
       rgmods,
       rgdates, //
     ]
@@ -211,7 +216,7 @@ const newBatchMemberAndProcess = async function (
   await baal.submitVote(proposalId, true);
   await moveForwardPeriods(2);
   const tx = await baal.processProposal(proposalId, setMemberAction);
-  gasStats("batch member " + rgaddrs.length.toString(), tx);
+  gasStats("batch member " + rgaddrsUnsorted.length.toString(), tx);
   return proposalId;
 };
 
@@ -437,8 +442,7 @@ describe("Member registry", function () {
       shares,
       loots
     );
-    const tx = await baalSummoner.summonBaalAndSafe(
-      encodedInitParams.initParams,
+    const tx = await baalSummoner.summonBaalAndSafe(encodedInitParams.initParams,
       encodedInitParams.initalizationActions,
       saltNonce
     );
@@ -576,7 +580,8 @@ describe("Member registry", function () {
       expect(s1RegistryMember.secondsActive).to.be.greaterThan(0);
     });
     it("adds new member batch trigger", async function () {
-      // console.log(rgaddrs, rgshares, rgmods, rgdates);
+      // console.log(rgaddrsUnsorted, rgshares, rgmods, rgdates);
+      
 
       const proposalId = await newBatchMemberAndProcess(
         baal,
@@ -585,7 +590,16 @@ describe("Member registry", function () {
       );
       const count = await memberRegistry.count();
 
-      const tx = await memberRegistry.triggerCalcAndSplits();
+      // todo: example of getting unsorted list from contract
+
+      const memberList = await memberRegistry.getMembers();
+      // console.log(memberList);
+      const addrList = memberList.map((item: any) => item.account)
+      addrList.sort((a: any, b: any) => {
+        return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
+      });
+
+      const tx = await memberRegistry.triggerCalcAndSplits(addrList);
       gasStats("batch update secs", tx);
 
     });
@@ -630,7 +644,7 @@ describe("Member registry", function () {
       );
       const secsActive = s2RegistryMembera.secondsActive;
 
-      const tx = await memberRegistry.triggerCalcAndSplits();
+      const tx = await memberRegistry.triggerCalcAndSplits([s1.address, s2.address]);
       gasStats("update seconds", tx);
 
       const s2RegistryMemberb = await memberRegistry.members(
@@ -665,7 +679,7 @@ describe("Member registry", function () {
         s1RegistryId.sub(1)
       );
 
-      const tx = await memberRegistry.triggerCalcAndSplits();
+      const tx = await memberRegistry.triggerCalcAndSplits([s1.address, s2.address]);
       gasStats("trigger", tx);
 
       const s2RegistryMemberb = await memberRegistry.members(

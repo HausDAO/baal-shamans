@@ -6,6 +6,7 @@ import "@gnosis.pm/safe-contracts/contracts/proxies/GnosisSafeProxyFactory.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 import "./Baal.sol";
+import "hardhat/console.sol";
 
 contract BaalSummoner is ModuleProxyFactory {
     address payable public immutable template; // fixed template for baal using eip-1167 proxy pattern

@@ -31,22 +31,20 @@ export declare namespace MemberRegistry {
     secondsActive: PromiseOrValue<BigNumberish>;
     activityMultiplier: PromiseOrValue<BigNumberish>;
     startDate: PromiseOrValue<BigNumberish>;
-    periodSecondsActive: PromiseOrValue<BigNumberish>;
   };
 
-  export type MemberStructOutput = [string, number, number, number, number] & {
+  export type MemberStructOutput = [string, number, number, number] & {
     account: string;
     secondsActive: number;
     activityMultiplier: number;
     startDate: number;
-    periodSecondsActive: number;
   };
 }
 
 export interface MemberRegistryInterface extends utils.Interface {
   functions: {
     "count()": FunctionFragment;
-    "lastTrigger()": FunctionFragment;
+    "getMembers()": FunctionFragment;
     "lastUpdate()": FunctionFragment;
     "memberIdxs(address)": FunctionFragment;
     "members(uint256)": FunctionFragment;
@@ -55,7 +53,7 @@ export interface MemberRegistryInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "count"
-      | "lastTrigger"
+      | "getMembers"
       | "lastUpdate"
       | "memberIdxs"
       | "members"
@@ -63,7 +61,7 @@ export interface MemberRegistryInterface extends utils.Interface {
 
   encodeFunctionData(functionFragment: "count", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "lastTrigger",
+    functionFragment: "getMembers",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -80,46 +78,37 @@ export interface MemberRegistryInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "lastTrigger",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getMembers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lastUpdate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "memberIdxs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
 
   events: {
-    "SetMember(tuple)": EventFragment;
-    "Trigger(uint32)": EventFragment;
+    "SetMember(tuple,uint32)": EventFragment;
     "Update(uint32)": EventFragment;
     "UpdateMember(tuple)": EventFragment;
+    "UpdateMemberSeconds(tuple,uint32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "SetMember"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Trigger"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Update"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateMember"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateMemberSeconds"): EventFragment;
 }
 
 export interface SetMemberEventObject {
   member: MemberRegistry.MemberStructOutput;
+  initialSeconds: number;
 }
 export type SetMemberEvent = TypedEvent<
-  [MemberRegistry.MemberStructOutput],
+  [MemberRegistry.MemberStructOutput, number],
   SetMemberEventObject
 >;
 
 export type SetMemberEventFilter = TypedEventFilter<SetMemberEvent>;
 
-export interface TriggerEventObject {
-  arg0: number;
-}
-export type TriggerEvent = TypedEvent<[number], TriggerEventObject>;
-
-export type TriggerEventFilter = TypedEventFilter<TriggerEvent>;
-
 export interface UpdateEventObject {
-  arg0: number;
+  date: number;
 }
 export type UpdateEvent = TypedEvent<[number], UpdateEventObject>;
 
@@ -134,6 +123,18 @@ export type UpdateMemberEvent = TypedEvent<
 >;
 
 export type UpdateMemberEventFilter = TypedEventFilter<UpdateMemberEvent>;
+
+export interface UpdateMemberSecondsEventObject {
+  member: MemberRegistry.MemberStructOutput;
+  newSeconds: number;
+}
+export type UpdateMemberSecondsEvent = TypedEvent<
+  [MemberRegistry.MemberStructOutput, number],
+  UpdateMemberSecondsEventObject
+>;
+
+export type UpdateMemberSecondsEventFilter =
+  TypedEventFilter<UpdateMemberSecondsEvent>;
 
 export interface MemberRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -164,7 +165,9 @@ export interface MemberRegistry extends BaseContract {
   functions: {
     count(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<[number]>;
+    getMembers(
+      overrides?: CallOverrides
+    ): Promise<[MemberRegistry.MemberStructOutput[]]>;
 
     lastUpdate(overrides?: CallOverrides): Promise<[number]>;
 
@@ -177,19 +180,20 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number, number, number] & {
+      [string, number, number, number] & {
         account: string;
         secondsActive: number;
         activityMultiplier: number;
         startDate: number;
-        periodSecondsActive: number;
       }
     >;
   };
 
   count(overrides?: CallOverrides): Promise<BigNumber>;
 
-  lastTrigger(overrides?: CallOverrides): Promise<number>;
+  getMembers(
+    overrides?: CallOverrides
+  ): Promise<MemberRegistry.MemberStructOutput[]>;
 
   lastUpdate(overrides?: CallOverrides): Promise<number>;
 
@@ -202,19 +206,20 @@ export interface MemberRegistry extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, number, number, number, number] & {
+    [string, number, number, number] & {
       account: string;
       secondsActive: number;
       activityMultiplier: number;
       startDate: number;
-      periodSecondsActive: number;
     }
   >;
 
   callStatic: {
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<number>;
+    getMembers(
+      overrides?: CallOverrides
+    ): Promise<MemberRegistry.MemberStructOutput[]>;
 
     lastUpdate(overrides?: CallOverrides): Promise<number>;
 
@@ -227,34 +232,42 @@ export interface MemberRegistry extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, number, number, number, number] & {
+      [string, number, number, number] & {
         account: string;
         secondsActive: number;
         activityMultiplier: number;
         startDate: number;
-        periodSecondsActive: number;
       }
     >;
   };
 
   filters: {
-    "SetMember(tuple)"(member?: null): SetMemberEventFilter;
-    SetMember(member?: null): SetMemberEventFilter;
+    "SetMember(tuple,uint32)"(
+      member?: null,
+      initialSeconds?: null
+    ): SetMemberEventFilter;
+    SetMember(member?: null, initialSeconds?: null): SetMemberEventFilter;
 
-    "Trigger(uint32)"(arg0?: null): TriggerEventFilter;
-    Trigger(arg0?: null): TriggerEventFilter;
-
-    "Update(uint32)"(arg0?: null): UpdateEventFilter;
-    Update(arg0?: null): UpdateEventFilter;
+    "Update(uint32)"(date?: null): UpdateEventFilter;
+    Update(date?: null): UpdateEventFilter;
 
     "UpdateMember(tuple)"(member?: null): UpdateMemberEventFilter;
     UpdateMember(member?: null): UpdateMemberEventFilter;
+
+    "UpdateMemberSeconds(tuple,uint32)"(
+      member?: null,
+      newSeconds?: null
+    ): UpdateMemberSecondsEventFilter;
+    UpdateMemberSeconds(
+      member?: null,
+      newSeconds?: null
+    ): UpdateMemberSecondsEventFilter;
   };
 
   estimateGas: {
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<BigNumber>;
+    getMembers(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -272,7 +285,7 @@ export interface MemberRegistry extends BaseContract {
   populateTransaction: {
     count(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    lastTrigger(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getMembers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     lastUpdate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

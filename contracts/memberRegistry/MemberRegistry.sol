@@ -7,29 +7,25 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Register
 abstract contract MemberRegistry {
-
     struct Member {
         address account;
         uint32 secondsActive;
         uint32 activityMultiplier;
         uint32 startDate;
-        uint32 periodSecondsActive;
     }
 
     // store when a update happens
     uint32 public lastUpdate;
-    uint32 public lastTrigger;
     // iterable
     Member[] public members;
     uint256 public count = 1;
     mapping(address => uint256) public memberIdxs;
-    // mapping(address => uint256) public start;
 
     // EVENTS
-    event SetMember(Member member);
+    event SetMember(Member member, uint32 initialSeconds);
+    event UpdateMemberSeconds(Member member, uint32 newSeconds);
     event UpdateMember(Member member);
-    event Update(uint32);
-    event Trigger(uint32);
+    event Update(uint32 date);
 
     // REGISTER MODIFIERS
 
@@ -42,16 +38,10 @@ abstract contract MemberRegistry {
         require(memberIdxs[_member] == 0, "already registered");
         uint32 secsActive = uint32(block.timestamp) - _startDate;
         members.push(
-            Member(
-                _member,
-                secsActive,
-                _activityMultiplier,
-                _startDate,
-                secsActive
-            )
+            Member(_member, secsActive, _activityMultiplier, _startDate)
         );
         memberIdxs[_member] = count;
-        emit SetMember(members[count - 1]); // index is minus 1 for 0 index array
+        emit SetMember(members[count - 1], secsActive); // index is minus 1 for 0 index array
         count += 1;
     }
 
@@ -66,24 +56,24 @@ abstract contract MemberRegistry {
         emit UpdateMember(members[memberIdxs[_member] - 1]);
     }
 
-    //todo: delete member?
-
-    // REGISTER ACTIONS
-
     // add seconds active to member from last update
     function updateSecondsActive() internal virtual {
         // cache this because it is the same for all members
-        uint32 newSeconds = (uint32(block.timestamp) - lastUpdate);
+        uint32 currentUpdate = uint32(block.timestamp);
+        uint32 newSeconds = (currentUpdate - lastUpdate);
         // update struct with total seconds active and seconds in last claim
         for (uint256 i = 0; i < members.length; i++) {
             Member memory _member = members[i];
             // multiple by modifier and divide by 100 to get %
-            uint32 newSecondsActive = (newSeconds * _member.activityMultiplier) / 100;
+            uint32 newSecondsActive = (newSeconds *
+                _member.activityMultiplier) / 100;
             _member.secondsActive += newSecondsActive;
-            _member.periodSecondsActive = newSecondsActive;
+            emit UpdateMemberSeconds(_member, newSecondsActive);
         }
+        emit Update(currentUpdate);
+    } 
 
-        emit Update(uint32(block.timestamp));
+    function getMembers() public view returns(Member[] memory) {
+        return members;
     }
-
 }

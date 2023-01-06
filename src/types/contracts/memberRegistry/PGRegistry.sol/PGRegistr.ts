@@ -43,7 +43,7 @@ export declare namespace MemberRegistry {
   };
 }
 
-export interface PGRegistryInterface extends utils.Interface {
+export interface PGRegistrInterface extends utils.Interface {
   functions: {
     "PERCENTAGE_SCALE()": FunctionFragment;
     "acceptControl(address)": FunctionFragment;
@@ -51,7 +51,6 @@ export interface PGRegistryInterface extends utils.Interface {
     "batchUpdateMember(address[],uint32[])": FunctionFragment;
     "cancelControlTransfer(address)": FunctionFragment;
     "count()": FunctionFragment;
-    "getMembers()": FunctionFragment;
     "lastUpdate()": FunctionFragment;
     "memberIdxs(address)": FunctionFragment;
     "members(uint256)": FunctionFragment;
@@ -74,7 +73,6 @@ export interface PGRegistryInterface extends utils.Interface {
       | "batchUpdateMember"
       | "cancelControlTransfer"
       | "count"
-      | "getMembers"
       | "lastUpdate"
       | "memberIdxs"
       | "members"
@@ -114,10 +112,6 @@ export interface PGRegistryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "count", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getMembers",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "lastUpdate",
     values?: undefined
@@ -186,7 +180,6 @@ export interface PGRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getMembers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lastUpdate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "memberIdxs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
@@ -285,12 +278,12 @@ export type UpdateMemberSecondsEvent = TypedEvent<
 export type UpdateMemberSecondsEventFilter =
   TypedEventFilter<UpdateMemberSecondsEvent>;
 
-export interface PGRegistry extends BaseContract {
+export interface PGRegistr extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PGRegistryInterface;
+  interface: PGRegistrInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -338,10 +331,6 @@ export interface PGRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
 
     count(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getMembers(
-      overrides?: CallOverrides
-    ): Promise<[MemberRegistry.MemberStructOutput[]]>;
 
     lastUpdate(overrides?: CallOverrides): Promise<[number]>;
 
@@ -391,7 +380,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
 
     triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
+      sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -428,10 +417,6 @@ export interface PGRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   count(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getMembers(
-    overrides?: CallOverrides
-  ): Promise<MemberRegistry.MemberStructOutput[]>;
 
   lastUpdate(overrides?: CallOverrides): Promise<number>;
 
@@ -481,7 +466,7 @@ export interface PGRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   triggerCalcAndSplits(
-    _sortedList: PromiseOrValue<string>[],
+    sortedList: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -518,10 +503,6 @@ export interface PGRegistry extends BaseContract {
     ): Promise<void>;
 
     count(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMembers(
-      overrides?: CallOverrides
-    ): Promise<MemberRegistry.MemberStructOutput[]>;
 
     lastUpdate(overrides?: CallOverrides): Promise<number>;
 
@@ -569,7 +550,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<void>;
 
     triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
+      sortedList: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -640,8 +621,6 @@ export interface PGRegistry extends BaseContract {
 
     count(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getMembers(overrides?: CallOverrides): Promise<BigNumber>;
-
     lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
 
     memberIdxs(
@@ -683,7 +662,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<BigNumber>;
 
     triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
+      sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -721,8 +700,6 @@ export interface PGRegistry extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     count(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getMembers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     lastUpdate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -765,7 +742,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
+      sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -44,7 +44,6 @@ contract PGRegistry is MemberRegistry, Ownable {
     }
     mapping(address => uint256) private sortHelper;
 
-
     constructor(address _splitsMain, address _split) {
         splitsMain = ISPLITS(_splitsMain);
         lastUpdate = uint32(block.timestamp);
@@ -86,18 +85,39 @@ contract PGRegistry is MemberRegistry, Ownable {
         }
     }
 
-    function triggerCalcAndSplits() public {
+    // takes a sorted (offchain) list of addresses from the member array
+    // verifys the address list is sorted, has no dups, and is valid
+    // gets the total seconds from all members square rooted for % calc
+    // set up arrays and parameters for 0xsplits contract call
+    //  addresses sorted, only non zero allocations
+    //  keep track of running total of allocations because it must equal PERCENTAGE_SCALE
+    // send update to 0xsplits
+    // update seconds active on all members (should this happen before or after)
+    function triggerCalcAndSplits(address[] memory _sortedList) public {
         uint256 nonZeroCount;
         uint256 total;
-        // get the total of seconds in the last period
+        address previous;
+
+        // verify list is members and sorted
+        require(_sortedList.length == members.length, "invalid list");
+        for (uint256 i = 0; i < _sortedList.length; i++) {
+            address listAddr = _sortedList[i];
+            require(
+                memberIdxs[listAddr] > 0 && previous < listAddr,
+                "account not a member or not sorted"
+            );
+            previous = listAddr;
+        }
+
+        // get the total seconds in the last period
+        // ignore inactive members
         for (uint256 i = 0; i < members.length; i++) {
-            if (members[i].periodSecondsActive > 0) {
-                UD60x18 udActiveSeconds = ud(members[i].periodSecondsActive);
+            if (members[i].activityMultiplier > 0) {
+                UD60x18 udActiveSeconds = ud(members[i].secondsActive);
                 total += unwrap(udActiveSeconds.sqrt());
                 nonZeroCount++;
             }
         }
-        console.log("nonZeroCount", nonZeroCount);
 
         // define variables for split params
         address[] memory _receivers = new address[](nonZeroCount);
@@ -105,15 +125,21 @@ contract PGRegistry is MemberRegistry, Ownable {
         uint32 _distributorsFee = 0;
 
         uint32 runningTotal;
-        // fill arrays
-        for (uint256 i = 0; i < members.length; i++) {
-            Member memory _member = members[i];
-            if (members[i].periodSecondsActive > 0) {
-                UD60x18 udActiveSeconds = ud(_member.periodSecondsActive);
-                _receivers[i] = members[i].account;
-                _percentAllocations[i] = 
-                    uint32(unwrap(udActiveSeconds.sqrt().mul(ud(PERCENTAGE_SCALE)).div(ud(total))));
-                
+        // fill arrays with sorted list
+        for (uint256 i = 0; i < _sortedList.length; i++) {
+            uint256 memberIdx = memberIdxs[_sortedList[i]];
+            Member memory _member = members[memberIdx - 1];
+            if (_member.activityMultiplier > 0) {
+                _receivers[i] = _member.account;
+                _percentAllocations[i] = uint32(
+                    unwrap(
+                        ud(_member.secondsActive)
+                            .sqrt()
+                            .mul(ud(PERCENTAGE_SCALE))
+                            .div(ud(total))
+                    )
+                );
+
                 runningTotal += _percentAllocations[i];
             }
         }
@@ -124,8 +150,13 @@ contract PGRegistry is MemberRegistry, Ownable {
         }
 
         // run split
-        // todo: mock
-        // splitsMain.updateSplit(split, _receivers, _percentAllocations, _distributorsFee);
+        // todo: mock and uncomment
+        // splitsMain.updateSplit(
+        //     split,
+        //     _receivers,
+        //     _percentAllocations,
+        //     _distributorsFee
+        // );
         // update member total seconds and seconds in last period
         updateSecondsActive();
     }

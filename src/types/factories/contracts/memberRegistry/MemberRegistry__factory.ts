@@ -35,16 +35,17 @@ const _abi = [
             name: "startDate",
             type: "uint32",
           },
-          {
-            internalType: "uint32",
-            name: "periodSecondsActive",
-            type: "uint32",
-          },
         ],
         indexed: false,
         internalType: "struct MemberRegistry.Member",
         name: "member",
         type: "tuple",
+      },
+      {
+        indexed: false,
+        internalType: "uint32",
+        name: "initialSeconds",
+        type: "uint32",
       },
     ],
     name: "SetMember",
@@ -56,20 +57,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint32",
-        name: "",
-        type: "uint32",
-      },
-    ],
-    name: "Trigger",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint32",
-        name: "",
+        name: "date",
         type: "uint32",
       },
     ],
@@ -101,11 +89,6 @@ const _abi = [
             name: "startDate",
             type: "uint32",
           },
-          {
-            internalType: "uint32",
-            name: "periodSecondsActive",
-            type: "uint32",
-          },
         ],
         indexed: false,
         internalType: "struct MemberRegistry.Member",
@@ -114,6 +97,47 @@ const _abi = [
       },
     ],
     name: "UpdateMember",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "account",
+            type: "address",
+          },
+          {
+            internalType: "uint32",
+            name: "secondsActive",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "activityMultiplier",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "startDate",
+            type: "uint32",
+          },
+        ],
+        indexed: false,
+        internalType: "struct MemberRegistry.Member",
+        name: "member",
+        type: "tuple",
+      },
+      {
+        indexed: false,
+        internalType: "uint32",
+        name: "newSeconds",
+        type: "uint32",
+      },
+    ],
+    name: "UpdateMemberSeconds",
     type: "event",
   },
   {
@@ -131,12 +155,34 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "lastTrigger",
+    name: "getMembers",
     outputs: [
       {
-        internalType: "uint32",
+        components: [
+          {
+            internalType: "address",
+            name: "account",
+            type: "address",
+          },
+          {
+            internalType: "uint32",
+            name: "secondsActive",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "activityMultiplier",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "startDate",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct MemberRegistry.Member[]",
         name: "",
-        type: "uint32",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",
@@ -202,11 +248,6 @@ const _abi = [
       {
         internalType: "uint32",
         name: "startDate",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "periodSecondsActive",
         type: "uint32",
       },
     ],
