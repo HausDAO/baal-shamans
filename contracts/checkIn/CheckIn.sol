@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "../interfaces/IBAAL.sol";
-import "../fixtures/Baal/contracts/utils/Poster.sol";
 
 // Made for use with Baal(Molochv3)
 // Example use of Manager shamans
@@ -15,7 +14,6 @@ import "../fixtures/Baal/contracts/utils/Poster.sol";
 // this shaman must be set as a manager role in the dao
 contract CheckInShaman is ReentrancyGuard, Initializable {
     IBAAL public baal;
-    Poster public poster;
     IERC20 public token;
 
     mapping(address => uint256) public timeLedger;
@@ -37,12 +35,11 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         address _baal,
         bool _sharesOrLoot,
         uint256 _sharesPerSecond,
-        uint256 _checkInInterval,
-        address _poster
+        uint256 _checkInInterval
     ) external initializer {
         baal = IBAAL(_baal);
         sharesOrLoot = _sharesOrLoot;
-        poster = Poster(_poster);
+
         // get shares or loot token address from dao based on 'shares' flag
         if (sharesOrLoot) {
             token = IERC20(baal.sharesToken());
@@ -89,7 +86,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         uint256 amount = calculate(_secondsWorked, sharesPerSecond);
         _mintTokens(msg.sender, amount);
         timeLedger[msg.sender] = block.timestamp;
-        poster.post(_metadata, "daohaus.member.database");
+
         emit Claim(
             msg.sender,
             block.timestamp,
@@ -127,8 +124,7 @@ contract CheckInSummoner {
         address _baal,
         bool _sharesOrLoot,
         uint256 _sharesPerSecond,
-        uint256 _checkInInterval,
-        address _poster
+        uint256 _checkInInterval
     ) public returns (address) {
         CheckInShaman checkInShaman = CheckInShaman(
             payable(Clones.clone(template))
@@ -137,8 +133,7 @@ contract CheckInSummoner {
             _baal,
             _sharesOrLoot,
             _sharesPerSecond,
-            _checkInInterval,
-            _poster
+            _checkInInterval
         );
 
         emit CheckInSummonComplete(

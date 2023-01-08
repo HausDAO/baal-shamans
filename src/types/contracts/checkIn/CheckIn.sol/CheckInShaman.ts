@@ -31,7 +31,7 @@ export interface CheckInShamanInterface extends utils.Interface {
   functions: {
     "baal()": FunctionFragment;
     "checkInInterval()": FunctionFragment;
-    "claim(uint32)": FunctionFragment;
+    "claim(uint32,string)": FunctionFragment;
     "init(address,bool,uint256,uint256)": FunctionFragment;
     "sharesOrLoot()": FunctionFragment;
     "sharesPerSecond()": FunctionFragment;
@@ -58,7 +58,7 @@ export interface CheckInShamanInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "claim",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "init",
@@ -102,7 +102,7 @@ export interface CheckInShamanInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
 
   events: {
-    "Claim(address,uint256,uint256,uint32)": EventFragment;
+    "Claim(address,uint256,uint256,uint32,string)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
@@ -114,10 +114,11 @@ export interface ClaimEventObject {
   account: string;
   timestamp: BigNumber;
   tokenAmountClaimed: BigNumber;
-  minutesWorked: number;
+  secondsWorked: number;
+  metadata: string;
 }
 export type ClaimEvent = TypedEvent<
-  [string, BigNumber, BigNumber, number],
+  [string, BigNumber, BigNumber, number, string],
   ClaimEventObject
 >;
 
@@ -163,6 +164,7 @@ export interface CheckInShaman extends BaseContract {
 
     claim(
       _secondsWorked: PromiseOrValue<BigNumberish>,
+      _metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -192,6 +194,7 @@ export interface CheckInShaman extends BaseContract {
 
   claim(
     _secondsWorked: PromiseOrValue<BigNumberish>,
+    _metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -221,6 +224,7 @@ export interface CheckInShaman extends BaseContract {
 
     claim(
       _secondsWorked: PromiseOrValue<BigNumberish>,
+      _metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -245,17 +249,19 @@ export interface CheckInShaman extends BaseContract {
   };
 
   filters: {
-    "Claim(address,uint256,uint256,uint32)"(
+    "Claim(address,uint256,uint256,uint32,string)"(
       account?: null,
       timestamp?: null,
       tokenAmountClaimed?: null,
-      minutesWorked?: null
+      secondsWorked?: null,
+      metadata?: null
     ): ClaimEventFilter;
     Claim(
       account?: null,
       timestamp?: null,
       tokenAmountClaimed?: null,
-      minutesWorked?: null
+      secondsWorked?: null,
+      metadata?: null
     ): ClaimEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
@@ -269,6 +275,7 @@ export interface CheckInShaman extends BaseContract {
 
     claim(
       _secondsWorked: PromiseOrValue<BigNumberish>,
+      _metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -299,6 +306,7 @@ export interface CheckInShaman extends BaseContract {
 
     claim(
       _secondsWorked: PromiseOrValue<BigNumberish>,
+      _metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

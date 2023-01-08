@@ -35,6 +35,16 @@ const SECONDS = {
 };
 // BASE UNITS WEI PER SECOND
 
+const METADATA = JSON.stringify({
+  morale:
+    'The endless struggle for survival is a constant reminder of the fragility of life.',
+  workDescription:
+    'Today, I built a new staking contract for the DAO. I also worked on the CheckIn contract.',
+  obstacles:
+    'I had to figure out how to use the Safe contracts to build a transaction for the DAO to execute.',
+  future:
+    'I will continue to work on the CheckIn contract and the DAO staking contract.',
+});
 const ONE_SHARE_PER_HOUR = 277777777777778;
 
 async function blockTime() {
@@ -424,7 +434,7 @@ describe('CheckIn Shaman Initialize', function () {
       const sharesTotalSupplyBefore = await sharesToken.totalSupply();
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
-      await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
+      await daoMemberCheckIn.claim(THREE_HOURS_WORKED, '');
 
       const s1SharesAfter = await sharesToken.balanceOf(s1.address);
       const s1LootAfter = await lootToken.balanceOf(s1.address);
@@ -467,7 +477,7 @@ describe('CheckIn Shaman Initialize', function () {
       const lootTotalSupplyBefore = await lootToken.totalSupply();
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
 
-      await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
+      await daoMemberCheckIn.claim(THREE_HOURS_WORKED, METADATA);
 
       const s1SharesAfter = await sharesToken.balanceOf(s1.address);
       const s1LootAfter = await lootToken.balanceOf(s1.address);
@@ -503,10 +513,10 @@ describe('CheckIn Shaman Initialize', function () {
       await setShamanProposal(baal, multisend, checkInAddress, 2);
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
-      await daoMemberCheckIn.claim(THREE_HOURS_WORKED);
+      await daoMemberCheckIn.claim(THREE_HOURS_WORKED, METADATA);
 
       await expect(
-        daoMemberCheckIn.claim(THREE_HOURS_WORKED)
+        daoMemberCheckIn.claim(THREE_HOURS_WORKED, METADATA)
       ).to.be.revertedWith('Can only claim 1 time per interval');
     });
     it('should revert if claimer is not a member', async () => {
@@ -528,7 +538,7 @@ describe('CheckIn Shaman Initialize', function () {
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
       await expect(
-        daoMemberCheckIn.claim(THREE_HOURS_WORKED)
+        daoMemberCheckIn.claim(THREE_HOURS_WORKED, METADATA)
       ).to.be.revertedWith(
         'Members Only: Must have DAO tokens in order to claim through this shaman'
       );
@@ -550,10 +560,14 @@ describe('CheckIn Shaman Initialize', function () {
       const daoMemberCheckIn = checkInShaman.connect(s1);
       await setShamanProposal(baal, multisend, checkInAddress, 2);
 
-      await expect(daoMemberCheckIn.claim(SECONDS.DAY)).to.be.revertedWith(
+      await expect(
+        daoMemberCheckIn.claim(SECONDS.DAY, METADATA)
+      ).to.be.revertedWith(
         'Claimable work period must be less than the check in interval'
       );
-      await expect(daoMemberCheckIn.claim(SECONDS.DAY + 1)).to.be.revertedWith(
+      await expect(
+        daoMemberCheckIn.claim(SECONDS.DAY + 1, METADATA)
+      ).to.be.revertedWith(
         'Claimable work period must be less than the check in interval'
       );
     });
