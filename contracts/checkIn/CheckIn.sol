@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "../interfaces/IBAAL.sol";
+import "../fixtures/Baal/contracts/utils/Poster.sol";
 
 // Made for use with Baal(Molochv3)
 // Example use of Manager shamans
@@ -14,6 +15,7 @@ import "../interfaces/IBAAL.sol";
 // this shaman must be set as a manager role in the dao
 contract CheckInShaman is ReentrancyGuard, Initializable {
     IBAAL public baal;
+    Poster public poster;
     IERC20 public token;
 
     mapping(address => uint256) public timeLedger;
@@ -25,19 +27,22 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         address account,
         uint256 timestamp,
         uint256 tokenAmountClaimed,
-        uint32 minutesWorked
+        uint32 secondsWorked,
+        string metadata
     );
 
-    constructor() initializer {}
+    // constructor() initializer {}
 
     function init(
         address _baal,
         bool _sharesOrLoot,
         uint256 _sharesPerSecond,
-        uint256 _checkInInterval
+        uint256 _checkInInterval,
+        address _poster
     ) external initializer {
         baal = IBAAL(_baal);
         sharesOrLoot = _sharesOrLoot;
+        poster = Poster(_poster);
         // get shares or loot token address from dao based on 'shares' flag
         if (sharesOrLoot) {
             token = IERC20(baal.sharesToken());
@@ -64,7 +69,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     }
 
     // can be called by any account to claim per checkInInterval tokens
-    function claim(uint32 _secondsWorked) public {
+    function claim(uint32 _secondsWorked, string calldata _metadata) public {
         require(
             _secondsWorked < checkInInterval,
             "Claimable work period must be less than the check in interval"
@@ -84,8 +89,14 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         uint256 amount = calculate(_secondsWorked, sharesPerSecond);
         _mintTokens(msg.sender, amount);
         timeLedger[msg.sender] = block.timestamp;
-
-        emit Claim(msg.sender, block.timestamp, amount, _secondsWorked);
+        poster.post(_metadata, "daohaus.member.database");
+        emit Claim(
+            msg.sender,
+            block.timestamp,
+            amount,
+            _secondsWorked,
+            _metadata
+        );
     }
 
     function calculate(uint32 _secondsWorked, uint256 _sharesPerSecond)
@@ -98,7 +109,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
 }
 
 contract CheckInSummoner {
-    address payable public template;
+    address public template;
 
     event CheckInSummonComplete(
         address indexed baal,
@@ -108,7 +119,7 @@ contract CheckInSummoner {
         uint256 checkInInterval
     );
 
-    constructor(address payable _template) {
+    constructor(address _template) {
         template = _template;
     }
 
@@ -116,7 +127,8 @@ contract CheckInSummoner {
         address _baal,
         bool _sharesOrLoot,
         uint256 _sharesPerSecond,
-        uint256 _checkInInterval
+        uint256 _checkInInterval,
+        address _poster
     ) public returns (address) {
         CheckInShaman checkInShaman = CheckInShaman(
             payable(Clones.clone(template))
@@ -125,7 +137,8 @@ contract CheckInSummoner {
             _baal,
             _sharesOrLoot,
             _sharesPerSecond,
-            _checkInInterval
+            _checkInInterval,
+            _poster
         );
 
         emit CheckInSummonComplete(
