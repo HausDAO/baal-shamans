@@ -36,6 +36,7 @@ const SECONDS = {
 // BASE UNITS WEI PER SECOND
 
 const METADATA = JSON.stringify({
+  dataVersion: 0.1,
   morale:
     'The endless struggle for survival is a constant reminder of the fragility of life.',
   workDescription:
