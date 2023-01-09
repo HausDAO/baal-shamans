@@ -98,7 +98,7 @@ export interface MemberRegistryInterface extends utils.Interface {
 
 export interface SetMemberEventObject {
   member: MemberRegistry.MemberStructOutput;
-  initialSeconds: number;
+  startDate: number;
 }
 export type SetMemberEvent = TypedEvent<
   [MemberRegistry.MemberStructOutput, number],
@@ -244,9 +244,9 @@ export interface MemberRegistry extends BaseContract {
   filters: {
     "SetMember(tuple,uint32)"(
       member?: null,
-      initialSeconds?: null
+      startDate?: null
     ): SetMemberEventFilter;
-    SetMember(member?: null, initialSeconds?: null): SetMemberEventFilter;
+    SetMember(member?: null, startDate?: null): SetMemberEventFilter;
 
     "Update(uint32)"(date?: null): UpdateEventFilter;
     Update(date?: null): UpdateEventFilter;

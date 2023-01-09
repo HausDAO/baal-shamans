@@ -44,7 +44,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint32",
-        name: "initialSeconds",
+        name: "startDate",
         type: "uint32",
       },
     ],

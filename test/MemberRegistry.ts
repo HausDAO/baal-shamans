@@ -24,6 +24,7 @@ import {
 } from "../src/types/contracts/fixtures/Baal/contracts";
 import { Loot } from "../src/types/contracts/fixtures/Baal/contracts/LootERC20.sol";
 import { Shares } from "../src/types/contracts/fixtures/Baal/contracts/SharesERC20.sol";
+import { MockSplits } from "../src/types/contracts/mock/MockSplits";
 
 
 use(solidity);
@@ -417,6 +418,9 @@ describe("Member registry", function () {
   let MemberRegistryFactory: ContractFactory;
   let memberRegistry: PGRegistry;
 
+  let MockSplitsFactory: ContractFactory;
+  let mockSplits: MockSplits;
+
   let proposal: { [key: string]: any };
 
   const loot = 500;
@@ -457,6 +461,7 @@ describe("Member registry", function () {
     BaalFactory = await ethers.getContractFactory("Baal");
     baalSingleton = (await BaalFactory.deploy()) as Baal;
     MemberRegistryFactory = await ethers.getContractFactory("PGRegistry");
+    MockSplitsFactory = await ethers.getContractFactory("MockSplits");
   });
 
   beforeEach(async function () {
@@ -530,7 +535,10 @@ describe("Member registry", function () {
     s6Baal = baal.connect(s6);
 
     // todo: mock splits
-    memberRegistry = (await MemberRegistryFactory.deploy(s4.address, s3.address)) as PGRegistry;
+    mockSplits = (await MockSplitsFactory.deploy()) as MockSplits;
+    
+    // second address id placeholder for now
+    memberRegistry = (await MemberRegistryFactory.deploy(mockSplits.address, s3.address)) as PGRegistry;
 
     await memberRegistry.transferOwnership(gnosisSafe.address);
 
@@ -577,7 +585,7 @@ describe("Member registry", function () {
       );
 
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
-      expect(s1RegistryMember.secondsActive).to.be.greaterThan(0);
+      expect(s1RegistryMember.secondsActive).to.equal(0);
     });
     it("adds new member batch trigger", async function () {
       // console.log(rgaddrsUnsorted, rgshares, rgmods, rgdates);

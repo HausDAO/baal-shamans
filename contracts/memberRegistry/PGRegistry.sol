@@ -46,7 +46,6 @@ contract PGRegistry is MemberRegistry, Ownable {
 
     constructor(address _splitsMain, address _split) {
         splitsMain = ISPLITS(_splitsMain);
-        lastUpdate = uint32(block.timestamp);
         split = _split;
     }
 
@@ -98,6 +97,9 @@ contract PGRegistry is MemberRegistry, Ownable {
         uint256 total;
         address previous;
 
+        // update member total seconds and seconds in last period
+        updateSecondsActive();
+
         // verify list is members and sorted
         require(_sortedList.length == members.length, "invalid list");
         for (uint256 i = 0; i < _sortedList.length; i++) {
@@ -113,8 +115,8 @@ contract PGRegistry is MemberRegistry, Ownable {
         // ignore inactive members
         for (uint256 i = 0; i < members.length; i++) {
             if (members[i].activityMultiplier > 0) {
-                UD60x18 udActiveSeconds = ud(members[i].secondsActive);
-                total += unwrap(udActiveSeconds.sqrt());
+                UD60x18 udActiveSeconds = wrap(members[i].secondsActive);
+                total = total + unwrap(udActiveSeconds.sqrt());
                 nonZeroCount++;
             }
         }
@@ -131,34 +133,30 @@ contract PGRegistry is MemberRegistry, Ownable {
             Member memory _member = members[memberIdx - 1];
             if (_member.activityMultiplier > 0) {
                 _receivers[i] = _member.account;
+
                 _percentAllocations[i] = uint32(
-                    unwrap(
-                        ud(_member.secondsActive)
-                            .sqrt()
-                            .mul(ud(PERCENTAGE_SCALE))
-                            .div(ud(total))
-                    )
+                    (unwrap(wrap(_member.secondsActive).sqrt()) *
+                        PERCENTAGE_SCALE) / total
                 );
 
                 runningTotal += _percentAllocations[i];
             }
         }
-        console.log("runningTotal", runningTotal);
+
         // if there was any loss add it to the first account.
         if (runningTotal != PERCENTAGE_SCALE) {
             _percentAllocations[0] += uint32(PERCENTAGE_SCALE - runningTotal);
+            // console.log("diff", uint32(PERCENTAGE_SCALE - runningTotal));
         }
 
         // run split
         // todo: mock and uncomment
-        // splitsMain.updateSplit(
-        //     split,
-        //     _receivers,
-        //     _percentAllocations,
-        //     _distributorsFee
-        // );
-        // update member total seconds and seconds in last period
-        updateSecondsActive();
+        splitsMain.updateSplit(
+            split,
+            _receivers,
+            _percentAllocations,
+            _distributorsFee
+        );
     }
 
     function transferControl(address _split, address _newController)

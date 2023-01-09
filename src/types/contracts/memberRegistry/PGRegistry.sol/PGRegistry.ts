@@ -247,7 +247,7 @@ export type OwnershipTransferredEventFilter =
 
 export interface SetMemberEventObject {
   member: MemberRegistry.MemberStructOutput;
-  initialSeconds: number;
+  startDate: number;
 }
 export type SetMemberEvent = TypedEvent<
   [MemberRegistry.MemberStructOutput, number],
@@ -592,9 +592,9 @@ export interface PGRegistry extends BaseContract {
 
     "SetMember(tuple,uint32)"(
       member?: null,
-      initialSeconds?: null
+      startDate?: null
     ): SetMemberEventFilter;
-    SetMember(member?: null, initialSeconds?: null): SetMemberEventFilter;
+    SetMember(member?: null, startDate?: null): SetMemberEventFilter;
 
     "Update(uint32)"(date?: null): UpdateEventFilter;
     Update(date?: null): UpdateEventFilter;
