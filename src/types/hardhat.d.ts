@@ -325,6 +325,22 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBAAL__factory>;
     getContractFactory(
+      name: "MemberRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MemberRegistry__factory>;
+    getContractFactory(
+      name: "ISPLITS",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ISPLITS__factory>;
+    getContractFactory(
+      name: "PGRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PGRegistry__factory>;
+    getContractFactory(
+      name: "MockSplits",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockSplits__factory>;
+    getContractFactory(
       name: "MyToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MyToken__factory>;
@@ -759,6 +775,26 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IBAAL>;
+    getContractAt(
+      name: "MemberRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MemberRegistry>;
+    getContractAt(
+      name: "ISPLITS",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ISPLITS>;
+    getContractAt(
+      name: "PGRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PGRegistry>;
+    getContractAt(
+      name: "MockSplits",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockSplits>;
     getContractAt(
       name: "MyToken",
       address: string,

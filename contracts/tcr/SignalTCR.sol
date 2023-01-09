@@ -60,6 +60,11 @@ contract DhSignalTCR is Initializable {
         uint256 amount
     );
 
+    event Init(
+        uint256 sharesSnapshotId,
+        uint256 lootSnapshotId
+    );
+
     /// @notice dao staking token contract instance.
     IBAAL public baal;
     IBAALTOKEN public baalShares;
@@ -109,6 +114,7 @@ contract DhSignalTCR is Initializable {
         sharesSnapshotId = baalShares.getCurrentSnapshotId();
         lootSnapshotId = baalLoot.getCurrentSnapshotId();
         // emit event with snapshot ids
+        emit Init(sharesSnapshotId, lootSnapshotId);
     }
 
     /**

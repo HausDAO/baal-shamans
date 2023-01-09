@@ -206,12 +206,14 @@ export interface DhSignalTCRInterface extends utils.Interface {
 
   events: {
     "ClaimTokens(address,uint256)": EventFragment;
+    "Init(uint256,uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "TokensReleased(uint56,address,uint152,uint48)": EventFragment;
     "VoteCasted(uint56,address,uint152,uint48)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ClaimTokens"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Init"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokensReleased"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VoteCasted"): EventFragment;
@@ -227,6 +229,14 @@ export type ClaimTokensEvent = TypedEvent<
 >;
 
 export type ClaimTokensEventFilter = TypedEventFilter<ClaimTokensEvent>;
+
+export interface InitEventObject {
+  sharesSnapshotId: BigNumber;
+  lootSnapshotId: BigNumber;
+}
+export type InitEvent = TypedEvent<[BigNumber, BigNumber], InitEventObject>;
+
+export type InitEventFilter = TypedEventFilter<InitEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -513,6 +523,12 @@ export interface DhSignalTCR extends BaseContract {
       voter?: PromiseOrValue<string> | null,
       amount?: null
     ): ClaimTokensEventFilter;
+
+    "Init(uint256,uint256)"(
+      sharesSnapshotId?: null,
+      lootSnapshotId?: null
+    ): InitEventFilter;
+    Init(sharesSnapshotId?: null, lootSnapshotId?: null): InitEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
