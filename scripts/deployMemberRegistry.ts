@@ -11,12 +11,14 @@ async function main() {
 
 
   const deployConfig = {
-    moloch: "0x8dcc8cdbfb97200bd08e05f580c236b3ac655fd8",
+    moloch: "0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1",
     safe: "0xe014057ebe435dbcf0139a9a05b7ee0a05b74ec8",
+    splitsMain: "0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE" ,
+    splits: "0xCb52567F44e7a1b01dDf49a25eFf217Ade7885b2"
   }
 
   const PGRegistry = await ethers.getContractFactory("PGRegistry");
-  const registryContract = await PGRegistry.deploy(deployConfig.moloch);
+  const registryContract = await PGRegistry.deploy(deployConfig.splitsMain, deployConfig.splits);
 
   await registryContract.deployed();
 
