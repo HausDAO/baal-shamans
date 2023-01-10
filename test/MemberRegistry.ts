@@ -110,13 +110,15 @@ const rgaddrsUnsorted = [
     "0xb4c3a698874b625df289e97f718206701c1f4c0f",
     "0x60959ed8307ee2b0d04306f6b319aeee8864f1ee",
   ];
+    
   const rgsorted = rgaddrsUnsorted.slice()
   rgsorted.sort((a, b) => {
     return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
   });
   
   const rgshares = rgaddrsUnsorted.map(() => ethers.utils.parseUnits("1.0", "ether"));
-  const rgmods = rgaddrsUnsorted.map(() => 100);
+  // get a bunch of random numbers and 0s
+  const rgmods = rgaddrsUnsorted.map((item, idx) => idx % 5 ? 0 : Math.floor(Math.random() * 100));
   const rgdates = rgaddrsUnsorted.map(() => Math.floor(Date.now() / 1000) - 60 * 60 * 24);
   
   

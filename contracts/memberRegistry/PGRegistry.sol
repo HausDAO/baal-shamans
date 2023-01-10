@@ -125,21 +125,24 @@ contract PGRegistry is MemberRegistry, Ownable {
         address[] memory _receivers = new address[](nonZeroCount);
         uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
         uint32 _distributorsFee = 0;
-
+        
+        // define variables for running total
         uint32 runningTotal;
+        uint256 nonZeroIndex;
         // fill arrays with sorted list
         for (uint256 i = 0; i < _sortedList.length; i++) {
             uint256 memberIdx = memberIdxs[_sortedList[i]];
             Member memory _member = members[memberIdx - 1];
             if (_member.activityMultiplier > 0) {
-                _receivers[i] = _member.account;
+                _receivers[nonZeroIndex] = _member.account;
 
-                _percentAllocations[i] = uint32(
+                _percentAllocations[nonZeroIndex] = uint32(
                     (unwrap(wrap(_member.secondsActive).sqrt()) *
                         PERCENTAGE_SCALE) / total
                 );
 
-                runningTotal += _percentAllocations[i];
+                runningTotal += _percentAllocations[nonZeroIndex];
+                nonZeroIndex++;
             }
         }
 
