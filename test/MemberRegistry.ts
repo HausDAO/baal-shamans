@@ -609,8 +609,11 @@ describe("Member registry", function () {
         return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
       });
 
-      const tx = await memberRegistry.triggerCalcAndSplits(addrList);
+      const tx = await memberRegistry.updateSecondsActive();
       gasStats("batch update secs", tx);
+
+      const tx1 = await memberRegistry.updateSplits(addrList);
+      gasStats("batch update secs", tx1);
 
     });
     it("edits member", async function () {
@@ -654,8 +657,11 @@ describe("Member registry", function () {
       );
       const secsActive = s2RegistryMembera.secondsActive;
 
-      const tx = await memberRegistry.triggerCalcAndSplits([s1.address, s2.address]);
-      gasStats("update seconds", tx);
+      const tx = await memberRegistry.updateSecondsActive();
+      gasStats("update secs", tx);
+
+      const tx1 = await memberRegistry.updateSplits([s1.address, s2.address]);
+      gasStats("update splits", tx1);
 
       const s2RegistryMemberb = await memberRegistry.members(
         s2RegistryId.sub(1)
@@ -689,8 +695,12 @@ describe("Member registry", function () {
         s1RegistryId.sub(1)
       );
 
-      const tx = await memberRegistry.triggerCalcAndSplits([s1.address, s2.address]);
-      gasStats("trigger", tx);
+      const tx = await memberRegistry.updateSecondsActive();
+      gasStats("update secs", tx);
+
+      const tx1 = await memberRegistry.updateSplits([s1.address, s2.address]);
+      gasStats("update splits", tx1);
+
 
       const s2RegistryMemberb = await memberRegistry.members(
         s2RegistryId.sub(1)

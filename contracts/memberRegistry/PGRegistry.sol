@@ -9,6 +9,7 @@ import "@prb/math/src/UD60x18.sol";
 
 import "hardhat/console.sol";
 
+// 0xsplits interface
 interface ISPLITS {
     function createSplit(
         address[] memory accounts,
@@ -31,7 +32,12 @@ interface ISPLITS {
     function cancelControlTransfer(address split) external;
 }
 
-// Register
+// DAO member registry
+//  - keeps track of members
+//  - keeps track of member part/full time activity (activity multiplier)
+//  - keeps track of member start date
+//  - keeps track of member total seconds active
+
 contract PGRegistry is MemberRegistry, Ownable {
     ISPLITS public splitsMain;
     address public split;
@@ -42,13 +48,15 @@ contract PGRegistry is MemberRegistry, Ownable {
         address receiver;
         uint32 percentAllocations;
     }
-    mapping(address => uint256) private sortHelper;
 
     constructor(address _splitsMain, address _split) {
         splitsMain = ISPLITS(_splitsMain);
         split = _split;
     }
 
+    // REGISTERY MODIFIERS
+
+    // add member to registry
     function setNewMember(
         address _member,
         uint32 _activityMultiplier,
@@ -57,6 +65,7 @@ contract PGRegistry is MemberRegistry, Ownable {
         _setNewMember(_member, _activityMultiplier, _startDate);
     }
 
+    // update member activity multiplier
     function updateMember(address _member, uint32 _activityMultiplier)
         external
         onlyOwner
@@ -84,6 +93,11 @@ contract PGRegistry is MemberRegistry, Ownable {
         }
     }
 
+    // update member total seconds and seconds in last period
+    function updateSecondsActive() external {
+        _updateSecondsActive();
+    } 
+
     // takes a sorted (offchain) list of addresses from the member array
     // verifys the address list is sorted, has no dups, and is valid
     // gets the total seconds from all members square rooted for % calc
@@ -91,16 +105,14 @@ contract PGRegistry is MemberRegistry, Ownable {
     //  addresses sorted, only non zero allocations
     //  keep track of running total of allocations because it must equal PERCENTAGE_SCALE
     // send update to 0xsplits
-    // update seconds active on all members (should this happen before or after)
-    function triggerCalcAndSplits(address[] memory _sortedList) public {
+    // update seconds active on all members 
+    function updateSplits(address[] memory _sortedList) public {
         uint256 nonZeroCount;
         uint256 total;
         address previous;
 
-        // update member total seconds and seconds in last period
-        updateSecondsActive();
 
-        // verify list is members and sorted
+        // verify list is current members and is sorted
         require(_sortedList.length == members.length, "invalid list");
         for (uint256 i = 0; i < _sortedList.length; i++) {
             address listAddr = _sortedList[i];
@@ -126,10 +138,10 @@ contract PGRegistry is MemberRegistry, Ownable {
         uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
         uint32 _distributorsFee = 0;
         
-        // define variables for running total
+        // define variables for second loop
         uint32 runningTotal;
-        uint256 nonZeroIndex;
-        // fill arrays with sorted list
+        uint256 nonZeroIndex; // index counter for non zero allocations
+        // fill 0xsplits arrays with sorted list
         for (uint256 i = 0; i < _sortedList.length; i++) {
             uint256 memberIdx = memberIdxs[_sortedList[i]];
             Member memory _member = members[memberIdx - 1];
@@ -149,11 +161,9 @@ contract PGRegistry is MemberRegistry, Ownable {
         // if there was any loss add it to the first account.
         if (runningTotal != PERCENTAGE_SCALE) {
             _percentAllocations[0] += uint32(PERCENTAGE_SCALE - runningTotal);
-            // console.log("diff", uint32(PERCENTAGE_SCALE - runningTotal));
         }
 
-        // run split
-        // todo: mock and uncomment
+        // run splits update
         splitsMain.updateSplit(
             split,
             _receivers,

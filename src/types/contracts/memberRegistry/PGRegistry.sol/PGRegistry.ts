@@ -62,8 +62,9 @@ export interface PGRegistryInterface extends utils.Interface {
     "splitsMain()": FunctionFragment;
     "transferControl(address,address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "triggerCalcAndSplits(address[])": FunctionFragment;
     "updateMember(address,uint32)": FunctionFragment;
+    "updateSecondsActive()": FunctionFragment;
+    "updateSplits(address[])": FunctionFragment;
   };
 
   getFunction(
@@ -85,8 +86,9 @@ export interface PGRegistryInterface extends utils.Interface {
       | "splitsMain"
       | "transferControl"
       | "transferOwnership"
-      | "triggerCalcAndSplits"
       | "updateMember"
+      | "updateSecondsActive"
+      | "updateSplits"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -157,12 +159,16 @@ export interface PGRegistryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "triggerCalcAndSplits",
-    values: [PromiseOrValue<string>[]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "updateMember",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateSecondsActive",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateSplits",
+    values: [PromiseOrValue<string>[]]
   ): string;
 
   decodeFunctionResult(
@@ -210,11 +216,15 @@ export interface PGRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "triggerCalcAndSplits",
+    functionFragment: "updateMember",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updateMember",
+    functionFragment: "updateSecondsActive",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateSplits",
     data: BytesLike
   ): Result;
 
@@ -390,14 +400,18 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     updateMember(
       _member: PromiseOrValue<string>,
       _activityMultiplier: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateSplits(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -480,14 +494,18 @@ export interface PGRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  triggerCalcAndSplits(
-    _sortedList: PromiseOrValue<string>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   updateMember(
     _member: PromiseOrValue<string>,
     _activityMultiplier: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateSecondsActive(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateSplits(
+    _sortedList: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -568,14 +586,16 @@ export interface PGRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     updateMember(
       _member: PromiseOrValue<string>,
       _activityMultiplier: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateSecondsActive(overrides?: CallOverrides): Promise<void>;
+
+    updateSplits(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -682,14 +702,18 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     updateMember(
       _member: PromiseOrValue<string>,
       _activityMultiplier: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateSplits(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -764,14 +788,18 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    triggerCalcAndSplits(
-      _sortedList: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     updateMember(
       _member: PromiseOrValue<string>,
       _activityMultiplier: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateSecondsActive(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateSplits(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

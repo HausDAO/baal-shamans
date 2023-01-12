@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "hardhat/console.sol";
 
-// Register
 abstract contract MemberRegistry {
     struct Member {
         address account;
@@ -29,6 +28,9 @@ abstract contract MemberRegistry {
 
     // REGISTERY MODIFIERS
 
+    // add member to registry
+    // if member already exists, update their activity multiplier
+    // if member does not exist, add them to the registry
     function _setNewMember(
         address _member,
         uint32 _activityMultiplier,
@@ -70,7 +72,8 @@ abstract contract MemberRegistry {
 
     // add seconds active to member from last update
     // for brand new members it will be an update from their start date
-    function updateSecondsActive() internal virtual {
+    // todo: this could be more generic, use a controller contract to update
+    function _updateSecondsActive() internal virtual {
         uint32 currentUpdate = uint32(block.timestamp);
         // update struct with total seconds active and seconds in last claim
         for (uint256 i = 0; i < members.length; i++) {
