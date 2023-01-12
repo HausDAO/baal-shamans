@@ -28,31 +28,29 @@ import type {
 
 export interface SecondsUpdaterInterface extends utils.Interface {
   functions: {
-    "registry()": FunctionFragment;
     "update()": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "registry" | "update"): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "update"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "registry", values?: undefined): string;
   encodeFunctionData(functionFragment: "update", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "registry", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "update", data: BytesLike): Result;
 
   events: {
-    "UpdateMemberActivity(address,uint32)": EventFragment;
+    "UpdateMemberActivity(address,address,uint32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "UpdateMemberActivity"): EventFragment;
 }
 
 export interface UpdateMemberActivityEventObject {
+  registry: string;
   member: string;
   newActivity: number;
 }
 export type UpdateMemberActivityEvent = TypedEvent<
-  [string, number],
+  [string, string, number],
   UpdateMemberActivityEventObject
 >;
 
@@ -86,47 +84,39 @@ export interface SecondsUpdater extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    registry(overrides?: CallOverrides): Promise<[string]>;
-
     update(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
-
-  registry(overrides?: CallOverrides): Promise<string>;
 
   update(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    registry(overrides?: CallOverrides): Promise<string>;
-
     update(overrides?: CallOverrides): Promise<number>;
   };
 
   filters: {
-    "UpdateMemberActivity(address,uint32)"(
+    "UpdateMemberActivity(address,address,uint32)"(
+      registry?: null,
       member?: null,
       newActivity?: null
     ): UpdateMemberActivityEventFilter;
     UpdateMemberActivity(
+      registry?: null,
       member?: null,
       newActivity?: null
     ): UpdateMemberActivityEventFilter;
   };
 
   estimateGas: {
-    registry(overrides?: CallOverrides): Promise<BigNumber>;
-
     update(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    registry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     update(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

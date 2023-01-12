@@ -40,7 +40,7 @@ contract SecondsUpdater {
     function update() external returns (uint32 currentUpdate) {
         // update seconds
         currentUpdate = uint32(block.timestamp);
-        //
+        // get registry
         IREGISTRY registry = IREGISTRY(msg.sender);
         // update struct with total seconds active and seconds in last claim
         IREGISTRY.Member[] memory members = registry.getMembers();

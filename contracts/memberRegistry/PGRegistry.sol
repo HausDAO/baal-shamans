@@ -54,7 +54,7 @@ contract PGRegistry is MemberRegistry, Ownable {
     constructor(address _splitsMain, address _split) {
         splitsMain = ISPLITS(_splitsMain);
         split = _split;
-        SecondsUpdater updaterContract = new SecondsUpdater(address(this));
+        SecondsUpdater updaterContract = new SecondsUpdater();
         updater = IUPDATOR(address(updaterContract));
     }
 
