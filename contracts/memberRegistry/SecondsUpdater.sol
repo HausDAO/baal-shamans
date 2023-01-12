@@ -24,21 +24,24 @@ interface IREGISTRY {
     function _addToActivity(address _member, uint32 _activity) external;
 
     function getMembers() external returns (Member[] memory);
+
     function lastUpdate() external returns (uint32);
-
 }
-contract SecondsUpdater  {
-    IREGISTRY public registry;
-    
-    event UpdateMemberActivity(address member, uint32 newActivity);
 
-    constructor(address _registry) {
-        // set last update to current block timestamp
-        registry = IREGISTRY(_registry);
-    }
-    function update() external returns(uint32 currentUpdate) {
+contract SecondsUpdater {
+    event UpdateMemberActivity(
+        address registry,
+        address member,
+        uint32 newActivity
+    );
+
+    constructor() {}
+
+    function update() external returns (uint32 currentUpdate) {
         // update seconds
         currentUpdate = uint32(block.timestamp);
+        //
+        IREGISTRY registry = IREGISTRY(msg.sender);
         // update struct with total seconds active and seconds in last claim
         IREGISTRY.Member[] memory members = registry.getMembers();
         for (uint256 i = 0; i < members.length; i++) {
@@ -55,8 +58,11 @@ contract SecondsUpdater  {
             uint32 newSecondsActive = (newSeconds *
                 _member.activityMultiplier) / 100;
             registry._addToActivity(_member.account, newSecondsActive);
-            emit UpdateMemberActivity(_member.account, newSecondsActive);
+            emit UpdateMemberActivity(
+                address(registry),
+                _member.account,
+                newSecondsActive
+            );
         }
-
     }
 }
