@@ -587,7 +587,7 @@ describe("Member registry", function () {
       );
 
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
-      expect(s1RegistryMember.secondsActive).to.equal(0);
+      expect(s1RegistryMember.activity).to.equal(0);
     });
     it("adds new member batch trigger", async function () {
       // console.log(rgaddrsUnsorted, rgshares, rgmods, rgdates);
@@ -655,7 +655,7 @@ describe("Member registry", function () {
       const s2RegistryMembera = await memberRegistry.members(
         s2RegistryId.sub(1)
       );
-      const secsActive = s2RegistryMembera.secondsActive;
+      const secsActive = s2RegistryMembera.activity;
 
       const tx = await memberRegistry.updateSecondsActive();
       gasStats("update secs", tx);
@@ -668,7 +668,7 @@ describe("Member registry", function () {
       );
 
       // same because adds 0 with update
-      expect(s2RegistryMemberb.secondsActive).to.equal(secsActive);
+      expect(s2RegistryMemberb.activity).to.equal(secsActive);
     });
     it("trigger distribute shares", async function () {
       const s1proposalId = await newMemberAndProcess(
@@ -688,7 +688,7 @@ describe("Member registry", function () {
       const s2RegistryMembera = await memberRegistry.members(
         s2RegistryId.sub(1)
       );
-      const secsActive = s2RegistryMembera.secondsActive;
+      const secsActive = s2RegistryMembera.activity;
 
       const s1RegistryId = await memberRegistry.memberIdxs(s1.address);
       const s1RegistryMember = await memberRegistry.members(

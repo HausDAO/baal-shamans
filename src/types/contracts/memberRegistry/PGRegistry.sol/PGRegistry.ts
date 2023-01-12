@@ -30,14 +30,14 @@ import type {
 export declare namespace MemberRegistry {
   export type MemberStruct = {
     account: PromiseOrValue<string>;
-    secondsActive: PromiseOrValue<BigNumberish>;
+    activity: PromiseOrValue<BigNumberish>;
     activityMultiplier: PromiseOrValue<BigNumberish>;
     startDate: PromiseOrValue<BigNumberish>;
   };
 
   export type MemberStructOutput = [string, number, number, number] & {
     account: string;
-    secondsActive: number;
+    activity: number;
     activityMultiplier: number;
     startDate: number;
   };
@@ -46,6 +46,7 @@ export declare namespace MemberRegistry {
 export interface PGRegistryInterface extends utils.Interface {
   functions: {
     "PERCENTAGE_SCALE()": FunctionFragment;
+    "_addToActivity(address,uint32)": FunctionFragment;
     "acceptControl(address)": FunctionFragment;
     "batchNewMember(address[],uint32[],uint32[])": FunctionFragment;
     "batchUpdateMember(address[],uint32[])": FunctionFragment;
@@ -65,11 +66,13 @@ export interface PGRegistryInterface extends utils.Interface {
     "updateMember(address,uint32)": FunctionFragment;
     "updateSecondsActive()": FunctionFragment;
     "updateSplits(address[])": FunctionFragment;
+    "updater()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "PERCENTAGE_SCALE"
+      | "_addToActivity"
       | "acceptControl"
       | "batchNewMember"
       | "batchUpdateMember"
@@ -89,11 +92,16 @@ export interface PGRegistryInterface extends utils.Interface {
       | "updateMember"
       | "updateSecondsActive"
       | "updateSplits"
+      | "updater"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "PERCENTAGE_SCALE",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "_addToActivity",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "acceptControl",
@@ -170,9 +178,14 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "updateSplits",
     values: [PromiseOrValue<string>[]]
   ): string;
+  encodeFunctionData(functionFragment: "updater", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "PERCENTAGE_SCALE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "_addToActivity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -227,20 +240,21 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "updateSplits",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "updater", data: BytesLike): Result;
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
     "SetMember(tuple,uint32)": EventFragment;
     "Update(uint32)": EventFragment;
     "UpdateMember(tuple)": EventFragment;
-    "UpdateMemberSeconds(tuple,uint32)": EventFragment;
+    "UpdateMemberActivity(tuple,uint32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMember"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Update"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateMember"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateMemberSeconds"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateMemberActivity"): EventFragment;
 }
 
 export interface OwnershipTransferredEventObject {
@@ -283,17 +297,17 @@ export type UpdateMemberEvent = TypedEvent<
 
 export type UpdateMemberEventFilter = TypedEventFilter<UpdateMemberEvent>;
 
-export interface UpdateMemberSecondsEventObject {
+export interface UpdateMemberActivityEventObject {
   member: MemberRegistry.MemberStructOutput;
-  newSeconds: number;
+  newActivity: number;
 }
-export type UpdateMemberSecondsEvent = TypedEvent<
+export type UpdateMemberActivityEvent = TypedEvent<
   [MemberRegistry.MemberStructOutput, number],
-  UpdateMemberSecondsEventObject
+  UpdateMemberActivityEventObject
 >;
 
-export type UpdateMemberSecondsEventFilter =
-  TypedEventFilter<UpdateMemberSecondsEvent>;
+export type UpdateMemberActivityEventFilter =
+  TypedEventFilter<UpdateMemberActivityEvent>;
 
 export interface PGRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -323,6 +337,12 @@ export interface PGRegistry extends BaseContract {
 
   functions: {
     PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<[number]>;
+
+    _addToActivity(
+      _memberAddr: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     acceptControl(
       _split: PromiseOrValue<string>,
@@ -366,7 +386,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<
       [string, number, number, number] & {
         account: string;
-        secondsActive: number;
+        activity: number;
         activityMultiplier: number;
         startDate: number;
       }
@@ -414,9 +434,17 @@ export interface PGRegistry extends BaseContract {
       _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    updater(overrides?: CallOverrides): Promise<[string]>;
   };
 
   PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<number>;
+
+  _addToActivity(
+    _memberAddr: PromiseOrValue<string>,
+    _amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   acceptControl(
     _split: PromiseOrValue<string>,
@@ -460,7 +488,7 @@ export interface PGRegistry extends BaseContract {
   ): Promise<
     [string, number, number, number] & {
       account: string;
-      secondsActive: number;
+      activity: number;
       activityMultiplier: number;
       startDate: number;
     }
@@ -509,8 +537,16 @@ export interface PGRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  updater(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<number>;
+
+    _addToActivity(
+      _memberAddr: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     acceptControl(
       _split: PromiseOrValue<string>,
@@ -554,7 +590,7 @@ export interface PGRegistry extends BaseContract {
     ): Promise<
       [string, number, number, number] & {
         account: string;
-        secondsActive: number;
+        activity: number;
         activityMultiplier: number;
         startDate: number;
       }
@@ -598,6 +634,8 @@ export interface PGRegistry extends BaseContract {
       _sortedList: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updater(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -622,18 +660,24 @@ export interface PGRegistry extends BaseContract {
     "UpdateMember(tuple)"(member?: null): UpdateMemberEventFilter;
     UpdateMember(member?: null): UpdateMemberEventFilter;
 
-    "UpdateMemberSeconds(tuple,uint32)"(
+    "UpdateMemberActivity(tuple,uint32)"(
       member?: null,
-      newSeconds?: null
-    ): UpdateMemberSecondsEventFilter;
-    UpdateMemberSeconds(
+      newActivity?: null
+    ): UpdateMemberActivityEventFilter;
+    UpdateMemberActivity(
       member?: null,
-      newSeconds?: null
-    ): UpdateMemberSecondsEventFilter;
+      newActivity?: null
+    ): UpdateMemberActivityEventFilter;
   };
 
   estimateGas: {
     PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _addToActivity(
+      _memberAddr: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     acceptControl(
       _split: PromiseOrValue<string>,
@@ -716,10 +760,18 @@ export interface PGRegistry extends BaseContract {
       _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    updater(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     PERCENTAGE_SCALE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _addToActivity(
+      _memberAddr: PromiseOrValue<string>,
+      _amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     acceptControl(
       _split: PromiseOrValue<string>,
@@ -802,5 +854,7 @@ export interface PGRegistry extends BaseContract {
       _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    updater(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

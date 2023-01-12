@@ -321,6 +321,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBAAL__factory>;
     getContractFactory(
+      name: "IUPDATOR",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IUPDATOR__factory>;
+    getContractFactory(
       name: "MemberRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MemberRegistry__factory>;
@@ -332,6 +336,14 @@ declare module "hardhat/types/runtime" {
       name: "PGRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PGRegistry__factory>;
+    getContractFactory(
+      name: "IREGISTRY",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IREGISTRY__factory>;
+    getContractFactory(
+      name: "SecondsUpdater",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SecondsUpdater__factory>;
     getContractFactory(
       name: "MockSplits",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -751,6 +763,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IBAAL>;
     getContractAt(
+      name: "IUPDATOR",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IUPDATOR>;
+    getContractAt(
       name: "MemberRegistry",
       address: string,
       signer?: ethers.Signer
@@ -765,6 +782,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PGRegistry>;
+    getContractAt(
+      name: "IREGISTRY",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IREGISTRY>;
+    getContractAt(
+      name: "SecondsUpdater",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SecondsUpdater>;
     getContractAt(
       name: "MockSplits",
       address: string,

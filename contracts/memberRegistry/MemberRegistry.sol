@@ -2,13 +2,18 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./SecondsUpdater.sol";
 
 import "hardhat/console.sol";
+
+interface IUPDATOR {
+    function update() external returns (uint32);
+}
 
 abstract contract MemberRegistry {
     struct Member {
         address account;
-        uint32 secondsActive;
+        uint32 activity;
         uint32 activityMultiplier;
         uint32 startDate;
     }
@@ -20,11 +25,18 @@ abstract contract MemberRegistry {
     uint256 public count = 1;
     mapping(address => uint256) public memberIdxs;
 
+    IUPDATOR public updater;
+
     // EVENTS
     event SetMember(Member member, uint32 startDate);
-    event UpdateMemberSeconds(Member member, uint32 newSeconds);
+    event UpdateMemberActivity(Member member, uint32 newActivity);
     event UpdateMember(Member member);
     event Update(uint32 date);
+
+    modifier onlyUpdater() {
+        require(msg.sender == address(updater), "not updater");
+        _;
+    }
 
     // REGISTERY MODIFIERS
 
@@ -72,28 +84,15 @@ abstract contract MemberRegistry {
 
     // add seconds active to member from last update
     // for brand new members it will be an update from their start date
-    // todo: this could be more generic, use a controller contract to update
-    function _updateSecondsActive() internal virtual {
-        uint32 currentUpdate = uint32(block.timestamp);
-        // update struct with total seconds active and seconds in last claim
-        for (uint256 i = 0; i < members.length; i++) {
-            Member storage _member = members[i];
+    // todo: this could be more generic then seconds, use a controller contract to update
+    function _updateActivity() internal virtual {
+        
+        lastUpdate = updater.update();
+        emit Update(lastUpdate);
+    }
 
-            uint32 newSeconds = 0;
-            if (_member.secondsActive == 0) {
-                // new member will be 0 and should get seconds from start date
-                newSeconds = (currentUpdate - _member.startDate);
-            } else {
-                newSeconds = (currentUpdate - lastUpdate);
-            }
-            // multiple by modifier and divide by 100 to get modifier % of seconds
-            uint32 newSecondsActive = (newSeconds *
-                _member.activityMultiplier) / 100;
-            _member.secondsActive += newSecondsActive;
-            emit UpdateMemberSeconds(_member, newSecondsActive);
-        }
-        lastUpdate = currentUpdate;
-        emit Update(currentUpdate);
+    function _addToActivity(address _memberAddr, uint32 _amount) external onlyUpdater {
+        members[memberIdxs[_memberAddr] - 1].activity += _amount;
     }
 
     function getMembers() public view returns (Member[] memory) {

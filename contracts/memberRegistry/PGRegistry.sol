@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MemberRegistry.sol";
+import "./SecondsUpdater.sol";
+
 
 import "@prb/math/src/UD60x18.sol";
 
@@ -52,6 +54,8 @@ contract PGRegistry is MemberRegistry, Ownable {
     constructor(address _splitsMain, address _split) {
         splitsMain = ISPLITS(_splitsMain);
         split = _split;
+        SecondsUpdater updaterContract = new SecondsUpdater(address(this));
+        updater = IUPDATOR(address(updaterContract));
     }
 
     // REGISTERY MODIFIERS
@@ -95,7 +99,7 @@ contract PGRegistry is MemberRegistry, Ownable {
 
     // update member total seconds and seconds in last period
     function updateSecondsActive() external {
-        _updateSecondsActive();
+        _updateActivity();
     } 
 
     // takes a sorted (offchain) list of addresses from the member array
@@ -127,7 +131,7 @@ contract PGRegistry is MemberRegistry, Ownable {
         // ignore inactive members
         for (uint256 i = 0; i < members.length; i++) {
             if (members[i].activityMultiplier > 0) {
-                UD60x18 udActiveSeconds = wrap(members[i].secondsActive);
+                UD60x18 udActiveSeconds = wrap(members[i].activity);
                 total = total + unwrap(udActiveSeconds.sqrt());
                 nonZeroCount++;
             }
@@ -149,7 +153,7 @@ contract PGRegistry is MemberRegistry, Ownable {
                 _receivers[nonZeroIndex] = _member.account;
 
                 _percentAllocations[nonZeroIndex] = uint32(
-                    (unwrap(wrap(_member.secondsActive).sqrt()) *
+                    (unwrap(wrap(_member.activity).sqrt()) *
                         PERCENTAGE_SCALE) / total
                 );
 
