@@ -5,6 +5,7 @@ export * as example from "./example";
 export * as fixtures from "./fixtures";
 export * as interfaces from "./interfaces";
 export * as mock from "./mock";
+export * as nftClaimer from "./nftClaimer";
 export * as nftDrip from "./nftDrip";
 export * as nftOnboarder from "./nftOnboarder";
 export * as onboarder from "./onboarder";

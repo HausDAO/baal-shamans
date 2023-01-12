@@ -9,6 +9,8 @@ import type * as interfaces from "./interfaces";
 export type { interfaces };
 import type * as mock from "./mock";
 export type { mock };
+import type * as nftClaimer from "./nftClaimer";
+export type { nftClaimer };
 import type * as nftDrip from "./nftDrip";
 export type { nftDrip };
 import type * as nftOnboarder from "./nftOnboarder";
