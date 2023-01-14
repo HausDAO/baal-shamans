@@ -15,13 +15,19 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     mapping(address => uint256) public timeLedger;
     bool public sharesOrLoot;
     uint256 public checkInInterval; // length of checkInInterval in seconds
-    uint256 public sharesPerSecond; // Amount of shares awarded per second of work
+    uint256 public tokenPerSecond; // Amount of shares awarded per second of work
+    uint32[5] public valueScalePercs; // Array of percentage numbers for each value scale, ex. [60, 80, 100, 120, 140]
+
+    address public teamLead;
+    bool public isPaused = false;
 
     event Claim(
         address indexed account,
         uint256 timestamp,
         uint256 tokenAmountClaimed,
-        uint32 secondsWorked,
+        uint64 totalSecondsWorked,
+        uint64[] sessionsTime,
+        uint8[] sessionsValue,
         string metadata
     );
 
@@ -29,14 +35,15 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
 
     function init(
         address _baal,
+        address _teamLead,
         bool _sharesOrLoot,
-        uint256 _sharesPerSecond,
+        uint256 _tokenPerSecond,
         uint256 _checkInInterval,
-        string calldata _projectMetadata
+        uint16[5] calldata _valueScalePercs
     ) external initializer {
         baal = IBAAL(_baal);
         sharesOrLoot = _sharesOrLoot;
-
+        teamLead = _teamLead;
         // get shares or loot token address from dao based on 'shares' flag
         if (sharesOrLoot) {
             token = IERC20(baal.sharesToken());
@@ -44,9 +51,9 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
             token = IERC20(baal.lootToken());
         }
         checkInInterval = _checkInInterval;
-        sharesPerSecond = _sharesPerSecond;
+        tokenPerSecond = _tokenPerSecond;
+        valueScalePercs = _valueScalePercs;
         // post(_projectMetadata, "daoMasons.summon.checkInV2");
-        emit Post(msg.sender, _projectMetadata, "daoMasons.summon.checkInV2");
     }
 
     // Mint share or loot tokens
@@ -65,42 +72,69 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     }
 
     // can be called by any account to claim per checkInInterval tokens
-    function claim(uint32 _secondsWorked, string calldata _metadata) public {
-        require(
-            _secondsWorked < checkInInterval,
-            "Claimable work period must be less than the check in interval"
-        );
+    function claim(
+        uint64[] memory _sessionsTime,
+        uint8[] memory _sessionsValue,
+        string calldata _metadata
+    ) public {
+        require(!isPaused, "Contract is locked.");
 
         require(
             block.timestamp - timeLedger[msg.sender] >= checkInInterval ||
                 timeLedger[msg.sender] == 0,
             "Can only claim 1 time per interval"
         );
-
         require(
             token.balanceOf(msg.sender) > 0,
             "Members Only: Must have DAO tokens in order to claim through this shaman"
         );
 
-        uint256 amount = calculate(_secondsWorked, sharesPerSecond);
-        _mintTokens(msg.sender, amount);
+        uint64 totalSecondsWorked = 0;
+        uint256 totalAmtEarned = 0;
+
+        for (uint256 i = 0; i < _sessionsTime.length; i++) {
+            totalSecondsWorked += _sessionsTime[i];
+            totalAmtEarned += _calculate(
+                _sessionsTime[i],
+                tokenPerSecond,
+                valueScalePercs[_sessionsValue[i]]
+            );
+        }
+
+        // checks that the sum total time of all sessions is less than the checkInInterval
+        require(
+            totalSecondsWorked < checkInInterval,
+            "Claimable work period must be less than the checkIn interval"
+        );
+
+        _mintTokens(msg.sender, totalAmtEarned);
         timeLedger[msg.sender] = block.timestamp;
 
         emit Claim(
             msg.sender,
             block.timestamp,
-            amount,
-            _secondsWorked,
+            totalAmtEarned,
+            totalSecondsWorked,
+            _sessionsTime,
+            _sessionsValue,
             _metadata
         );
     }
 
-    function calculate(uint32 _secondsWorked, uint256 _sharesPerSecond)
-        internal
-        pure
-        returns (uint256 total)
-    {
-        total = _secondsWorked * _sharesPerSecond;
+    function _calculate(
+        uint64 _secondsWorked,
+        uint256 _tokenPerSecond,
+        uint32 _percentage
+    ) internal pure returns (uint256 total) {
+        total = ((_secondsWorked * _percentage) / 100) * _tokenPerSecond;
+    }
+
+    function lock(bool _shouldLock) public {
+        require(
+            msg.sender == teamLead,
+            "Only teamLead can lock or unlock this shaman"
+        );
+        isPaused = _shouldLock;
     }
 
     function post(string calldata content, string calldata tag) external {
@@ -113,11 +147,13 @@ contract CheckInSummoner {
 
     event CheckInSummonComplete(
         address indexed baal,
-        address indexed summoner,
-        address shamanAddress,
+        address summoner,
+        address indexed shamanAddress,
+        address teamLead,
         bool sharesOrLoot,
-        uint256 sharesPerSecond,
+        uint256 tokenPerSecond,
         uint256 checkInInterval,
+        uint16[5] valueScalePercs,
         string projectMetadata
     );
 
@@ -127,9 +163,11 @@ contract CheckInSummoner {
 
     function summon(
         address _baal,
+        address _teamLead,
         bool _sharesOrLoot,
-        uint256 _sharesPerSecond,
+        uint256 _tokenPerSecond,
         uint256 _checkInInterval,
+        uint16[5] calldata _valueScalePercs,
         string memory _projectMetadata
     ) public returns (address) {
         CheckInShaman checkInShaman = CheckInShaman(
@@ -137,22 +175,24 @@ contract CheckInSummoner {
         );
         checkInShaman.init(
             _baal,
+            _teamLead,
             _sharesOrLoot,
-            _sharesPerSecond,
+            _tokenPerSecond,
             _checkInInterval,
-            _projectMetadata
+            _valueScalePercs
         );
 
         emit CheckInSummonComplete(
             _baal,
             msg.sender,
             address(checkInShaman),
+            _teamLead,
             _sharesOrLoot,
-            _sharesPerSecond,
+            _tokenPerSecond,
             _checkInInterval,
+            _valueScalePercs,
             _projectMetadata
         );
-
         return address(checkInShaman);
     }
 }
