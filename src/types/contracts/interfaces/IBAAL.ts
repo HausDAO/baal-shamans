@@ -25,6 +25,7 @@ import type {
 
 export interface IBAALInterface extends utils.Interface {
   functions: {
+    "avatar()": FunctionFragment;
     "isManager(address)": FunctionFragment;
     "lootToken()": FunctionFragment;
     "mintLoot(address[],uint256[])": FunctionFragment;
@@ -37,6 +38,7 @@ export interface IBAALInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "avatar"
       | "isManager"
       | "lootToken"
       | "mintLoot"
@@ -47,6 +49,7 @@ export interface IBAALInterface extends utils.Interface {
       | "totalSupply"
   ): FunctionFragment;
 
+  encodeFunctionData(functionFragment: "avatar", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isManager",
     values: [PromiseOrValue<string>]
@@ -74,6 +77,7 @@ export interface IBAALInterface extends utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(functionFragment: "avatar", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lootToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintLoot", data: BytesLike): Result;
@@ -119,6 +123,8 @@ export interface IBAAL extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    avatar(overrides?: CallOverrides): Promise<[string]>;
+
     isManager(
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -151,6 +157,8 @@ export interface IBAAL extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
+
+  avatar(overrides?: CallOverrides): Promise<string>;
 
   isManager(
     shaman: PromiseOrValue<string>,
@@ -185,6 +193,8 @@ export interface IBAAL extends BaseContract {
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
+    avatar(overrides?: CallOverrides): Promise<string>;
+
     isManager(
       shaman: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -219,6 +229,8 @@ export interface IBAAL extends BaseContract {
   filters: {};
 
   estimateGas: {
+    avatar(overrides?: CallOverrides): Promise<BigNumber>;
+
     isManager(
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -253,6 +265,8 @@ export interface IBAAL extends BaseContract {
   };
 
   populateTransaction: {
+    avatar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     isManager(
       shaman: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }

@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as checkIn from "./checkIn";
 export type { checkIn };
+import type * as checkInV2 from "./checkInV2";
+export type { checkInV2 };
 import type * as fixtures from "./fixtures";
 export type { fixtures };
 import type * as interfaces from "./interfaces";

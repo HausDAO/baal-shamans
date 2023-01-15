@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as checkIn from "./checkIn";
+export * as checkInV2 from "./checkInV2";
 export * as fixtures from "./fixtures";
 export * as interfaces from "./interfaces";
 export * as mock from "./mock";

@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "../interfaces/IBAAL.sol";
 
-contract CheckInShaman is ReentrancyGuard, Initializable {
+contract CheckInShamanV2 is ReentrancyGuard, Initializable {
     IBAAL public baal;
     IERC20 public token;
 
@@ -16,7 +16,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     bool public sharesOrLoot;
     uint256 public checkInInterval; // length of checkInInterval in seconds
     uint256 public tokenPerSecond; // Amount of shares awarded per second of work
-    uint32[4] public valueScalePercs; // Array of percentage numbers for each value scale, ex. [60, 80, 100, 120, 140]
+    uint32[5] public valueScalePercs; // Array of percentage numbers for each value scale, ex. [60, 80, 100, 120, 140]
 
     address public teamLead;
     bool public isLocked = false;
@@ -34,7 +34,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     event Mutiny(address from, address to);
     event UpdateInterval(uint256 from, uint256 to);
     event UpdateTokenPerSecond(uint256 from, uint256 to);
-    event UpdatePercs(uint32[4] from, uint32[4] to);
+    event UpdatePercs(uint32[5] from, uint32[5] to);
 
     event Post(address indexed account, string indexed tag, string metadata);
 
@@ -44,7 +44,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         bool _sharesOrLoot,
         uint256 _tokenPerSecond,
         uint256 _checkInInterval,
-        uint32[4] calldata _valueScalePercs
+        uint32[5] calldata _valueScalePercs
     ) external initializer {
         baal = IBAAL(_baal);
 
@@ -115,7 +115,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         }
         require(
             totalSecondsWorked < checkInInterval,
-            "Claimable work period must be less than the checkIn interval"
+            "Claimable work period must be less than the check in interval"
         );
 
         _mintTokens(msg.sender, totalAmtEarned);
@@ -166,7 +166,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         emit UpdateTokenPerSecond(tokenPerSecond, _newTokenPerSecond);
     }
 
-    function updateValueScalePercs(uint32[4] calldata _newValueScalePercs)
+    function updateValueScalePercs(uint32[5] calldata _newValueScalePercs)
         public
         baalOnly
     {
@@ -179,7 +179,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     }
 }
 
-contract CheckInSummoner {
+contract CheckInV2Summoner {
     address public template;
 
     event CheckInSummonComplete(
@@ -190,7 +190,7 @@ contract CheckInSummoner {
         bool sharesOrLoot,
         uint256 tokenPerSecond,
         uint256 checkInInterval,
-        uint32[4] valueScalePercs,
+        uint32[5] valueScalePercs,
         string projectMetadata
     );
 
@@ -204,10 +204,10 @@ contract CheckInSummoner {
         bool _sharesOrLoot,
         uint256 _tokenPerSecond,
         uint256 _checkInInterval,
-        uint32[4] calldata _valueScalePercs,
+        uint32[5] calldata _valueScalePercs,
         string memory _projectMetadata
     ) public returns (address) {
-        CheckInShaman checkInShaman = CheckInShaman(
+        CheckInShamanV2 checkInShaman = CheckInShamanV2(
             payable(Clones.clone(template))
         );
         checkInShaman.init(

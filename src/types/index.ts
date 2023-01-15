@@ -118,6 +118,10 @@ export type { CheckInShaman } from "./contracts/checkIn/CheckIn.sol/CheckInShama
 export { CheckInShaman__factory } from "./factories/contracts/checkIn/CheckIn.sol/CheckInShaman__factory";
 export type { CheckInSummoner } from "./contracts/checkIn/CheckIn.sol/CheckInSummoner";
 export { CheckInSummoner__factory } from "./factories/contracts/checkIn/CheckIn.sol/CheckInSummoner__factory";
+export type { CheckInShamanV2 } from "./contracts/checkInV2/checkInV2.sol/CheckInShamanV2";
+export { CheckInShamanV2__factory } from "./factories/contracts/checkInV2/checkInV2.sol/CheckInShamanV2__factory";
+export type { CheckInV2Summoner } from "./contracts/checkInV2/checkInV2.sol/CheckInV2Summoner";
+export { CheckInV2Summoner__factory } from "./factories/contracts/checkInV2/checkInV2.sol/CheckInV2Summoner__factory";
 export type { Baal } from "./contracts/fixtures/Baal/contracts/Baal";
 export { Baal__factory } from "./factories/contracts/fixtures/Baal/contracts/Baal__factory";
 export type { BaalSummoner } from "./contracts/fixtures/Baal/contracts/BaalSummoner";

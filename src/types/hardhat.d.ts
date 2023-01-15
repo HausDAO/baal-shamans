@@ -237,6 +237,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CheckInSummoner__factory>;
     getContractFactory(
+      name: "CheckInShamanV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CheckInShamanV2__factory>;
+    getContractFactory(
+      name: "CheckInV2Summoner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CheckInV2Summoner__factory>;
+    getContractFactory(
       name: "Baal",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Baal__factory>;
@@ -617,6 +625,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.CheckInSummoner>;
+    getContractAt(
+      name: "CheckInShamanV2",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CheckInShamanV2>;
+    getContractAt(
+      name: "CheckInV2Summoner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CheckInV2Summoner>;
     getContractAt(
       name: "Baal",
       address: string,
