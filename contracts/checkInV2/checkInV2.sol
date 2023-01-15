@@ -16,10 +16,10 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
     bool public sharesOrLoot;
     uint256 public checkInInterval; // length of checkInInterval in seconds
     uint256 public tokenPerSecond; // Amount of shares awarded per second of work
-    uint32[5] public valueScalePercs; // Array of percentage numbers for each value scale, ex. [60, 80, 100, 120, 140]
+    uint32[4] public valueScalePercs; // Array of percentage numbers for each value scale, ex. [60, 80, 100, 120, 140]
 
     address public teamLead;
-    bool public isPaused = false;
+    bool public isLocked = false;
 
     event Claim(
         address indexed account,
@@ -31,6 +31,11 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         string metadata
     );
 
+    event Mutiny(address from, address to);
+    event UpdateInterval(uint256 from, uint256 to);
+    event UpdateTokenPerSecond(uint256 from, uint256 to);
+    event UpdatePercs(uint32[4] from, uint32[4] to);
+
     event Post(address indexed account, string indexed tag, string metadata);
 
     function init(
@@ -39,9 +44,10 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         bool _sharesOrLoot,
         uint256 _tokenPerSecond,
         uint256 _checkInInterval,
-        uint16[5] calldata _valueScalePercs
+        uint32[4] calldata _valueScalePercs
     ) external initializer {
         baal = IBAAL(_baal);
+
         sharesOrLoot = _sharesOrLoot;
         teamLead = _teamLead;
         // get shares or loot token address from dao based on 'shares' flag
@@ -53,7 +59,14 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         checkInInterval = _checkInInterval;
         tokenPerSecond = _tokenPerSecond;
         valueScalePercs = _valueScalePercs;
-        // post(_projectMetadata, "daoMasons.summon.checkInV2");
+    }
+
+    modifier baalOnly() {
+        require(
+            msg.sender == baal.avatar(),
+            "This can only be called by a Baal Proposal"
+        );
+        _;
     }
 
     // Mint share or loot tokens
@@ -76,8 +89,8 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         uint64[] memory _sessionsTime,
         uint8[] memory _sessionsValue,
         string calldata _metadata
-    ) public {
-        require(!isPaused, "Contract is locked.");
+    ) public nonReentrant {
+        require(!isLocked, "Contract is locked.");
 
         require(
             block.timestamp - timeLedger[msg.sender] >= checkInInterval ||
@@ -100,8 +113,6 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
                 valueScalePercs[_sessionsValue[i]]
             );
         }
-
-        // checks that the sum total time of all sessions is less than the checkInInterval
         require(
             totalSecondsWorked < checkInInterval,
             "Claimable work period must be less than the checkIn interval"
@@ -134,7 +145,33 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
             msg.sender == teamLead,
             "Only teamLead can lock or unlock this shaman"
         );
-        isPaused = _shouldLock;
+        isLocked = _shouldLock;
+    }
+
+    function mutiny(address _newTeamLead) public baalOnly {
+        teamLead = _newTeamLead;
+        emit Mutiny(teamLead, _newTeamLead);
+    }
+
+    function updateCheckInInterval(uint256 _newCheckInInterval)
+        public
+        baalOnly
+    {
+        checkInInterval = _newCheckInInterval;
+        emit UpdateInterval(checkInInterval, _newCheckInInterval);
+    }
+
+    function updateTokenPerSecond(uint256 _newTokenPerSecond) public baalOnly {
+        tokenPerSecond = _newTokenPerSecond;
+        emit UpdateTokenPerSecond(tokenPerSecond, _newTokenPerSecond);
+    }
+
+    function updateValueScalePercs(uint32[4] calldata _newValueScalePercs)
+        public
+        baalOnly
+    {
+        valueScalePercs = _newValueScalePercs;
+        emit UpdatePercs(valueScalePercs, _newValueScalePercs);
     }
 
     function post(string calldata content, string calldata tag) external {
@@ -147,13 +184,13 @@ contract CheckInSummoner {
 
     event CheckInSummonComplete(
         address indexed baal,
-        address summoner,
+        address indexed summoner,
         address indexed shamanAddress,
         address teamLead,
         bool sharesOrLoot,
         uint256 tokenPerSecond,
         uint256 checkInInterval,
-        uint16[5] valueScalePercs,
+        uint32[4] valueScalePercs,
         string projectMetadata
     );
 
@@ -167,7 +204,7 @@ contract CheckInSummoner {
         bool _sharesOrLoot,
         uint256 _tokenPerSecond,
         uint256 _checkInInterval,
-        uint16[5] calldata _valueScalePercs,
+        uint32[4] calldata _valueScalePercs,
         string memory _projectMetadata
     ) public returns (address) {
         CheckInShaman checkInShaman = CheckInShaman(

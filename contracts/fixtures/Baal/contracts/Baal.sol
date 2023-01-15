@@ -21,7 +21,12 @@ import "./interfaces/IBaalToken.sol";
 
 /// @title Baal ';_;'.
 /// @notice Flexible guild contract inspired by Moloch DAO framework.
-contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRelayRecipient {
+contract Baal is
+    Module,
+    EIP712Upgradeable,
+    ReentrancyGuardUpgradeable,
+    BaseRelayRecipient
+{
     using ECDSAUpgradeable for bytes32;
 
     // ERC20 SHARES + LOOT
@@ -66,7 +71,10 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
     string public override versionRecipient; /* version recipient for OpenGSN */
 
     // SIGNATURE HELPERS
-    bytes32 constant VOTE_TYPEHASH = keccak256("Vote(string name,address voter,uint256 expiry,uint256 nonce,uint32 proposalId,bool support)");
+    bytes32 constant VOTE_TYPEHASH =
+        keccak256(
+            "Vote(string name,address voter,uint256 expiry,uint256 nonce,uint32 proposalId,bool support)"
+        );
 
     // DATA STRUCTURES
     struct Proposal {
@@ -107,7 +115,10 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
     }
 
     modifier baalOrAdminOnly() {
-        require(_msgSender() == avatar || isAdmin(_msgSender()), "!baal & !admin"); /*check `shaman` is admin*/
+        require(
+            _msgSender() == avatar || isAdmin(_msgSender()),
+            "!baal & !admin"
+        ); /*check `shaman` is admin*/
         _;
     }
 
@@ -301,7 +312,6 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
             totalShares(),
             totalLoot()
         );
-
     }
 
     /*****************
@@ -324,7 +334,8 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
         );
 
         bool selfSponsor = false; /*plant sponsor flag*/
-        if (sharesToken.getCurrentVotes(_msgSender()) >= sponsorThreshold ||
+        if (
+            sharesToken.getCurrentVotes(_msgSender()) >= sponsorThreshold ||
             sharesToken.getCurrentVotes(tx.origin) >= sponsorThreshold /*if called by a middleware contract (e.g. minion) & above sponsor threshold*/
         ) {
             selfSponsor = true; /*if above sponsor threshold, self-sponsor*/
@@ -379,7 +390,10 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
     function sponsorProposal(uint32 id) external nonReentrant {
         Proposal storage prop = proposals[id]; /*alias proposal storage pointers*/
 
-        require(sharesToken.getCurrentVotes(_msgSender()) >= sponsorThreshold, "!sponsor"); /*check 'votes > threshold - required to sponsor proposal*/
+        require(
+            sharesToken.getCurrentVotes(_msgSender()) >= sponsorThreshold,
+            "!sponsor"
+        ); /*check 'votes > threshold - required to sponsor proposal*/
         require(state(id) == ProposalState.Submitted, "!submitted");
         require(
             prop.expiration == 0 ||
@@ -743,19 +757,18 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
         external
         baalOrAdminOnly
     {
-
-        if(pauseShares && !sharesToken.paused()){
+        if (pauseShares && !sharesToken.paused()) {
             sharesToken.pause();
             emit SharesPaused(true);
-        } else if(!pauseShares && sharesToken.paused()){
+        } else if (!pauseShares && sharesToken.paused()) {
             sharesToken.unpause();
             emit SharesPaused(false);
         }
 
-        if(pauseLoot && !lootToken.paused()){
+        if (pauseLoot && !lootToken.paused()) {
             lootToken.pause();
             emit LootPaused(true);
-        } else if(!pauseLoot && lootToken.paused()){
+        } else if (!pauseLoot && lootToken.paused()) {
             lootToken.unpause();
             emit LootPaused(false);
         }
@@ -858,13 +871,13 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
                 _governanceConfig,
                 (uint32, uint32, uint256, uint256, uint256, uint256)
             );
-        require(quorum >= 0 && minRetention <= 100, 'bad quorum');
-        require(minRetention >= 0 && minRetention <= 100, 'bad minRetention');
+        require(quorum >= 0 && minRetention <= 100, "bad quorum");
+        require(minRetention >= 0 && minRetention <= 100, "bad minRetention");
 
         // on initialization of governance config, there is no shares token
         // skip this check on initialization of governance config.
         if (sponsorThreshold > 0 && address(sharesToken) != address(0)) {
-            require(sponsor <= totalShares(), 'sponsor > sharesSupply');
+            require(sponsor <= totalShares(), "sponsor > sharesSupply");
         }
 
         if (voting != 0) votingPeriod = voting; /*if positive, reset min. voting periods to first `value`*/
@@ -1037,14 +1050,22 @@ contract Baal is Module, EIP712Upgradeable, ReentrancyGuardUpgradeable, BaseRela
     }
 
     /// @notice Provides access to message sender of a meta transaction (EIP-2771)
-    function _msgSender() internal view override(ContextUpgradeable, BaseRelayRecipient)
-        returns (address sender) {
+    function _msgSender()
+        internal
+        view
+        override(ContextUpgradeable, BaseRelayRecipient)
+        returns (address sender)
+    {
         sender = BaseRelayRecipient._msgSender();
     }
 
     /// @notice Provides access to message data of a meta transaction (EIP-2771)
-    function _msgData() internal view override(ContextUpgradeable, BaseRelayRecipient)
-        returns (bytes calldata) {
+    function _msgData()
+        internal
+        view
+        override(ContextUpgradeable, BaseRelayRecipient)
+        returns (bytes calldata)
+    {
         return BaseRelayRecipient._msgData();
     }
 }
