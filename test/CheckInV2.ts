@@ -64,6 +64,25 @@ const STATIC_RATES: Scales = [100, 100, 100, 100, 100];
 //   return block.number;
 // }
 
+const calculateSessions = (
+  times: number[],
+  values: number[],
+  scales: Scales,
+  sharesPerSecond: number
+) => {
+  let totalEarned = BigNumber.from(0);
+
+  for (let i = 0; i < times.length; i++) {
+    const time = times[i];
+    const perc = scales[values[i]];
+
+    const earned = BigNumber.from(time).mul(sharesPerSecond).mul(perc).div(100);
+    totalEarned = totalEarned.add(earned);
+  }
+
+  return totalEarned;
+};
+
 async function moveForwardPeriods(periods: number, extra?: number) {
   const goToTime =
     (await blockTime()) +
@@ -97,6 +116,16 @@ const setShamanProposal = async function (
   await baal.processProposal(proposalId, setShamanAction);
   return proposalId;
 };
+
+const simulateProposal = async ({
+  txData,
+  baal,
+  multisend,
+}: {
+  txData: string;
+  baal: Baal;
+  multisend: MultiSend;
+}) => {};
 
 type CheckInInitArgs = {
   baalAddress: string;
@@ -385,12 +414,12 @@ describe('CheckIn ShamanV2 Initialize', function () {
       defaultDAOSettings,
       [sharesPaused, lootPaused],
       [
-        [summoner.address, applicant.address, s1.address],
-        [shares, shares, shares],
+        [summoner.address, applicant.address, s1.address, s2.address],
+        [shares, shares, shares, shares],
       ],
       [
-        [summoner.address, applicant.address, s1.address],
-        [loot, loot, loot],
+        [summoner.address, applicant.address, s1.address, s2.address],
+        [loot, loot, loot, loot],
       ],
       baalSummoner
     );
@@ -567,7 +596,7 @@ describe('CheckIn ShamanV2 Initialize', function () {
       );
 
       checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
-      const daoMemberCheckIn = checkInShaman.connect(s2);
+      const daoMemberCheckIn = checkInShaman.connect(s3);
       await setShamanProposal(baal, multisend, checkInAddress, 2);
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
@@ -595,18 +624,212 @@ describe('CheckIn ShamanV2 Initialize', function () {
 
       checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
       const daoMemberCheckIn = checkInShaman.connect(s1);
+
       await setShamanProposal(baal, multisend, checkInAddress, 2);
 
+      // reverts if equal
       await expect(
         daoMemberCheckIn.claim([SECONDS.DAY], [3], METADATA)
       ).to.be.revertedWith(
         'Claimable work period must be less than the check in interval'
       );
+      // reverts if greater-than
       await expect(
         daoMemberCheckIn.claim([SECONDS.DAY + 1], [3], METADATA)
       ).to.be.revertedWith(
         'Claimable work period must be less than the check in interval'
       );
+    });
+    it('should reward users based on varying value levels and times for multiple sessions', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: DYNAMIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const TIMES = [
+        2 * SECONDS.HOUR,
+        2 * SECONDS.HOUR,
+        1 * SECONDS.HOUR,
+        3 * SECONDS.HOUR,
+      ];
+      const VALUES = [0, 4, 3, 2];
+
+      const totalEarned = calculateSessions(
+        TIMES,
+        VALUES,
+        DYNAMIC_RATES,
+        ONE_SHARE_PER_HOUR
+      );
+
+      const s1SharesBefore = await sharesToken.balanceOf(s1.address);
+
+      const totalExpectedValue = totalEarned.add(s1SharesBefore);
+
+      await daoMemberCheckIn.claim(TIMES, VALUES, METADATA);
+      const s1SharesAfter = await sharesToken.balanceOf(s1.address);
+
+      expect(s1SharesAfter.sub(totalExpectedValue)).to.equal(0);
+    });
+    it('should revert if a user tries to claim more than the interval over many sessions', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const SIX_HOURS_WORKED = 6 * SECONDS.HOUR;
+
+      await expect(
+        daoMemberCheckIn.claim(
+          [
+            SIX_HOURS_WORKED,
+            SIX_HOURS_WORKED,
+            SIX_HOURS_WORKED,
+            SIX_HOURS_WORKED + 1,
+          ],
+          [3, 3, 3, 3],
+          METADATA
+        )
+      ).to.be.revertedWith(
+        'Claimable work period must be less than the check in interval'
+      );
+    });
+    it('should revert if contract is locked', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      const daoMemberCheckIn2 = checkInShaman.connect(s2);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      await daoMemberCheckIn.lock(true);
+
+      await expect(
+        daoMemberCheckIn.claim([3 * SECONDS.HOUR], [3], METADATA)
+      ).to.be.revertedWith('Contract is locked');
+      await expect(
+        daoMemberCheckIn2.claim([3 * SECONDS.HOUR], [3], METADATA)
+      ).to.be.revertedWith('Contract is locked');
+    });
+    it('should revert if non-team lead tries to lock or unlock', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      const daoMemberCheckIn2 = checkInShaman.connect(s2);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      await expect(daoMemberCheckIn2.lock(true)).to.be.revertedWith(
+        'Only teamLead can lock or unlock this shaman'
+      );
+      await daoMemberCheckIn.lock(true);
+
+      await expect(daoMemberCheckIn2.lock(false)).to.be.revertedWith(
+        'Only teamLead can lock or unlock this shaman'
+      );
+    });
+  });
+
+  describe('CheckInShamanV2 - Updating shaman config', () => {
+    it('should revert if a team lead or member tries to call any of the updater functions', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+      const daoMemberCheckIn = checkInShaman.connect(s1);
+      const daoMemberCheckIn2 = checkInShaman.connect(s2);
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      await expect(daoMemberCheckIn2.mutiny(s2.address)).to.be.revertedWith(
+        'This can only be called by a Baal Proposal'
+      );
+      await expect(
+        daoMemberCheckIn2.updateTokenPerSecond(ONE_SHARE_PER_HOUR)
+      ).to.be.revertedWith('This can only be called by a Baal Proposal');
+      await expect(
+        daoMemberCheckIn2.updateCheckInInterval(SECONDS.DAY)
+      ).to.be.revertedWith('This can only be called by a Baal Proposal');
+      await expect(
+        daoMemberCheckIn2.updateValueScalePercs(STATIC_RATES)
+      ).to.be.revertedWith('This can only be called by a Baal Proposal');
+
+      await expect(daoMemberCheckIn.mutiny(s2.address)).to.be.revertedWith(
+        'This can only be called by a Baal Proposal'
+      );
+      await expect(
+        daoMemberCheckIn.updateTokenPerSecond(ONE_SHARE_PER_HOUR)
+      ).to.be.revertedWith('This can only be called by a Baal Proposal');
+      await expect(
+        daoMemberCheckIn.updateCheckInInterval(SECONDS.DAY)
+      ).to.be.revertedWith('This can only be called by a Baal Proposal');
+      await expect(
+        daoMemberCheckIn.updateValueScalePercs(STATIC_RATES)
+      ).to.be.revertedWith('This can only be called by a Baal Proposal');
     });
   });
 });

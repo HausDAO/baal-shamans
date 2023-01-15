@@ -38,6 +38,14 @@ contract CheckInShamanV2 is ReentrancyGuard, Initializable {
 
     event Post(address indexed account, string indexed tag, string metadata);
 
+    modifier baalOnly() {
+        require(
+            msg.sender == baal.avatar(),
+            "This can only be called by a Baal Proposal"
+        );
+        _;
+    }
+
     function init(
         address _baal,
         address _teamLead,
@@ -59,14 +67,6 @@ contract CheckInShamanV2 is ReentrancyGuard, Initializable {
         checkInInterval = _checkInInterval;
         tokenPerSecond = _tokenPerSecond;
         valueScalePercs = _valueScalePercs;
-    }
-
-    modifier baalOnly() {
-        require(
-            msg.sender == baal.avatar(),
-            "This can only be called by a Baal Proposal"
-        );
-        _;
     }
 
     // Mint share or loot tokens
