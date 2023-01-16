@@ -121,11 +121,35 @@ const simulateProposal = async ({
   txData,
   baal,
   multisend,
+  targetAddress,
 }: {
   txData: string;
   baal: Baal;
   multisend: MultiSend;
-}) => {};
+  targetAddress: string;
+}) => {
+  const action = encodeMultiAction(
+    multisend,
+    [txData],
+    [targetAddress],
+    [BigNumber.from(0)],
+    [0]
+  );
+
+  await baal.submitProposal(action, 0, 0, '');
+  const proposalId = await baal.proposalCount();
+  await baal.submitVote(proposalId, true);
+  await moveForwardPeriods(2);
+  const result = await baal.processProposal(proposalId, action);
+  const receipt = await result.wait();
+  // console.log('result', result);
+  // console.log('receipt', receipt);
+  // console.log(
+  //   'receipt args',
+  //   receipt.events?.find((event) => event.event === 'ProcessProposal')
+  // );
+  return proposalId;
+};
 
 type CheckInInitArgs = {
   baalAddress: string;
@@ -784,6 +808,157 @@ describe('CheckIn ShamanV2 Initialize', function () {
   });
 
   describe('CheckInShamanV2 - Updating shaman config', () => {
+    it('should allow members to use a proposal to remove the team lead', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+      const oldLead = await checkInShaman.teamLead();
+
+      expect(oldLead).to.equal(s1.address);
+      const mutinyAction = checkInShaman.interface.encodeFunctionData(
+        'mutiny',
+        [s2.address]
+      );
+      await simulateProposal({
+        baal,
+        multisend,
+        txData: mutinyAction,
+        targetAddress: checkInShaman.address,
+      });
+      const newLead = await checkInShaman.teamLead();
+
+      expect(newLead).to.equal(s2.address);
+    });
+    it('should allow the DAO to change their value scale', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+      const updateScaleAction = checkInShaman.interface.encodeFunctionData(
+        'updateValueScalePercs',
+        [DYNAMIC_RATES]
+      );
+
+      await simulateProposal({
+        baal,
+        multisend,
+        txData: updateScaleAction,
+        targetAddress: checkInShaman.address,
+      });
+      const scale0 = await checkInShaman.valueScalePercs([0]);
+      const scale1 = await checkInShaman.valueScalePercs([1]);
+      const scale2 = await checkInShaman.valueScalePercs([2]);
+      const scale3 = await checkInShaman.valueScalePercs([3]);
+      const scale4 = await checkInShaman.valueScalePercs([4]);
+
+      expect(scale2).to.equal(DYNAMIC_RATES[2]);
+      expect(scale0).to.equal(DYNAMIC_RATES[0]);
+      expect(scale1).to.equal(DYNAMIC_RATES[1]);
+      expect(scale3).to.equal(DYNAMIC_RATES[3]);
+      expect(scale4).to.equal(DYNAMIC_RATES[4]);
+    });
+    it('The DAO should be able to update the Check In interval', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const oldInterval = await checkInShaman.checkInInterval();
+      expect(oldInterval).to.equal(SECONDS.DAY);
+
+      const updateIntervalAction = checkInShaman.interface.encodeFunctionData(
+        'updateCheckInInterval',
+        [6 * SECONDS.DAY]
+      );
+
+      await simulateProposal({
+        baal,
+        multisend,
+        txData: updateIntervalAction,
+        targetAddress: checkInShaman.address,
+      });
+      const newInterval = await checkInShaman.checkInInterval();
+      expect(newInterval).to.equal(6 * SECONDS.DAY);
+    });
+    it('The DAO should be able to the amount of DAO tokens per second reward', async () => {
+      const checkInSummonArgs: CheckInInitArgs = {
+        baalAddress: baal.address,
+        teamLead: s1.address,
+        sharesOrLoot: true,
+        tokenPerSecond: ONE_SHARE_PER_HOUR,
+        checkInInterval: SECONDS.DAY,
+        valueScalePercs: STATIC_RATES,
+        projectMetadata: 'test',
+      };
+      const checkInAddress = await summonCheckInShaman(
+        checkInSummonArgs,
+        checkInSingleton,
+        checkInSummonerSingleton
+      );
+
+      checkInShaman = CheckInFactory.attach(checkInAddress) as CheckInShamanV2;
+
+      await setShamanProposal(baal, multisend, checkInAddress, 2);
+
+      const oldTPS = await checkInShaman.tokenPerSecond();
+      expect(oldTPS).to.equal(ONE_SHARE_PER_HOUR);
+
+      const updateTPSAction = checkInShaman.interface.encodeFunctionData(
+        'updateTokenPerSecond',
+        [ONE_SHARE_PER_HOUR * 2]
+      );
+
+      await simulateProposal({
+        baal,
+        multisend,
+        txData: updateTPSAction,
+        targetAddress: checkInShaman.address,
+      });
+      const newTPS = await checkInShaman.tokenPerSecond();
+      expect(newTPS).to.equal(ONE_SHARE_PER_HOUR * 2);
+    });
     it('should revert if a team lead or member tries to call any of the updater functions', async () => {
       const checkInSummonArgs: CheckInInitArgs = {
         baalAddress: baal.address,

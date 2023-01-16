@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
+import "hardhat/console.sol";
 import "../interfaces/IBAAL.sol";
 
 contract CheckInShamanV2 is ReentrancyGuard, Initializable {
@@ -149,29 +149,33 @@ contract CheckInShamanV2 is ReentrancyGuard, Initializable {
     }
 
     function mutiny(address _newTeamLead) public baalOnly {
+        address oldTeamLead = teamLead;
         teamLead = _newTeamLead;
-        emit Mutiny(teamLead, _newTeamLead);
+        emit Mutiny(oldTeamLead, _newTeamLead);
     }
 
     function updateCheckInInterval(uint256 _newCheckInInterval)
         public
         baalOnly
     {
+        uint256 oldInterval = checkInInterval;
         checkInInterval = _newCheckInInterval;
-        emit UpdateInterval(checkInInterval, _newCheckInInterval);
+        emit UpdateInterval(oldInterval, _newCheckInInterval);
     }
 
     function updateTokenPerSecond(uint256 _newTokenPerSecond) public baalOnly {
+        uint256 oldTokenPerSecond = tokenPerSecond;
         tokenPerSecond = _newTokenPerSecond;
-        emit UpdateTokenPerSecond(tokenPerSecond, _newTokenPerSecond);
+        emit UpdateTokenPerSecond(oldTokenPerSecond, _newTokenPerSecond);
     }
 
     function updateValueScalePercs(uint32[5] calldata _newValueScalePercs)
         public
         baalOnly
     {
+        uint32[5] memory oldPercs = valueScalePercs;
         valueScalePercs = _newValueScalePercs;
-        emit UpdatePercs(valueScalePercs, _newValueScalePercs);
+        emit UpdatePercs(oldPercs, _newValueScalePercs);
     }
 
     function post(string calldata content, string calldata tag) external {
