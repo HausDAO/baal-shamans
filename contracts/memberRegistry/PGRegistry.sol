@@ -105,18 +105,18 @@ contract PGRegistry is MemberRegistry, Ownable {
     //  addresses sorted, only non zero allocations
     //  keep track of running total of allocations because it must equal PERCENTAGE_SCALE
     // send update to 0xsplits
-    // update seconds active on all members 
+    // update seconds active on all members
+    // todo: update comments 
     function updateSplits(address[] memory _sortedList) public {
         
         (address[] memory _receivers, uint32[] memory _percentAllocations) = calculate(_sortedList);
         
-        uint32 _distributorsFee = 0;
         // run splits update
         splitsMain.updateSplit(
             split,
             _receivers,
             _percentAllocations,
-            _distributorsFee
+            0 // distributorsFee
         );
     }
 
@@ -135,14 +135,11 @@ contract PGRegistry is MemberRegistry, Ownable {
                 "account not a member or not sorted"
             );
             previous = listAddr;
-        }
 
-        // get the total seconds in the last period
-        // ignore inactive members
-        for (uint256 i = 0; i < members.length; i++) {
+            // get the total seconds in the last period
+            // ignore inactive members
             if (members[i].activityMultiplier > 0) {
-                UD60x18 udActiveSeconds = wrap(members[i].secondsActive);
-                total = total + unwrap(udActiveSeconds.sqrt());
+                total = total + unwrap(wrap(members[i].secondsActive).sqrt());
                 nonZeroCount++;
             }
         }
