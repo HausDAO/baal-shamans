@@ -107,6 +107,20 @@ contract PGRegistry is MemberRegistry, Ownable {
     // send update to 0xsplits
     // update seconds active on all members 
     function updateSplits(address[] memory _sortedList) public {
+        
+        (address[] memory _receivers, uint32[] memory _percentAllocations) = calculate(_sortedList);
+        
+        uint32 _distributorsFee = 0;
+        // run splits update
+        splitsMain.updateSplit(
+            split,
+            _receivers,
+            _percentAllocations,
+            _distributorsFee
+        );
+    }
+
+    function calculate(address[] memory _sortedList) public view returns (address[] memory, uint32[] memory){
         uint256 nonZeroCount;
         uint256 total;
         address previous;
@@ -132,11 +146,10 @@ contract PGRegistry is MemberRegistry, Ownable {
                 nonZeroCount++;
             }
         }
-
+        
         // define variables for split params
         address[] memory _receivers = new address[](nonZeroCount);
         uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
-        uint32 _distributorsFee = 0;
         
         // define variables for second loop
         uint32 runningTotal;
@@ -163,13 +176,7 @@ contract PGRegistry is MemberRegistry, Ownable {
             _percentAllocations[0] += uint32(PERCENTAGE_SCALE - runningTotal);
         }
 
-        // run splits update
-        splitsMain.updateSplit(
-            split,
-            _receivers,
-            _percentAllocations,
-            _distributorsFee
-        );
+        return (_receivers, _percentAllocations);
     }
 
     function transferControl(address _split, address _newController)

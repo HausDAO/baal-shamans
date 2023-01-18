@@ -589,7 +589,7 @@ describe("Member registry", function () {
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
       expect(s1RegistryMember.secondsActive).to.equal(0);
     });
-    it("adds new member batch trigger", async function () {
+    it.only("adds new member batch trigger", async function () {
       // console.log(rgaddrsUnsorted, rgshares, rgmods, rgdates);
       
 
@@ -600,17 +600,27 @@ describe("Member registry", function () {
       );
       const count = await memberRegistry.count();
 
-      // todo: example of getting unsorted list from contract
+      const tx = await memberRegistry.updateSecondsActive();
+      gasStats("batch update secs", tx);
 
       const memberList = await memberRegistry.getMembers();
       // console.log(memberList);
       const addrList = memberList.map((item: any) => item.account)
+
       addrList.sort((a: any, b: any) => {
         return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
       });
 
-      const tx = await memberRegistry.updateSecondsActive();
-      gasStats("batch update secs", tx);
+      const calculate = await memberRegistry.calculate(addrList);
+
+      console.log('calculate', calculate);
+      
+      
+
+      // const total = Math.floor(memberList.reduce((acc: any, item: any) => {
+      //   return acc + Math.sqrt(item.secondsActive);
+      // }, 0));
+      // console.log('total sqrts', total);
 
       const tx1 = await memberRegistry.updateSplits(addrList);
       gasStats("batch update secs", tx1);

@@ -49,6 +49,7 @@ export interface PGRegistryInterface extends utils.Interface {
     "acceptControl(address)": FunctionFragment;
     "batchNewMember(address[],uint32[],uint32[])": FunctionFragment;
     "batchUpdateMember(address[],uint32[])": FunctionFragment;
+    "calculate(address[])": FunctionFragment;
     "cancelControlTransfer(address)": FunctionFragment;
     "count()": FunctionFragment;
     "getMembers()": FunctionFragment;
@@ -73,6 +74,7 @@ export interface PGRegistryInterface extends utils.Interface {
       | "acceptControl"
       | "batchNewMember"
       | "batchUpdateMember"
+      | "calculate"
       | "cancelControlTransfer"
       | "count"
       | "getMembers"
@@ -110,6 +112,10 @@ export interface PGRegistryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "batchUpdateMember",
     values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculate",
+    values: [PromiseOrValue<string>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelControlTransfer",
@@ -187,6 +193,7 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "batchUpdateMember",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "calculate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cancelControlTransfer",
     data: BytesLike
@@ -342,6 +349,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    calculate(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<[string[], number[]]>;
+
     cancelControlTransfer(
       _split: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -436,6 +448,11 @@ export interface PGRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  calculate(
+    _sortedList: PromiseOrValue<string>[],
+    overrides?: CallOverrides
+  ): Promise<[string[], number[]]>;
+
   cancelControlTransfer(
     _split: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -529,6 +546,11 @@ export interface PGRegistry extends BaseContract {
       _activityMultipliers: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
+
+    calculate(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<[string[], number[]]>;
 
     cancelControlTransfer(
       _split: PromiseOrValue<string>,
@@ -653,6 +675,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    calculate(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     cancelControlTransfer(
       _split: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -737,6 +764,11 @@ export interface PGRegistry extends BaseContract {
       _members: PromiseOrValue<string>[],
       _activityMultipliers: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    calculate(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     cancelControlTransfer(
