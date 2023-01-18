@@ -69,11 +69,12 @@ export interface DhSignalTCRInterface extends utils.Interface {
     "baalShares()": FunctionFragment;
     "claim(address)": FunctionFragment;
     "claimAndVote((uint48,uint152)[])": FunctionFragment;
-    "currentTimestamp()": FunctionFragment;
+    "endDate()": FunctionFragment;
     "getVotesForAddress(address)": FunctionFragment;
+    "isComplete()": FunctionFragment;
     "lootSnapshotId()": FunctionFragment;
     "releaseTokens(uint256[])": FunctionFragment;
-    "setUp(address)": FunctionFragment;
+    "setUp(address,uint256)": FunctionFragment;
     "sharesSnapshotId()": FunctionFragment;
     "vote((uint48,uint152)[])": FunctionFragment;
     "voterBalances(address)": FunctionFragment;
@@ -89,8 +90,9 @@ export interface DhSignalTCRInterface extends utils.Interface {
       | "baalShares"
       | "claim"
       | "claimAndVote"
-      | "currentTimestamp"
+      | "endDate"
       | "getVotesForAddress"
+      | "isComplete"
       | "lootSnapshotId"
       | "releaseTokens"
       | "setUp"
@@ -119,13 +121,14 @@ export interface DhSignalTCRInterface extends utils.Interface {
     functionFragment: "claimAndVote",
     values: [DhSignalTCR.BatchVoteParamStruct[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "currentTimestamp",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "endDate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getVotesForAddress",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isComplete",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "lootSnapshotId",
@@ -137,7 +140,7 @@ export interface DhSignalTCRInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setUp",
-    values: [PromiseOrValue<string>]
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "sharesSnapshotId",
@@ -172,14 +175,12 @@ export interface DhSignalTCRInterface extends utils.Interface {
     functionFragment: "claimAndVote",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "currentTimestamp",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "endDate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getVotesForAddress",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isComplete", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lootSnapshotId",
     data: BytesLike
@@ -319,12 +320,14 @@ export interface DhSignalTCR extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    currentTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
+    endDate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getVotesForAddress(
       _voter: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[DhSignalTCR.VoteStructOutput[]]>;
+
+    isComplete(overrides?: CallOverrides): Promise<[boolean]>;
 
     lootSnapshotId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -335,6 +338,7 @@ export interface DhSignalTCR extends BaseContract {
 
     setUp(
       _baalAddress: PromiseOrValue<string>,
+      _endDate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -391,12 +395,14 @@ export interface DhSignalTCR extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  currentTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+  endDate(overrides?: CallOverrides): Promise<BigNumber>;
 
   getVotesForAddress(
     _voter: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<DhSignalTCR.VoteStructOutput[]>;
+
+  isComplete(overrides?: CallOverrides): Promise<boolean>;
 
   lootSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -407,6 +413,7 @@ export interface DhSignalTCR extends BaseContract {
 
   setUp(
     _baalAddress: PromiseOrValue<string>,
+    _endDate: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -463,12 +470,14 @@ export interface DhSignalTCR extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    currentTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+    endDate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getVotesForAddress(
       _voter: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<DhSignalTCR.VoteStructOutput[]>;
+
+    isComplete(overrides?: CallOverrides): Promise<boolean>;
 
     lootSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -479,6 +488,7 @@ export interface DhSignalTCR extends BaseContract {
 
     setUp(
       _baalAddress: PromiseOrValue<string>,
+      _endDate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -582,12 +592,14 @@ export interface DhSignalTCR extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    currentTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+    endDate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getVotesForAddress(
       _voter: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    isComplete(overrides?: CallOverrides): Promise<BigNumber>;
 
     lootSnapshotId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -598,6 +610,7 @@ export interface DhSignalTCR extends BaseContract {
 
     setUp(
       _baalAddress: PromiseOrValue<string>,
+      _endDate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -647,12 +660,14 @@ export interface DhSignalTCR extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    currentTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    endDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getVotesForAddress(
       _voter: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    isComplete(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     lootSnapshotId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -663,6 +678,7 @@ export interface DhSignalTCR extends BaseContract {
 
     setUp(
       _baalAddress: PromiseOrValue<string>,
+      _endDate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

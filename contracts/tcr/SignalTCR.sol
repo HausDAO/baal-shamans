@@ -30,6 +30,7 @@ error INVALID_AMOUNT();
 error NOT_OWNER();
 error TOKENS_ALREADY_RELAEASED();
 error TOKENS_ALREADY_CLAIMED();
+error ENDED();
 
 /**
 @title DAO Signal Conviction Contract
@@ -55,15 +56,9 @@ contract DhSignalTCR is Initializable {
         uint48 choiceId
     );
 
-    event ClaimTokens(
-        address indexed voter,
-        uint256 amount
-    );
+    event ClaimTokens(address indexed voter, uint256 amount);
 
-    event Init(
-        uint256 sharesSnapshotId,
-        uint256 lootSnapshotId
-    );
+    event Init(uint256 sharesSnapshotId, uint256 lootSnapshotId);
 
     /// @notice dao staking token contract instance.
     IBAAL public baal;
@@ -71,6 +66,7 @@ contract DhSignalTCR is Initializable {
     IBAALTOKEN public baalLoot;
     uint256 public sharesSnapshotId;
     uint256 public lootSnapshotId;
+    uint256 public endDate;
 
     /// @notice vote struct array.
     Vote[] public votes;
@@ -102,35 +98,43 @@ contract DhSignalTCR is Initializable {
     /// @notice mapping which tracks the claimed balance for a particular user.
     mapping(address => UserBalance) public voterBalances;
 
+    modifier notEnded() {
+        if (isComplete()) {
+            revert ENDED();
+        }
+        _;
+    }
+
     /**
     @dev initializer.
     @param _baalAddress dao staking baal address.
     */
-    function setUp(address _baalAddress) public initializer {
+    function setUp(address _baalAddress, uint256 _endDate) public initializer {
         baal = IBAAL(_baalAddress);
         baalShares = IBAALTOKEN(baal.sharesToken());
         baalLoot = IBAALTOKEN(baal.lootToken());
         // get current snapshot ids
         sharesSnapshotId = baalShares.getCurrentSnapshotId();
         lootSnapshotId = baalLoot.getCurrentSnapshotId();
+        endDate = _endDate;
         // emit event with snapshot ids
         emit Init(sharesSnapshotId, lootSnapshotId);
     }
 
     /**
-    @dev Get Current Timestamp.
-    @return current timestamp.
+    @dev Checks if the contract is ended or not.
+    @return bool is completed.
     */
-    function currentTimestamp() external view returns (uint256) {
-        return block.timestamp;
+    function isComplete() public view returns (bool) {
+        return endDate < block.timestamp;
     }
 
     /**
     @dev User claims balance at snapshot.
     @return snapshot total balance.
     */
-    function claim(address account) public returns (uint256) {
-        if(voterBalances[account].claimed) {
+    function claim(address account) public notEnded returns (uint256) {
+        if (voterBalances[account].claimed) {
             revert TOKENS_ALREADY_CLAIMED();
         }
         voterBalances[account].claimed = true;
@@ -205,7 +209,7 @@ contract DhSignalTCR is Initializable {
     @dev Stake and get Voting rights in batch.
     @param _batch array of struct to stake into multiple choices.
     */
-    function vote(BatchVoteParam[] calldata _batch) external {
+    function vote(BatchVoteParam[] calldata _batch) external notEnded {
         for (uint256 i = 0; i < _batch.length; i++) {
             _vote(_batch[i].choiceId, _batch[i].amount);
         }
@@ -215,7 +219,7 @@ contract DhSignalTCR is Initializable {
     @dev Sender claim and stake in batch
     @param _batch array of struct to stake into multiple choices.
     */
-    function claimAndVote(BatchVoteParam[] calldata _batch) external {
+    function claimAndVote(BatchVoteParam[] calldata _batch) external notEnded {
         claim(msg.sender);
         for (uint256 i = 0; i < _batch.length; i++) {
             _vote(_batch[i].choiceId, _batch[i].amount);
@@ -226,7 +230,7 @@ contract DhSignalTCR is Initializable {
     @dev Release tokens and give up votes.
     @param _voteIds array of vote ids in order to release tokens.
     */
-    function releaseTokens(uint256[] calldata _voteIds) external {
+    function releaseTokens(uint256[] calldata _voteIds) external notEnded {
         for (uint256 i = 0; i < _voteIds.length; i++) {
             if (votes[_voteIds[i]].voter != msg.sender) {
                 revert NOT_OWNER();
@@ -256,6 +260,7 @@ contract DhSignalTCRSumoner {
         address indexed signal,
         address indexed baal,
         uint256 date,
+        uint256 endDate,
         string details
     );
 
@@ -263,18 +268,24 @@ contract DhSignalTCRSumoner {
         _template = template;
     }
 
-    function summonSignalTCR(address baal, string calldata details)
-        external
-        returns (address)
-    {
-
+    function summonSignalTCR(
+        address baal,
+        uint256 endDate,
+        string calldata details
+    ) external returns (address) {
         DhSignalTCR signal = DhSignalTCR(Clones.clone(_template));
 
-        signal.setUp(baal);
+        signal.setUp(baal, endDate);
 
         // todo: set as module on baal avatar
 
-        emit SummonDaoStake(address(signal), address(baal), block.timestamp, details);
+        emit SummonDaoStake(
+            address(signal),
+            address(baal),
+            block.timestamp,
+            endDate,
+            details
+        );
 
         return (address(signal));
     }

@@ -4,6 +4,7 @@
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -29,7 +30,7 @@ import type {
 export interface DhSignalTCRSumonerInterface extends utils.Interface {
   functions: {
     "_template()": FunctionFragment;
-    "summonSignalTCR(address,string)": FunctionFragment;
+    "summonSignalTCR(address,uint256,string)": FunctionFragment;
   };
 
   getFunction(
@@ -39,7 +40,11 @@ export interface DhSignalTCRSumonerInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "_template", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "summonSignalTCR",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
   ): string;
 
   decodeFunctionResult(functionFragment: "_template", data: BytesLike): Result;
@@ -49,7 +54,7 @@ export interface DhSignalTCRSumonerInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "SummonDaoStake(address,address,uint256,string)": EventFragment;
+    "SummonDaoStake(address,address,uint256,uint256,string)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "SummonDaoStake"): EventFragment;
@@ -59,10 +64,11 @@ export interface SummonDaoStakeEventObject {
   signal: string;
   baal: string;
   date: BigNumber;
+  endDate: BigNumber;
   details: string;
 }
 export type SummonDaoStakeEvent = TypedEvent<
-  [string, string, BigNumber, string],
+  [string, string, BigNumber, BigNumber, string],
   SummonDaoStakeEventObject
 >;
 
@@ -99,6 +105,7 @@ export interface DhSignalTCRSumoner extends BaseContract {
 
     summonSignalTCR(
       baal: PromiseOrValue<string>,
+      endDate: PromiseOrValue<BigNumberish>,
       details: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -108,6 +115,7 @@ export interface DhSignalTCRSumoner extends BaseContract {
 
   summonSignalTCR(
     baal: PromiseOrValue<string>,
+    endDate: PromiseOrValue<BigNumberish>,
     details: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -117,22 +125,25 @@ export interface DhSignalTCRSumoner extends BaseContract {
 
     summonSignalTCR(
       baal: PromiseOrValue<string>,
+      endDate: PromiseOrValue<BigNumberish>,
       details: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
   };
 
   filters: {
-    "SummonDaoStake(address,address,uint256,string)"(
+    "SummonDaoStake(address,address,uint256,uint256,string)"(
       signal?: PromiseOrValue<string> | null,
       baal?: PromiseOrValue<string> | null,
       date?: null,
+      endDate?: null,
       details?: null
     ): SummonDaoStakeEventFilter;
     SummonDaoStake(
       signal?: PromiseOrValue<string> | null,
       baal?: PromiseOrValue<string> | null,
       date?: null,
+      endDate?: null,
       details?: null
     ): SummonDaoStakeEventFilter;
   };
@@ -142,6 +153,7 @@ export interface DhSignalTCRSumoner extends BaseContract {
 
     summonSignalTCR(
       baal: PromiseOrValue<string>,
+      endDate: PromiseOrValue<BigNumberish>,
       details: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -152,6 +164,7 @@ export interface DhSignalTCRSumoner extends BaseContract {
 
     summonSignalTCR(
       baal: PromiseOrValue<string>,
+      endDate: PromiseOrValue<BigNumberish>,
       details: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
