@@ -79,23 +79,18 @@ const summonDhSignalTCR = async function (
   let signalAddress;
   let summonTx = await dhSignalTCRSummoner.summonSignalTCR(
     baal.address,
+    Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30), // 30 days from now
     "test data"
   );
 
-  let result = await summonTx.wait();
+  let result: any = await summonTx.wait();
+  
   if (
-    result &&
-    result.events &&
-    result.events[1] &&
-    result.events[1].args &&
-    result.events[1].args.signal
+    result?.events[2]?.args?.signal
   ) {
-    console.log("signal", result.events[1].args.signal);
-    signalAddress = result.events[1].args.signal;
-  }
-
-  const subscription = dhSignalTCRSingleton.attach(signalAddress);
-
+    console.log("signal", result.events[2].args.signal);
+    signalAddress = result.events[2].args.signal;
+  }  
   return signalAddress;
 };
 
