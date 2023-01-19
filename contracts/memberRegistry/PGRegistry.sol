@@ -30,6 +30,23 @@ interface ISPLITS {
     function acceptControl(address split) external;
 
     function cancelControlTransfer(address split) external;
+
+    function distributeETH(
+        address split,
+        address[] calldata accounts,
+        uint32[] calldata percentAllocations,
+        uint32 distributorFee,
+        address distributorAddress
+    ) external;
+
+    function distributeERC20(
+        address split,
+        IERC20 token,
+        address[] calldata accounts,
+        uint32[] calldata percentAllocations,
+        uint32 distributorFee,
+        address distributorAddress
+    ) external;
 }
 
 // DAO member registry
@@ -74,6 +91,7 @@ contract PGRegistry is MemberRegistry, Ownable {
     }
 
     // BATCH OPERATIONS
+
     function batchNewMember(
         address[] memory _members,
         uint32[] memory _activityMultipliers,
@@ -93,24 +111,24 @@ contract PGRegistry is MemberRegistry, Ownable {
         }
     }
 
+    // UPDATE ACTIONS
+
     // update member total seconds and seconds in last period
-    function updateSecondsActive() external {
+    function updateSecondsActive() public {
         _updateSecondsActive();
-    } 
+    }
 
     // takes a sorted (offchain) list of addresses from the member array
-    // verifys the address list is sorted, has no dups, and is valid
-    // gets the total seconds from all members square rooted for % calc
-    // set up arrays and parameters for 0xsplits contract call
-    //  addresses sorted, only non zero allocations
-    //  keep track of running total of allocations because it must equal PERCENTAGE_SCALE
     // send update to 0xsplits
-    // update seconds active on all members
-    // todo: update comments 
-    function updateSplits(address[] memory _sortedList) public {
-        
-        (address[] memory _receivers, uint32[] memory _percentAllocations) = calculate(_sortedList);
-        
+    function updateSplits(address[] memory _sortedList)
+        public
+        returns (
+            address[] memory _receivers,
+            uint32[] memory _percentAllocations
+        )
+    {
+        (_receivers, _percentAllocations) = calculate(_sortedList);
+
         // run splits update
         splitsMain.updateSplit(
             split,
@@ -120,11 +138,71 @@ contract PGRegistry is MemberRegistry, Ownable {
         );
     }
 
-    function calculate(address[] memory _sortedList) public view returns (address[] memory, uint32[] memory){
+    // update member registry and update splits
+    function updateAll(address[] memory _sortedList)
+        external
+        returns (
+            address[] memory _receivers,
+            uint32[] memory _percentAllocations
+        )
+    {
+        updateSecondsActive();
+        (_receivers, _percentAllocations) = updateSplits(_sortedList);   
+    }
+
+    // update member registry, update splits, and distribute ETH
+    // wraps 0xsplits distributeETH
+    function updateAllAndDistributeETH(address[] memory _sortedList)
+        external
+    {
+        updateSecondsActive();
+        (
+            address[] memory _receivers,
+            uint32[] memory _percentAllocations
+        ) = updateSplits(_sortedList);
+        splitsMain.distributeETH(
+            split,
+            _receivers,
+            _percentAllocations,
+            0, // distributorsFee
+            address(0) // distributorAddress
+        );
+    }
+
+    // update member registry, update splits, and distribute ERC20
+    // wraps 0xsplits distributeERC20
+    function updateAllAndDistributeERC20(address[] memory _sortedList, IERC20 _token)
+        external
+    {
+        updateSecondsActive();
+        (
+            address[] memory _receivers,
+            uint32[] memory _percentAllocations
+        ) = updateSplits(_sortedList);
+        splitsMain.distributeERC20(
+            split,
+            _token,
+            _receivers,
+            _percentAllocations,
+            0, // distributorsFee
+            address(0) // distributorAddress
+        );
+    }
+
+    // calculate the split allocations
+    // verifys the address list is sorted, has no dups, and is valid
+    // gets the total seconds from all members square rooted for % calc
+    // set up arrays and parameters for 0xsplits contract call
+    //  addresses sorted, only non zero allocations
+    //  keep track of running total of allocations because it must equal PERCENTAGE_SCALE
+    function calculate(address[] memory _sortedList)
+        public
+        view
+        returns (address[] memory, uint32[] memory)
+    {
         uint256 nonZeroCount;
         uint256 total;
         address previous;
-
 
         // verify list is current members and is sorted
         require(_sortedList.length == members.length, "invalid list");
@@ -143,11 +221,11 @@ contract PGRegistry is MemberRegistry, Ownable {
                 nonZeroCount++;
             }
         }
-        
+
         // define variables for split params
         address[] memory _receivers = new address[](nonZeroCount);
         uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
-        
+
         // define variables for second loop
         uint32 runningTotal;
         uint256 nonZeroIndex; // index counter for non zero allocations
@@ -175,6 +253,14 @@ contract PGRegistry is MemberRegistry, Ownable {
 
         return (_receivers, _percentAllocations);
     }
+
+    // CONFIG
+
+    function setSplit(address _split) external onlyOwner {
+        split = _split;
+    }
+
+    // OWNERSHIP INTERFCE WRAPERS
 
     function transferControl(address _split, address _newController)
         external

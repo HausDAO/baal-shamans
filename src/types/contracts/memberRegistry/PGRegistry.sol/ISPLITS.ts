@@ -28,6 +28,8 @@ export interface ISPLITSInterface extends utils.Interface {
     "acceptControl(address)": FunctionFragment;
     "cancelControlTransfer(address)": FunctionFragment;
     "createSplit(address[],uint32[],uint32,address)": FunctionFragment;
+    "distributeERC20(address,address,address[],uint32[],uint32,address)": FunctionFragment;
+    "distributeETH(address,address[],uint32[],uint32,address)": FunctionFragment;
     "transferControl(address,address)": FunctionFragment;
     "updateSplit(address,address[],uint32[],uint32)": FunctionFragment;
   };
@@ -37,6 +39,8 @@ export interface ISPLITSInterface extends utils.Interface {
       | "acceptControl"
       | "cancelControlTransfer"
       | "createSplit"
+      | "distributeERC20"
+      | "distributeETH"
       | "transferControl"
       | "updateSplit"
   ): FunctionFragment;
@@ -52,6 +56,27 @@ export interface ISPLITSInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "createSplit",
     values: [
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "distributeERC20",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "distributeETH",
+    values: [
+      PromiseOrValue<string>,
       PromiseOrValue<string>[],
       PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>,
@@ -82,6 +107,14 @@ export interface ISPLITSInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "createSplit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "distributeERC20",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "distributeETH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -141,6 +174,25 @@ export interface ISPLITS extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    distributeERC20(
+      split: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    distributeETH(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     transferControl(
       split: PromiseOrValue<string>,
       newController: PromiseOrValue<string>,
@@ -174,6 +226,25 @@ export interface ISPLITS extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  distributeERC20(
+    split: PromiseOrValue<string>,
+    token: PromiseOrValue<string>,
+    accounts: PromiseOrValue<string>[],
+    percentAllocations: PromiseOrValue<BigNumberish>[],
+    distributorFee: PromiseOrValue<BigNumberish>,
+    distributorAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  distributeETH(
+    split: PromiseOrValue<string>,
+    accounts: PromiseOrValue<string>[],
+    percentAllocations: PromiseOrValue<BigNumberish>[],
+    distributorFee: PromiseOrValue<BigNumberish>,
+    distributorAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   transferControl(
     split: PromiseOrValue<string>,
     newController: PromiseOrValue<string>,
@@ -204,6 +275,25 @@ export interface ISPLITS extends BaseContract {
       percentAllocations: PromiseOrValue<BigNumberish>[],
       distributorsFee: PromiseOrValue<BigNumberish>,
       controller: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    distributeERC20(
+      split: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    distributeETH(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -243,6 +333,25 @@ export interface ISPLITS extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    distributeERC20(
+      split: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    distributeETH(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     transferControl(
       split: PromiseOrValue<string>,
       newController: PromiseOrValue<string>,
@@ -274,6 +383,25 @@ export interface ISPLITS extends BaseContract {
       percentAllocations: PromiseOrValue<BigNumberish>[],
       distributorsFee: PromiseOrValue<BigNumberish>,
       controller: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    distributeERC20(
+      split: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    distributeETH(
+      split: PromiseOrValue<string>,
+      accounts: PromiseOrValue<string>[],
+      percentAllocations: PromiseOrValue<BigNumberish>[],
+      distributorFee: PromiseOrValue<BigNumberish>,
+      distributorAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

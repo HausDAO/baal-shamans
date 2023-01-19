@@ -14,7 +14,7 @@ async function main() {
     moloch: "0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1",
     safe: "0xe014057ebe435dbcf0139a9a05b7ee0a05b74ec8",
     splitsMain: "0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE" ,
-    splits: "0xCb52567F44e7a1b01dDf49a25eFf217Ade7885b2"
+    splits: "0x50730dF422AF6c5465C6EfdE58dEC6443908a059"
   }
 
   const PGRegistry = await ethers.getContractFactory("PGRegistry");

@@ -72,6 +72,77 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "contract IERC20",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address[]",
+        name: "accounts",
+        type: "address[]",
+      },
+      {
+        internalType: "uint32[]",
+        name: "percentAllocations",
+        type: "uint32[]",
+      },
+      {
+        internalType: "uint32",
+        name: "distributorFee",
+        type: "uint32",
+      },
+      {
+        internalType: "address",
+        name: "distributorAddress",
+        type: "address",
+      },
+    ],
+    name: "distributeERC20",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "split",
+        type: "address",
+      },
+      {
+        internalType: "address[]",
+        name: "accounts",
+        type: "address[]",
+      },
+      {
+        internalType: "uint32[]",
+        name: "percentAllocations",
+        type: "uint32[]",
+      },
+      {
+        internalType: "uint32",
+        name: "distributorFee",
+        type: "uint32",
+      },
+      {
+        internalType: "address",
+        name: "distributorAddress",
+        type: "address",
+      },
+    ],
+    name: "distributeETH",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "split",
+        type: "address",
+      },
+      {
         internalType: "address",
         name: "newController",
         type: "address",

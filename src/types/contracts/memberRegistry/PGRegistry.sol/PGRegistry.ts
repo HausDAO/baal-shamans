@@ -59,10 +59,14 @@ export interface PGRegistryInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setNewMember(address,uint32,uint32)": FunctionFragment;
+    "setSplit(address)": FunctionFragment;
     "split()": FunctionFragment;
     "splitsMain()": FunctionFragment;
     "transferControl(address,address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateAll(address[])": FunctionFragment;
+    "updateAllAndDistributeERC20(address[],address)": FunctionFragment;
+    "updateAllAndDistributeETH(address[])": FunctionFragment;
     "updateMember(address,uint32)": FunctionFragment;
     "updateSecondsActive()": FunctionFragment;
     "updateSplits(address[])": FunctionFragment;
@@ -84,10 +88,14 @@ export interface PGRegistryInterface extends utils.Interface {
       | "owner"
       | "renounceOwnership"
       | "setNewMember"
+      | "setSplit"
       | "split"
       | "splitsMain"
       | "transferControl"
       | "transferOwnership"
+      | "updateAll"
+      | "updateAllAndDistributeERC20"
+      | "updateAllAndDistributeETH"
       | "updateMember"
       | "updateSecondsActive"
       | "updateSplits"
@@ -151,6 +159,10 @@ export interface PGRegistryInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setSplit",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "split", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "splitsMain",
@@ -163,6 +175,18 @@ export interface PGRegistryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateAll",
+    values: [PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateAllAndDistributeERC20",
+    values: [PromiseOrValue<string>[], PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateAllAndDistributeETH",
+    values: [PromiseOrValue<string>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "updateMember",
@@ -212,6 +236,7 @@ export interface PGRegistryInterface extends utils.Interface {
     functionFragment: "setNewMember",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setSplit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "split", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "splitsMain", data: BytesLike): Result;
   decodeFunctionResult(
@@ -220,6 +245,15 @@ export interface PGRegistryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "updateAll", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateAllAndDistributeERC20",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateAllAndDistributeETH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -397,6 +431,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setSplit(
+      _split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     split(overrides?: CallOverrides): Promise<[string]>;
 
     splitsMain(overrides?: CallOverrides): Promise<[string]>;
@@ -409,6 +448,22 @@ export interface PGRegistry extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateAll(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateAllAndDistributeERC20(
+      _sortedList: PromiseOrValue<string>[],
+      _token: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    updateAllAndDistributeETH(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -496,6 +551,11 @@ export interface PGRegistry extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setSplit(
+    _split: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   split(overrides?: CallOverrides): Promise<string>;
 
   splitsMain(overrides?: CallOverrides): Promise<string>;
@@ -508,6 +568,22 @@ export interface PGRegistry extends BaseContract {
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateAll(
+    _sortedList: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateAllAndDistributeERC20(
+    _sortedList: PromiseOrValue<string>[],
+    _token: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  updateAllAndDistributeETH(
+    _sortedList: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -593,6 +669,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setSplit(
+      _split: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     split(overrides?: CallOverrides): Promise<string>;
 
     splitsMain(overrides?: CallOverrides): Promise<string>;
@@ -608,6 +689,27 @@ export interface PGRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    updateAll(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [string[], number[]] & {
+        _receivers: string[];
+        _percentAllocations: number[];
+      }
+    >;
+
+    updateAllAndDistributeERC20(
+      _sortedList: PromiseOrValue<string>[],
+      _token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateAllAndDistributeETH(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     updateMember(
       _member: PromiseOrValue<string>,
       _activityMultiplier: PromiseOrValue<BigNumberish>,
@@ -619,7 +721,12 @@ export interface PGRegistry extends BaseContract {
     updateSplits(
       _sortedList: PromiseOrValue<string>[],
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      [string[], number[]] & {
+        _receivers: string[];
+        _percentAllocations: number[];
+      }
+    >;
   };
 
   filters: {
@@ -714,6 +821,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setSplit(
+      _split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     split(overrides?: CallOverrides): Promise<BigNumber>;
 
     splitsMain(overrides?: CallOverrides): Promise<BigNumber>;
@@ -726,6 +838,22 @@ export interface PGRegistry extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateAll(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateAllAndDistributeERC20(
+      _sortedList: PromiseOrValue<string>[],
+      _token: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    updateAllAndDistributeETH(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -805,6 +933,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setSplit(
+      _split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     split(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     splitsMain(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -817,6 +950,22 @@ export interface PGRegistry extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateAll(
+      _sortedList: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateAllAndDistributeERC20(
+      _sortedList: PromiseOrValue<string>[],
+      _token: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateAllAndDistributeETH(
+      _sortedList: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
