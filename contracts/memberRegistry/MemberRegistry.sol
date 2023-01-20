@@ -5,6 +5,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "hardhat/console.sol";
 
+//*********************************************************************//
+// --------------------------- custom errors ------------------------- //
+//*********************************************************************//
+error ALREADY_REGISTERED();
+error NOT_REGISTERED();
+error START_DATE_IN_PAST();
+error INVALID_ACTIVITY_MULTIPLIER();
+
 abstract contract MemberRegistry {
     struct Member {
         address account;
@@ -36,16 +44,10 @@ abstract contract MemberRegistry {
         uint32 _activityMultiplier,
         uint32 _startDate
     ) internal {
-        // require unique?
-        require(memberIdxs[_member] == 0, "already registered");
-        require(
-            _startDate <= uint32(block.timestamp),
-            "start date can not be in the future"
-        );
-        require(
-            _activityMultiplier <= 100,
-            "invalid _activityMultiplier, between 0-100"
-        );
+        if(memberIdxs[_member] != 0) revert ALREADY_REGISTERED();
+        if(_startDate > uint32(block.timestamp)) revert START_DATE_IN_PAST();
+        if(_activityMultiplier > 100) revert INVALID_ACTIVITY_MULTIPLIER();
+
         // set to 0, will be updated in next update
         uint32 secsActive = 0;
         members.push(
@@ -60,11 +62,9 @@ abstract contract MemberRegistry {
         address _member,
         uint32 _activityMultiplier // 0-100 %
     ) internal {
-        require(memberIdxs[_member] != 0, "not registered");
-        require(
-            _activityMultiplier <= 100,
-            "invalid _activityMultiplier, between 0-100"
-        );
+        if(memberIdxs[_member] == 0) revert NOT_REGISTERED();
+        if(_activityMultiplier > 100) revert INVALID_ACTIVITY_MULTIPLIER();
+
         members[memberIdxs[_member] - 1]
             .activityMultiplier = _activityMultiplier;
         emit UpdateMember(members[memberIdxs[_member] - 1]);

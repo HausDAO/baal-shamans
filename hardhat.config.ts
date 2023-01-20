@@ -80,7 +80,7 @@ const config: HardhatUserConfig = {
       },
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
+      url: "https://goerli.infura.io/v3/895440c3ef614d1e835c6b2f114067e8", //<---- YOUR INFURA ID! (or it won't work)
       accounts: {
         mnemonic: mnemonic(),
       },
