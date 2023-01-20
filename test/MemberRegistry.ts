@@ -589,7 +589,7 @@ describe("Member registry", function () {
       expect(s1Balance).to.equal(ethers.utils.parseUnits("1.0", "ether"));
       expect(s1RegistryMember.secondsActive).to.equal(0);
     });
-    it.only("adds new member batch trigger", async function () {
+    it("adds new member batch trigger", async function () {
       // console.log(rgaddrsUnsorted, rgshares, rgmods, rgdates);
       
 

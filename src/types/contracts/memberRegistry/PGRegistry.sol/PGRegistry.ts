@@ -60,6 +60,7 @@ export interface PGRegistryInterface extends utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "setNewMember(address,uint32,uint32)": FunctionFragment;
     "setSplit(address)": FunctionFragment;
+    "setSplitMain(address)": FunctionFragment;
     "split()": FunctionFragment;
     "splitsMain()": FunctionFragment;
     "transferControl(address,address)": FunctionFragment;
@@ -89,6 +90,7 @@ export interface PGRegistryInterface extends utils.Interface {
       | "renounceOwnership"
       | "setNewMember"
       | "setSplit"
+      | "setSplitMain"
       | "split"
       | "splitsMain"
       | "transferControl"
@@ -161,6 +163,10 @@ export interface PGRegistryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setSplit",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSplitMain",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "split", values?: undefined): string;
@@ -237,6 +243,10 @@ export interface PGRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setSplit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setSplitMain",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "split", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "splitsMain", data: BytesLike): Result;
   decodeFunctionResult(
@@ -386,7 +396,12 @@ export interface PGRegistry extends BaseContract {
     calculate(
       _sortedList: PromiseOrValue<string>[],
       overrides?: CallOverrides
-    ): Promise<[string[], number[]]>;
+    ): Promise<
+      [string[], number[]] & {
+        _receivers: string[];
+        _percentAllocations: number[];
+      }
+    >;
 
     cancelControlTransfer(
       _split: PromiseOrValue<string>,
@@ -433,6 +448,11 @@ export interface PGRegistry extends BaseContract {
 
     setSplit(
       _split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setSplitMain(
+      _splitsMain: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -506,7 +526,12 @@ export interface PGRegistry extends BaseContract {
   calculate(
     _sortedList: PromiseOrValue<string>[],
     overrides?: CallOverrides
-  ): Promise<[string[], number[]]>;
+  ): Promise<
+    [string[], number[]] & {
+      _receivers: string[];
+      _percentAllocations: number[];
+    }
+  >;
 
   cancelControlTransfer(
     _split: PromiseOrValue<string>,
@@ -553,6 +578,11 @@ export interface PGRegistry extends BaseContract {
 
   setSplit(
     _split: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setSplitMain(
+    _splitsMain: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -626,7 +656,12 @@ export interface PGRegistry extends BaseContract {
     calculate(
       _sortedList: PromiseOrValue<string>[],
       overrides?: CallOverrides
-    ): Promise<[string[], number[]]>;
+    ): Promise<
+      [string[], number[]] & {
+        _receivers: string[];
+        _percentAllocations: number[];
+      }
+    >;
 
     cancelControlTransfer(
       _split: PromiseOrValue<string>,
@@ -671,6 +706,11 @@ export interface PGRegistry extends BaseContract {
 
     setSplit(
       _split: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSplitMain(
+      _splitsMain: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -826,6 +866,11 @@ export interface PGRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setSplitMain(
+      _splitsMain: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     split(overrides?: CallOverrides): Promise<BigNumber>;
 
     splitsMain(overrides?: CallOverrides): Promise<BigNumber>;
@@ -935,6 +980,11 @@ export interface PGRegistry extends BaseContract {
 
     setSplit(
       _split: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSplitMain(
+      _splitsMain: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

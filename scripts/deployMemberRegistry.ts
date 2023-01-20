@@ -8,8 +8,6 @@ async function main() {
 	const address = await deployer.getAddress();
 	console.log('Account address:', address);
 
-
-
   const deployConfig = {
     moloch: "0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1",
     safe: "0xe014057ebe435dbcf0139a9a05b7ee0a05b74ec8",
@@ -26,7 +24,6 @@ async function main() {
 
   await registryContract.transferOwnership(deployConfig.safe);
 
-  
 }
 
 // We recommend this pattern to be able to use async/await everywhere

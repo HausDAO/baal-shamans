@@ -49,6 +49,12 @@ interface ISPLITS {
     ) external;
 }
 
+//*********************************************************************//
+// --------------------------- custom errors ------------------------- //
+//*********************************************************************//
+error INVALID_LIST();
+error NOT_MEMBER_OR_NOT_SORTED();
+
 // DAO member registry
 //  - keeps track of members
 //  - keeps track of member part/full time activity (activity multiplier)
@@ -147,14 +153,12 @@ contract PGRegistry is MemberRegistry, Ownable {
         )
     {
         updateSecondsActive();
-        (_receivers, _percentAllocations) = updateSplits(_sortedList);   
+        (_receivers, _percentAllocations) = updateSplits(_sortedList);
     }
 
     // update member registry, update splits, and distribute ETH
     // wraps 0xsplits distributeETH
-    function updateAllAndDistributeETH(address[] memory _sortedList)
-        external
-    {
+    function updateAllAndDistributeETH(address[] memory _sortedList) external {
         updateSecondsActive();
         (
             address[] memory _receivers,
@@ -171,9 +175,10 @@ contract PGRegistry is MemberRegistry, Ownable {
 
     // update member registry, update splits, and distribute ERC20
     // wraps 0xsplits distributeERC20
-    function updateAllAndDistributeERC20(address[] memory _sortedList, IERC20 _token)
-        external
-    {
+    function updateAllAndDistributeERC20(
+        address[] memory _sortedList,
+        IERC20 _token
+    ) external {
         updateSecondsActive();
         (
             address[] memory _receivers,
@@ -198,20 +203,21 @@ contract PGRegistry is MemberRegistry, Ownable {
     function calculate(address[] memory _sortedList)
         public
         view
-        returns (address[] memory, uint32[] memory)
+        returns (
+            address[] memory _receivers,
+            uint32[] memory _percentAllocations
+        )
     {
         uint256 nonZeroCount;
         uint256 total;
         address previous;
 
         // verify list is current members and is sorted
-        require(_sortedList.length == members.length, "invalid list");
+        if (_sortedList.length != members.length) revert INVALID_LIST();
         for (uint256 i = 0; i < _sortedList.length; i++) {
             address listAddr = _sortedList[i];
-            require(
-                memberIdxs[listAddr] > 0 && previous < listAddr,
-                "account not a member or not sorted"
-            );
+            if (memberIdxs[listAddr] == 0 && listAddr >= previous)
+                revert NOT_MEMBER_OR_NOT_SORTED();
             previous = listAddr;
 
             // get the total seconds in the last period
@@ -223,8 +229,8 @@ contract PGRegistry is MemberRegistry, Ownable {
         }
 
         // define variables for split params
-        address[] memory _receivers = new address[](nonZeroCount);
-        uint32[] memory _percentAllocations = new uint32[](nonZeroCount);
+        _receivers = new address[](nonZeroCount);
+        _percentAllocations = new uint32[](nonZeroCount);
 
         // define variables for second loop
         uint32 runningTotal;
@@ -250,8 +256,6 @@ contract PGRegistry is MemberRegistry, Ownable {
         if (runningTotal != PERCENTAGE_SCALE) {
             _percentAllocations[0] += uint32(PERCENTAGE_SCALE - runningTotal);
         }
-
-        return (_receivers, _percentAllocations);
     }
 
     // CONFIG
@@ -260,7 +264,11 @@ contract PGRegistry is MemberRegistry, Ownable {
         split = _split;
     }
 
-    // OWNERSHIP INTERFCE WRAPERS
+    function setSplitMain(address _splitsMain) external onlyOwner {
+        splitsMain = ISPLITS(_splitsMain);
+    }
+
+    // OWNERSHIP INTERFCE WRAPPERS
 
     function transferControl(address _split, address _newController)
         external
