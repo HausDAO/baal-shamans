@@ -10,7 +10,7 @@ async function main() {
 
   const deployConfig = {
     moloch: "0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1",
-    safe: "0xe014057ebe435dbcf0139a9a05b7ee0a05b74ec8",
+    safe: "0xaccd85e73639b5213a001630eb2512dbd6292e32",
     splitsMain: "0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE" ,
     splits: "0x50730dF422AF6c5465C6EfdE58dEC6443908a059"
   }

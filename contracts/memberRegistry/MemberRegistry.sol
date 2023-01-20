@@ -10,7 +10,7 @@ import "hardhat/console.sol";
 //*********************************************************************//
 error ALREADY_REGISTERED();
 error NOT_REGISTERED();
-error START_DATE_IN_PAST();
+error START_DATE_IN_FUTURE();
 error INVALID_ACTIVITY_MULTIPLIER();
 
 abstract contract MemberRegistry {
@@ -45,7 +45,7 @@ abstract contract MemberRegistry {
         uint32 _startDate
     ) internal {
         if(memberIdxs[_member] != 0) revert ALREADY_REGISTERED();
-        if(_startDate > uint32(block.timestamp)) revert START_DATE_IN_PAST();
+        if(_startDate > uint32(block.timestamp)) revert START_DATE_IN_FUTURE();
         if(_activityMultiplier > 100) revert INVALID_ACTIVITY_MULTIPLIER();
 
         // set to 0, will be updated in next update

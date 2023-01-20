@@ -112,7 +112,7 @@ contract PGRegistry is MemberRegistry, Ownable {
         address[] memory _members,
         uint32[] memory _activityMultipliers
     ) external onlyOwner {
-        for (uint256 i = 0; i < members.length; i++) {
+        for (uint256 i = 0; i < _members.length; i++) {
             _updateMember(_members[i], _activityMultipliers[i]);
         }
     }
