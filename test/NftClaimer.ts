@@ -458,20 +458,14 @@ describe("NFTClaimerShaman", function () {
     const id = await setShamanProposal(baal, multisend, nftClaimer.address, 3);
   });
 
-  describe("subscription", function () {
-    it.only("mint shares on claim", async function () {
+  describe("nftClaim", function () {
+    it("mint shares on claim", async function () {
       const memberBalance = await sharesToken.balanceOf(summoner.address);
-
-      console.log(memberBalance);
-      const someRes = await nftClaimer.claim("12345");
-      console.log(someRes);
-
+      await nftClaimer.claim("12345");
       const memberNewBalance = await sharesToken.balanceOf(summoner.address);
+      const perNft = await nftClaimer.perNft();
 
-      console.log("memberNewBalance", memberNewBalance);
-
-      // expect
+      expect(memberNewBalance).to.equal(memberBalance.add(perNft));
     });
-    it("mint loot on ...", async function () {});
   });
 });

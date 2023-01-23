@@ -21,8 +21,7 @@ contract NFTClaimerShaman is Initializable {
     bool public isShares;
     uint256 public perNft; // amount of loot or shares to mint
 
-    // event SetMember(address account);
-    // event Claim(address account, uint256 tokenId, uint256 timestamp);
+    event Claim(address account, uint256 tokenId, uint256 timestamp, uint256 amount, bool isShares);
 
     function init(address _moloch, address _nftAddress, bool _isShares, uint256 _perNft) initializer external {
         baal = IBAAL(_moloch);
@@ -52,7 +51,7 @@ contract NFTClaimerShaman is Initializable {
         }
     }
 
-    // can be called by any account to claim per period tokens
+    // can be called nft holder account to claim per nft
     function claim(uint256 _tokenId) public {
         require(nft.ownerOf(_tokenId) == msg.sender, "must be owner");
         require(claims[_tokenId] == 0, "tokenId has already been claimed");
@@ -60,7 +59,7 @@ contract NFTClaimerShaman is Initializable {
         uint256 amount = calculate();
         _mintTokens(msg.sender, amount);
         claims[_tokenId] = block.timestamp;
-        // emit Claim(msg.sender, _tokenId, block.timestamp);
+        emit Claim(msg.sender, _tokenId, block.timestamp, amount, isShares);
     }
 
     function batchClaim(uint256[] memory _tokenIds) external {
@@ -80,8 +79,10 @@ contract NFTClaimerShamanSummoner {
     address public template;
 
     event SummonComplete(
-        address indexed baal,
-        address claimer
+        address indexed moloch,
+        address claimer,
+        bool isShares,
+        uint256 perNft
     );
 
     constructor(address _template) {
@@ -104,13 +105,13 @@ contract NFTClaimerShamanSummoner {
             _perNft
         );
 
-
         emit SummonComplete(
             _moloch,
-            address(nftClaimer)
+            address(nftClaimer),
+            _isShares,
+            _perNft
         );
 
         return address(nftClaimer);
-
     }
 }
