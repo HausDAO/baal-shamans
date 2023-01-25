@@ -117,7 +117,7 @@ const config: HardhatUserConfig = {
     // Obtain one at https://etherscan.io/
     // apiKey: "61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY" // etherscan
     apiKey: {
-      gnosis: "SN711KA5TEDG6JRJ2XGD8AITT7Q3VE58XG",
+      gnosis: "",
       xdai: etherscan(),
       goerli: etherscan(),
       mainnet: etherscan(),

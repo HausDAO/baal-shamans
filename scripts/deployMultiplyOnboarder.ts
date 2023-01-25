@@ -2,9 +2,15 @@ import { ethers } from "hardhat";
 
 async function main() {
 
+  // deployed at https://etherscan.io/address/0x3840453a3907916113dB88bFAc2349533a736c64#code
+
   const [deployer] = await ethers.getSigners();
 	const address = await deployer.getAddress();
 	console.log('Account address:', address);
+  console.log(
+		'Account balance:',
+		ethers.utils.formatEther(await deployer?.provider?.getBalance(address) || 0)
+	);
 
   const Onboarder = await ethers.getContractFactory("MultiplyOnboarderShaman");
   const onboarderSingleton = await Onboarder.deploy();

@@ -137,25 +137,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OwnableUpgradeable__factory>;
     getContractFactory(
-      name: "IERC1822ProxiableUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC1822ProxiableUpgradeable__factory>;
-    getContractFactory(
-      name: "IBeaconUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IBeaconUpgradeable__factory>;
-    getContractFactory(
-      name: "ERC1967UpgradeUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC1967UpgradeUpgradeable__factory>;
-    getContractFactory(
       name: "Initializable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Initializable__factory>;
-    getContractFactory(
-      name: "UUPSUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UUPSUpgradeable__factory>;
     getContractFactory(
       name: "PausableUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -320,34 +304,6 @@ declare module "hardhat/types/runtime" {
       name: "IBAAL",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IBAAL__factory>;
-    getContractFactory(
-      name: "IUPDATOR",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IUPDATOR__factory>;
-    getContractFactory(
-      name: "MemberRegistry",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MemberRegistry__factory>;
-    getContractFactory(
-      name: "ISPLITS",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ISPLITS__factory>;
-    getContractFactory(
-      name: "PGRegistry",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.PGRegistry__factory>;
-    getContractFactory(
-      name: "IREGISTRY",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IREGISTRY__factory>;
-    getContractFactory(
-      name: "SecondsUpdater",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SecondsUpdater__factory>;
-    getContractFactory(
-      name: "MockSplits",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MockSplits__factory>;
     getContractFactory(
       name: "MyToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -541,30 +497,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.OwnableUpgradeable>;
     getContractAt(
-      name: "IERC1822ProxiableUpgradeable",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IERC1822ProxiableUpgradeable>;
-    getContractAt(
-      name: "IBeaconUpgradeable",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IBeaconUpgradeable>;
-    getContractAt(
-      name: "ERC1967UpgradeUpgradeable",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ERC1967UpgradeUpgradeable>;
-    getContractAt(
       name: "Initializable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Initializable>;
-    getContractAt(
-      name: "UUPSUpgradeable",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.UUPSUpgradeable>;
     getContractAt(
       name: "PausableUpgradeable",
       address: string,
@@ -770,41 +706,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IBAAL>;
-    getContractAt(
-      name: "IUPDATOR",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IUPDATOR>;
-    getContractAt(
-      name: "MemberRegistry",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MemberRegistry>;
-    getContractAt(
-      name: "ISPLITS",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ISPLITS>;
-    getContractAt(
-      name: "PGRegistry",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.PGRegistry>;
-    getContractAt(
-      name: "IREGISTRY",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IREGISTRY>;
-    getContractAt(
-      name: "SecondsUpdater",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SecondsUpdater>;
-    getContractAt(
-      name: "MockSplits",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MockSplits>;
     getContractAt(
       name: "MyToken",
       address: string,
