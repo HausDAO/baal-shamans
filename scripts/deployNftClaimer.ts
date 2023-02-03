@@ -18,6 +18,8 @@ async function main() {
   );
 
   await nftClaimerFactory.deployed();
+
+  console.log(`nftClaimerFactory deployed to ${nftClaimerFactory.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

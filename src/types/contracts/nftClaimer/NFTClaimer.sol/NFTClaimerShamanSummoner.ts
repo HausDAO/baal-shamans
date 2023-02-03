@@ -55,18 +55,20 @@ export interface NFTClaimerShamanSummonerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "template", data: BytesLike): Result;
 
   events: {
-    "SummonComplete(address,address)": EventFragment;
+    "SummonComplete(address,address,bool,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "SummonComplete"): EventFragment;
 }
 
 export interface SummonCompleteEventObject {
-  baal: string;
+  moloch: string;
   claimer: string;
+  isShares: boolean;
+  perNft: BigNumber;
 }
 export type SummonCompleteEvent = TypedEvent<
-  [string, string],
+  [string, string, boolean, BigNumber],
   SummonCompleteEventObject
 >;
 
@@ -133,13 +135,17 @@ export interface NFTClaimerShamanSummoner extends BaseContract {
   };
 
   filters: {
-    "SummonComplete(address,address)"(
-      baal?: PromiseOrValue<string> | null,
-      claimer?: null
+    "SummonComplete(address,address,bool,uint256)"(
+      moloch?: PromiseOrValue<string> | null,
+      claimer?: null,
+      isShares?: null,
+      perNft?: null
     ): SummonCompleteEventFilter;
     SummonComplete(
-      baal?: PromiseOrValue<string> | null,
-      claimer?: null
+      moloch?: PromiseOrValue<string> | null,
+      claimer?: null,
+      isShares?: null,
+      perNft?: null
     ): SummonCompleteEventFilter;
   };
 

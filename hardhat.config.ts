@@ -197,8 +197,8 @@ task(
       "💬 Use 'yarn run account' to get more information about the deployment account."
     );
 
-    fs.writeFileSync("../" + address + ".txt", mnemonic.toString());
-    fs.writeFileSync("../mnemonic.txt", mnemonic.toString());
+    fs.writeFileSync("./" + address + ".txt", mnemonic.toString());
+    fs.writeFileSync("./mnemonic.txt", mnemonic.toString());
   }
 );
 

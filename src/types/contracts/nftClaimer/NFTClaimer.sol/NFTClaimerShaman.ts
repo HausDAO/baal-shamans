@@ -91,11 +91,27 @@ export interface NFTClaimerShamanInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
 
   events: {
+    "Claim(address,uint256,uint256,uint256,bool)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Claim"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
+
+export interface ClaimEventObject {
+  account: string;
+  tokenId: BigNumber;
+  timestamp: BigNumber;
+  amount: BigNumber;
+  isShares: boolean;
+}
+export type ClaimEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, boolean],
+  ClaimEventObject
+>;
+
+export type ClaimEventFilter = TypedEventFilter<ClaimEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -234,6 +250,21 @@ export interface NFTClaimerShaman extends BaseContract {
   };
 
   filters: {
+    "Claim(address,uint256,uint256,uint256,bool)"(
+      account?: null,
+      tokenId?: null,
+      timestamp?: null,
+      amount?: null,
+      isShares?: null
+    ): ClaimEventFilter;
+    Claim(
+      account?: null,
+      tokenId?: null,
+      timestamp?: null,
+      amount?: null,
+      isShares?: null
+    ): ClaimEventFilter;
+
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
   };

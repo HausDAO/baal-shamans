@@ -81,6 +81,7 @@ contract NFTClaimerShamanSummoner {
     event SummonComplete(
         address indexed moloch,
         address claimer,
+        address nft,
         bool isShares,
         uint256 perNft
     );
@@ -108,6 +109,7 @@ contract NFTClaimerShamanSummoner {
         emit SummonComplete(
             _moloch,
             address(nftClaimer),
+            _nftAddress,
             _isShares,
             _perNft
         );
