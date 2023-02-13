@@ -8,19 +8,24 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 import "../interfaces/IBAAL.sol";
 
+// shaman that works with a stake token to mint shares or loot
+// will mint shares/loot to the contributor based on some claim
+// the dao can update claims
+// if expiered the owner(dao) can withdraw remainder
+
 contract StakeClaimShaman is Ownable, Initializable {
     IBAAL public baal;
     IERC20 public stakeToken;
 
     mapping(address => uint256) public claims;
-    mapping(address => bool) public claimed;
 
     bool public isShares;
     uint256 public expiery;
     uint256 public multiplier;
 
-    event SetMember(address account);
-    event Claim(address account, uint256 timestamp);
+    event SetClaims(address[] accounts, uint256[] amounts);
+    event Claim(address account, uint256 amount);
+    event DaoWithdraw(address account, uint256 amount);
 
     function init(
         address _moloch,
@@ -53,18 +58,19 @@ contract StakeClaimShaman is Ownable, Initializable {
 
     function claim() public {
         require(block.timestamp < expiery, "claim window expiered");
-        require(!claimed[msg.sender], "already claimed");
         require(claimOf(msg.sender) > 0, "no claim available");
         require(
             claimOf(msg.sender) < stakeToken.balanceOf(address(this)),
             "insolvent"
         );
 
-        // claims[msg.sender] = 0;
-        claimed[msg.sender] = true;
+        uint256 currentClaim = claimOf(msg.sender);
+        claims[msg.sender] = 0;
 
-        require(stakeToken.transfer(baal.target(), claimOf(msg.sender)), "transfer failed");
-        _mintTokens(msg.sender, claimOf(msg.sender) * multiplier);
+        require(stakeToken.transfer(baal.target(), currentClaim), "transfer failed");
+        _mintTokens(msg.sender, currentClaim * multiplier);
+
+        emit Claim(msg.sender, currentClaim);
     }
 
     function updateClaims(address[] memory _accounts, uint256[] memory _claims)
@@ -75,16 +81,18 @@ contract StakeClaimShaman is Ownable, Initializable {
         for (uint256 i = 0; i < _accounts.length; i++) {
             claims[_accounts[i]] = _claims[i];
         }
+        emit SetClaims(_accounts, _claims);
     }
 
     function daoWithdraw(address _to) external onlyOwner {
         require(expiery < block.timestamp, "claim window not expiered");
-
-        require(stakeToken.transfer(_to, stakeToken.balanceOf(address(this))));
+        uint256 _balance = stakeToken.balanceOf(address(this));
+        require(stakeToken.transfer(_to, _balance), "transfer failed");
+        emit DaoWithdraw(_to, _balance);
     }
 
     function claimOf(address _account) public view returns (uint256) {
-        return !claimed[msg.sender] ? claims[_account] : 0;
+        return claims[_account];
     }
 }
 
