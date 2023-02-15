@@ -2,8 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 import "../interfaces/IBAAL.sol";
@@ -13,7 +12,7 @@ import "../interfaces/IBAAL.sol";
 // the dao can update claims
 // if expiered the owner(dao) can withdraw remainder
 
-contract StakeClaimShaman is Ownable, Initializable {
+contract StakeClaimShaman is Initializable, OwnableUpgradeable {
     IBAAL public baal;
     IERC20 public stakeToken;
 
@@ -34,6 +33,7 @@ contract StakeClaimShaman is Ownable, Initializable {
         uint256 _expiery,
         uint256 _multiplier
     ) external initializer {
+        __Ownable_init();
         baal = IBAAL(_moloch);
         stakeToken = IERC20(_stakeToken);
         isShares = _isShares;
@@ -103,6 +103,7 @@ contract StakeClaimShamanSummoner {
         address indexed baal,
         address stakeClaim,
         address token,
+        address owner,
         bool isShares,
         uint256 expiery,
         uint256 multiplier,
@@ -116,6 +117,7 @@ contract StakeClaimShamanSummoner {
     function summonStakeClaim(
         address _moloch,
         address _stakeToken,
+        address _owner,
         bool _isShares,
         uint256 _expiery,
         uint256 _multiplier,
@@ -127,10 +129,13 @@ contract StakeClaimShamanSummoner {
 
         stakeClaim.init(_moloch, _stakeToken, _isShares, _expiery, _multiplier);
 
+        stakeClaim.transferOwnership(_owner);
+
         emit SummonStakeClaim(
             _moloch,
             address(stakeClaim),
             _stakeToken,
+            _owner,
             _isShares,
             _expiery,
             _multiplier,

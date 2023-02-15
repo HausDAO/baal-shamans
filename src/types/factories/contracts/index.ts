@@ -7,5 +7,6 @@ export * as interfaces from "./interfaces";
 export * as mock from "./mock";
 export * as onboarder from "./onboarder";
 export * as simpleOnboarder from "./simpleOnboarder";
+export * as stakeclaims from "./stakeclaims";
 export * as subscriptions from "./subscriptions";
 export * as tcr from "./tcr";

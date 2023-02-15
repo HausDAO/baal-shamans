@@ -13,6 +13,8 @@ import type * as onboarder from "./onboarder";
 export type { onboarder };
 import type * as simpleOnboarder from "./simpleOnboarder";
 export type { simpleOnboarder };
+import type * as stakeclaims from "./stakeclaims";
+export type { stakeclaims };
 import type * as subscriptions from "./subscriptions";
 export type { subscriptions };
 import type * as tcr from "./tcr";

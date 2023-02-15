@@ -168,6 +168,10 @@ export type { SimpleOnboarderShaman } from "./contracts/simpleOnboarder/SimpleOn
 export { SimpleOnboarderShaman__factory } from "./factories/contracts/simpleOnboarder/SimpleOnboarder.sol/SimpleOnboarderShaman__factory";
 export type { SimpleOnboarderShamanSummoner } from "./contracts/simpleOnboarder/SimpleOnboarder.sol/SimpleOnboarderShamanSummoner";
 export { SimpleOnboarderShamanSummoner__factory } from "./factories/contracts/simpleOnboarder/SimpleOnboarder.sol/SimpleOnboarderShamanSummoner__factory";
+export type { StakeClaimShaman } from "./contracts/stakeclaims/StakeClaims.sol/StakeClaimShaman";
+export { StakeClaimShaman__factory } from "./factories/contracts/stakeclaims/StakeClaims.sol/StakeClaimShaman__factory";
+export type { StakeClaimShamanSummoner } from "./contracts/stakeclaims/StakeClaims.sol/StakeClaimShamanSummoner";
+export { StakeClaimShamanSummoner__factory } from "./factories/contracts/stakeclaims/StakeClaims.sol/StakeClaimShamanSummoner__factory";
 export type { SubscriptionShaman } from "./contracts/subscriptions/Subscriptions.sol/SubscriptionShaman";
 export { SubscriptionShaman__factory } from "./factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShaman__factory";
 export type { SubscriptionShamanSummoner } from "./contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner";
