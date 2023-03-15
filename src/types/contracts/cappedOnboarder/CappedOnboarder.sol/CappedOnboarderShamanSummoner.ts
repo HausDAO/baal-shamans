@@ -30,7 +30,7 @@ import type {
 export interface CappedOnboarderShamanSummonerInterface
   extends utils.Interface {
   functions: {
-    "summonOnboarder(address,address,uint256,uint256,uint256,address[],uint256[],string)": FunctionFragment;
+    "summonOnboarder(address,address,uint256,uint256,uint256,string)": FunctionFragment;
     "template()": FunctionFragment;
   };
 
@@ -46,8 +46,6 @@ export interface CappedOnboarderShamanSummonerInterface
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<string>
     ]
   ): string;
@@ -60,7 +58,7 @@ export interface CappedOnboarderShamanSummonerInterface
   decodeFunctionResult(functionFragment: "template", data: BytesLike): Result;
 
   events: {
-    "SummonCappedOnboarder(address,address,address,uint256,uint256,uint256,string,address[],uint256[])": EventFragment;
+    "SummonCappedOnboarder(address,address,address,uint256,uint256,uint256,string)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "SummonCappedOnboarder"): EventFragment;
@@ -74,21 +72,9 @@ export interface SummonCappedOnboarderEventObject {
   cap: BigNumber;
   multiplier: BigNumber;
   details: string;
-  _cuts: string[];
-  _amounts: BigNumber[];
 }
 export type SummonCappedOnboarderEvent = TypedEvent<
-  [
-    string,
-    string,
-    string,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    string,
-    string[],
-    BigNumber[]
-  ],
+  [string, string, string, BigNumber, BigNumber, BigNumber, string],
   SummonCappedOnboarderEventObject
 >;
 
@@ -128,8 +114,6 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       _details: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -143,8 +127,6 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
     _expiery: PromiseOrValue<BigNumberish>,
     _cap: PromiseOrValue<BigNumberish>,
     _multiplier: PromiseOrValue<BigNumberish>,
-    _cuts: PromiseOrValue<string>[],
-    _amounts: PromiseOrValue<BigNumberish>[],
     _details: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -158,8 +140,6 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       _details: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -168,16 +148,14 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
   };
 
   filters: {
-    "SummonCappedOnboarder(address,address,address,uint256,uint256,uint256,string,address[],uint256[])"(
+    "SummonCappedOnboarder(address,address,address,uint256,uint256,uint256,string)"(
       baal?: PromiseOrValue<string> | null,
       onboarder?: null,
       token?: null,
       expiery?: null,
       cap?: null,
       multiplier?: null,
-      details?: null,
-      _cuts?: null,
-      _amounts?: null
+      details?: null
     ): SummonCappedOnboarderEventFilter;
     SummonCappedOnboarder(
       baal?: PromiseOrValue<string> | null,
@@ -186,9 +164,7 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
       expiery?: null,
       cap?: null,
       multiplier?: null,
-      details?: null,
-      _cuts?: null,
-      _amounts?: null
+      details?: null
     ): SummonCappedOnboarderEventFilter;
   };
 
@@ -199,8 +175,6 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       _details: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -215,8 +189,6 @@ export interface CappedOnboarderShamanSummoner extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       _details: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

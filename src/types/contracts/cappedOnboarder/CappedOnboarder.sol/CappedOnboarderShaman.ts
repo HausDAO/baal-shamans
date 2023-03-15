@@ -33,12 +33,11 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
     "amounts(uint256)": FunctionFragment;
     "baal()": FunctionFragment;
     "cap()": FunctionFragment;
-    "claimedShares(address)": FunctionFragment;
     "cuts(uint256)": FunctionFragment;
     "expiery()": FunctionFragment;
-    "init(address,address,uint256,uint256,uint256,address[],uint256[])": FunctionFragment;
+    "init(address,address,uint256,uint256,uint256)": FunctionFragment;
     "multiplier()": FunctionFragment;
-    "onboarder(uint256,uint256)": FunctionFragment;
+    "onboarder(uint256)": FunctionFragment;
     "token()": FunctionFragment;
   };
 
@@ -48,7 +47,6 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
       | "amounts"
       | "baal"
       | "cap"
-      | "claimedShares"
       | "cuts"
       | "expiery"
       | "init"
@@ -68,10 +66,6 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "baal", values?: undefined): string;
   encodeFunctionData(functionFragment: "cap", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "claimedShares",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "cuts",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -83,9 +77,7 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[]
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
@@ -94,7 +86,7 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "onboarder",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
 
@@ -105,10 +97,6 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "amounts", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cap", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "claimedShares",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "cuts", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "expiery", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
@@ -118,7 +106,7 @@ export interface CappedOnboarderShamanInterface extends utils.Interface {
 
   events: {
     "Initialized(uint8)": EventFragment;
-    "ObReceived(address,uint256,address,uint256)": EventFragment;
+    "ObReceived(address,uint256,address)": EventFragment;
     "Tribute(uint256,address)": EventFragment;
   };
 
@@ -138,10 +126,9 @@ export interface ObReceivedEventObject {
   contributorAddress: string;
   amount: BigNumber;
   baal: string;
-  lootToCuts: BigNumber;
 }
 export type ObReceivedEvent = TypedEvent<
-  [string, BigNumber, string, BigNumber],
+  [string, BigNumber, string],
   ObReceivedEventObject
 >;
 
@@ -193,11 +180,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    claimedShares(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     cuts(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -211,8 +193,6 @@ export interface CappedOnboarderShaman extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -220,7 +200,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     onboarder(
       _value: PromiseOrValue<BigNumberish>,
-      _tribute: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -238,11 +217,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
   cap(overrides?: CallOverrides): Promise<BigNumber>;
 
-  claimedShares(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   cuts(
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -256,8 +230,6 @@ export interface CappedOnboarderShaman extends BaseContract {
     _expiery: PromiseOrValue<BigNumberish>,
     _cap: PromiseOrValue<BigNumberish>,
     _multiplier: PromiseOrValue<BigNumberish>,
-    _cuts: PromiseOrValue<string>[],
-    _amounts: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -265,7 +237,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
   onboarder(
     _value: PromiseOrValue<BigNumberish>,
-    _tribute: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -283,11 +254,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<BigNumber>;
 
-    claimedShares(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     cuts(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -301,8 +267,6 @@ export interface CappedOnboarderShaman extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -310,7 +274,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     onboarder(
       _value: PromiseOrValue<BigNumberish>,
-      _tribute: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -321,17 +284,15 @@ export interface CappedOnboarderShaman extends BaseContract {
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
-    "ObReceived(address,uint256,address,uint256)"(
+    "ObReceived(address,uint256,address)"(
       contributorAddress?: PromiseOrValue<string> | null,
       amount?: null,
-      baal?: null,
-      lootToCuts?: null
+      baal?: null
     ): ObReceivedEventFilter;
     ObReceived(
       contributorAddress?: PromiseOrValue<string> | null,
       amount?: null,
-      baal?: null,
-      lootToCuts?: null
+      baal?: null
     ): ObReceivedEventFilter;
 
     "Tribute(uint256,address)"(amount?: null, token?: null): TributeEventFilter;
@@ -350,11 +311,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<BigNumber>;
 
-    claimedShares(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     cuts(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -368,8 +324,6 @@ export interface CappedOnboarderShaman extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -377,7 +331,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     onboarder(
       _value: PromiseOrValue<BigNumberish>,
-      _tribute: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -396,11 +349,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    claimedShares(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     cuts(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -414,8 +362,6 @@ export interface CappedOnboarderShaman extends BaseContract {
       _expiery: PromiseOrValue<BigNumberish>,
       _cap: PromiseOrValue<BigNumberish>,
       _multiplier: PromiseOrValue<BigNumberish>,
-      _cuts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -423,7 +369,6 @@ export interface CappedOnboarderShaman extends BaseContract {
 
     onboarder(
       _value: PromiseOrValue<BigNumberish>,
-      _tribute: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

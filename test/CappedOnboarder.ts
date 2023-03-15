@@ -86,8 +86,6 @@ const summonOnboarder = async function (
     onboarderArgs.expiery,
     onboarderArgs.cap,
     onboarderArgs.multiplier,
-    onboarderArgs.cuts,
-    onboarderArgs.amounts,
     onboarderArgs.details
   );
   
@@ -403,8 +401,6 @@ describe("Onboarder", function () {
         expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
         cap: ethers.utils.parseUnits("1000", "ether"),
         multiplier: 10,
-        cuts: [],
-        amounts: [],
         details: "test",
       };
       console.log("summoning");
@@ -435,8 +431,7 @@ describe("Onboarder", function () {
       console.log('amount', amount);
 
       await applicantOnboarder.onboarder(
-        amount,
-        0
+        amount
       );
 
       const s2BalanceAfter = await token.balanceOf(s2.address);
@@ -463,8 +458,6 @@ describe("Onboarder", function () {
         expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
         cap: ethers.utils.parseUnits("1000", "ether"),
         multiplier: 10,
-        cuts: [],
-        amounts: [],
         details: "test",
       };
 
@@ -494,8 +487,7 @@ describe("Onboarder", function () {
       console.log('baalTotalSupplyBefore', baalTotalSupplyBefore);
 
       await applicantOnboarder.onboarder(
-        amount,
-        0
+        amount
       );
 
       const s2BalanceAfter = await token.balanceOf(s2.address);
@@ -532,8 +524,6 @@ describe("Onboarder", function () {
         expiery: Math.floor(Date.now() / 1000) + 86400 * 365,
         cap: ethers.utils.parseUnits("1000", "ether"),
         multiplier: 10,
-        cuts: [],
-        amounts: [],
         details: "test",
       };
   
@@ -563,8 +553,7 @@ describe("Onboarder", function () {
       console.log('baalTotalSupplyBefore', baalTotalSupplyBefore);
   
       await applicantOnboarder.onboarder(
-        amount,
-        10000 // 10000 1% // 1000 .1% // 100 .01% // 10 .001%
+        amount
       );
   
       const s2BalanceAfter = await token.balanceOf(s2.address);
@@ -578,10 +567,6 @@ describe("Onboarder", function () {
       console.log('baalTotalSupplyAfter', baalTotalSupplyAfter);
       console.log('baalTotalShares', baalTotalShares);
       
-      const tribute = amount.mul(onboarderArgs.multiplier).div(100); // 1%
-
-      expect(ecoLootAfter).to.equal(tribute);
-
       expect(baalTotalSupplyAfter).to.equal(
         baalTotalSupplyBefore.add(amount.mul(onboarderArgs.multiplier))
       );
