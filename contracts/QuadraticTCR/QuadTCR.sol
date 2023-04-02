@@ -1,13 +1,9 @@
 pragma solidity ^0.8.7;
-
+//SPDX-License-Identifier: MIT
 import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-
-pragma solidity >=0.8.4 <0.9.0;
-
-//SPDX-License-Identifier: MIT
 
 interface IBAAL {
     function sharesToken() external returns (address);
