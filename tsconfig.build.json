@@ -37,7 +37,6 @@
         "src/types/factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShaman__factory.ts",
         "src/types/contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner.ts",
         "src/types/factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner__factory.ts",
-        "src/types/contracts/interfaces/IBAAL.ts",
         "src/types/common.ts"
     ]
   }

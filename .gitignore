@@ -11,6 +11,7 @@ artifacts
 src/types/
 dist/
 abi/
+export/
 
 .DS_Store
 .openzeppelin/
