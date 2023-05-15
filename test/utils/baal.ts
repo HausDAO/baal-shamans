@@ -1,7 +1,7 @@
 import { ethers } from 'hardhat';
 import { BigNumber, BigNumberish, ContractTransaction } from 'ethers';
 
-import { encodeMultiAction } from '../../src/util';
+import { encodeMultiAction } from '../../src/utils';
 import { moveForwardPeriods } from './evm';
 import { expect } from 'chai';
 import { Baal, BaalSummoner, MultiSend, Poster } from '@daohaus/baal-contracts';

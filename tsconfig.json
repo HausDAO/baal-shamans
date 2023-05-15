@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "types": [
+      "chai",
+      "node"
+    ],
     "target": "es2020",
     "module": "commonjs",
     "esModuleInterop": true,
@@ -9,7 +13,11 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules"],
-  "files": ["./hardhat.config.ts"],
-  "include": ["src/**/*", "tasks/**/*", "test/**/*"]
+  "include": [
+    "deploy",
+    "src/**/*",
+    "tasks/**/*",
+    "test/**/*",
+    "hardhat.config.ts"
+  ]
 }
