@@ -18,8 +18,6 @@ import { SubscriptionShaman__factory as SubscriptionShamanFactory } from './type
 import { SubscriptionShamanSummoner } from './types/contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner';
 import { SubscriptionShamanSummoner__factory as SubscriptionShamanSummonerFactory } from './types/factories/contracts/subscriptions/Subscriptions.sol/SubscriptionShamanSummoner__factory';
 
-import { IBAAL } from './types/contracts/interfaces/IBAAL';
-
 export { 
     OnboarderShaman,
     OnboarderShamanFactory,
@@ -33,5 +31,4 @@ export {
     SubscriptionShamanFactory,
     SubscriptionShamanSummoner,
     SubscriptionShamanSummonerFactory,
-    IBAAL,
 };

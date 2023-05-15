@@ -1,23 +1,24 @@
-import { task, subtask, HardhatUserConfig } from "hardhat/config";
-import "@nomiclabs/hardhat-waffle";
-import "@nomiclabs/hardhat-ethers";
-import "hardhat-gas-reporter";
-import "@nomiclabs/hardhat-etherscan";
+import dotenv from "dotenv";
+import * as fs from "fs";
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
 import "solidity-coverage";
 import "hardhat-contract-sizer";
 import "hardhat-abi-exporter";
+import "hardhat-deploy";
 
-import * as fs from "fs";
-import "@typechain/hardhat";
-
+dotenv.config();
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
 const defaultNetwork = "localhost";
 
+const infuraKey = () => {
+  return process.env.INFURA_API_KEY || '' // <---- YOUR INFURA ID! (or it won't work)
+};
 
-function mnemonic() {
+const mnemonic = () => {
   try {
     return fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
@@ -29,15 +30,25 @@ function mnemonic() {
   }
   return "";
 }
-function etherscan() {
-  try {
-    return fs.readFileSync("./etherscan.txt").toString().trim();
-  } catch (e) {
-    if (defaultNetwork !== "localhost") {
-      console.log("☢️ WARNING: No etherscan file");
+
+const explorerApiKey = (networkName: string) => {
+  const fromEnv = () => {
+    switch (networkName) {
+      case "ethereum":
+        return process.env.ETHERSCAN_API_KEY;
+      case "gnosis":
+        return process.env.GNOSISSCAN_API_KEY;
+      case "polygon":
+        return process.env.POLYGONSCAN_API_KEY;
+      case "optimism":
+        return process.env.OPTIMISTICSCAN_API_KEY;
+      case "arbitrumOne":
+        return process.env.ARBISCAN_API_KEY;
+      default:
+        break;
     }
   }
-  return "";
+  return fromEnv() || '';
 }
 
 const config: HardhatUserConfig = {
@@ -49,66 +60,90 @@ const config: HardhatUserConfig = {
         (you can put in a mnemonic here to set the deployer locally)
       */
     },
-    rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      gas: 5000000,
-      gasPrice: 8000000000,
-      gasMultiplier: 2,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    kovan: {
-      url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      gas: 5000000,
-      gasPrice: 8000000000,
-      gasMultiplier: 2,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
     mainnet: {
-      url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
+      url: `https://mainnet.infura.io/v3/${infuraKey()}`,
       accounts: {
         mnemonic: mnemonic(),
       },
-    },
-    ropsten: {
-      url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('ethereum'),
+        },
       },
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
+      url: `https://goerli.infura.io/v3/${infuraKey()}`,
       gas: 5000000,
       gasPrice: 8000000000,
       gasMultiplier: 2,
-      accounts: {
-        mnemonic: mnemonic(),
+      accounts: process.env.ACCOUNT_PK
+        ? [process.env.ACCOUNT_PK]
+        : {
+          mnemonic: mnemonic(),
+        },
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('ethereum'),
+        },
       },
     },
-    xdai: {
+    gnosis: {
       url: "https://rpc.gnosischain.com/",
       gas: 5000000,
       gasPrice: 8000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('gnosis'),
+        },
+      },
     },
-    matic: {
-      // url: 'https://rpc-mainnet.maticvigil.com/v1/036f1ba8516f0eee2204a574a960b68437ac8661',
-      url: "https://polygon-mainnet.infura.io/v3/cc7ca25d68f246f393d7630842360c47",
+    polygon: {
+      url: `https://polygon-mainnet.infura.io/v3/${infuraKey()}`,
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('polygon'),
+        },
+      },
     },
-    mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com/v1/036f1ba8516f0eee2204a574a960b68437ac8661",
+    polygonMumbai: {
+      url: `https://polygon-mumbai.infura.io/v3/${infuraKey()}`,
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
+      },
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('polygon'),
+        },
+      },
+    },
+    arbitrumOne: {
+      url: `https://arbitrum-mainnet.infura.io/v3/${infuraKey()}`,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('arbitrumOne'),
+        },
+      },
+    },
+    optimisticEthereum: {
+      url: `https://optimism-mainnet.infura.io/v3/${infuraKey()}`,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      verify: {
+        etherscan: {
+          apiKey: explorerApiKey('optimism'),
+        },
       },
     },
   },
@@ -117,29 +152,24 @@ const config: HardhatUserConfig = {
     // Obtain one at https://etherscan.io/
     // apiKey: "61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY" // etherscan
     apiKey: {
-      gnosis: "SN711KA5TEDG6JRJ2XGD8AITT7Q3VE58XG",
-      xdai: etherscan(),
-      goerli: etherscan(),
-      mainnet: etherscan(),
+      gnosis: explorerApiKey('gnosis'),
+      xdai: explorerApiKey('gnosis'),
+      goerli: explorerApiKey('ethereum'),
+      mainnet: explorerApiKey('ethereum'),
+      polygon: explorerApiKey('polygon'),
+      polygonMumbai: explorerApiKey('polygon'),
+      arbitrumOne: explorerApiKey('arbitrumOne'),
+      optimisticEthereum: explorerApiKey('optimism'),
     },
     customChains: [
-      // {
-      //   network: "gnosis",
-      //   chainId: 100,
-      //   urls: {
-      //     apiURL: "https://api.gnosisscan.io/api",
-      //     browserURL: "https://gnosisscan.io/",
-      //   }
-      // },
-      // can only have one chainId 100 at a time
       {
-        network: "xdai",
+        network: "gnosis",
         chainId: 100,
         urls: {
-          apiURL: "https://blockscout.com/xdai/mainnet/api",
-          browserURL: "https://blockscout.com/xdai/mainnet/",
-        }
-      }
+          apiURL: "https://api.gnosisscan.io/api",
+          browserURL: "https://gnosisscan.io/",
+        },
+      },
     ]
   },
   solidity: {
@@ -155,6 +185,9 @@ const config: HardhatUserConfig = {
       }
     ],
   },
+  namedAccounts: {
+    deployer: 0,
+  },
   abiExporter: {
     path: './abi',
     clear: true,
@@ -164,6 +197,21 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "src/types",
     target: "ethers-v5",
+  },
+  gasReporter: {
+    currency: "USD",
+    enabled: process.env.REPORT_GAS === 'true',
+    excludeContracts: [],
+    src: "./contracts",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+  },
+  external: {
+    contracts: [
+      {
+        artifacts: 'node_modules/@daohaus/baal-contracts/export/artifacts',
+        deploy: 'node_modules/@daohaus/baal-contracts/export/deploy'
+      }
+    ]
   },
 };
 
