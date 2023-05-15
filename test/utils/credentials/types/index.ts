@@ -1,4 +1,4 @@
-import { PromiseOrValue } from "../src/types/common";
+import { PromiseOrValue } from "../../../../src/types/common";
 
 export * from "./eip712Types";
 

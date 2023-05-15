@@ -1,6 +1,7 @@
 import * as DIDKit from "@spruceid/didkit-wasm-node";
 import { ethers } from "ethers";
 
+// Issuer: 0xd6fc34345bc8c8e5659a35bed9629d5558d48c4e
 const JWK =
   '{"kty":"EC","crv":"secp256k1","x":"PdB2nS-knyAxc6KPuxBr65vRpW-duAXwpeXlwGJ03eU","y":"MwoGZ08hF5uv-_UEC9BKsYdJVSbJNHcFhR1BZWer5RQ","d":"z9VrSNNZXf9ywUx3v_8cLDhSw8-pvAT9qu_WZmqqfWM"}';
 const did = DIDKit.keyToDID("ethr", JWK);
@@ -12,7 +13,7 @@ const credentialInput = {
   issuanceDate: "2022-07-19T10:42:24.883Z",
   expirationDate: "2022-10-17T10:42:24.883Z",
   credentialSubject: {
-    id: "did:pkh:eip155:1:0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    id: "did:pkh:eip155:1:0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // credential owner
     hash: "v0.0.0:AjcRjxx7Hp3PKPSNwPeBJjR21pLyA14CVeQ1XijzxUc=",
     provider: "Brigthid",
   },
@@ -156,4 +157,5 @@ export async function createCredential() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-createCredential();
+// NOTICE: Un-comment this line to get a verified credential for testing
+// createCredential();

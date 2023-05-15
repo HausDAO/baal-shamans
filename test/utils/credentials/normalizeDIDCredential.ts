@@ -1,4 +1,4 @@
-import { DocumentStruct, CredentialSubjectStruct, ProofStruct } from "../types";
+import { DocumentStruct, CredentialSubjectStruct, ProofStruct } from "./types";
 export interface DIDCredential {
   '@context': string;
   type?: (string)[] | null;

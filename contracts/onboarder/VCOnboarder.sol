@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 import { Document, IDIDStampVcVerifier } from "./credentials/IDIDStampVCVerifier.sol";
-import "../interfaces/IBAAL.sol";
 
 // import "hardhat/console.sol";
 
@@ -19,7 +19,7 @@ contract VCOnboarderShaman is ReentrancyGuard, Initializable {
     IERC20 public tributeToken;
     uint256 public minTribute;
 
-    IBAAL public baal;
+    IBaal public baal;
     IDIDStampVcVerifier public vcVerifier;
 
     mapping(string => string) public verifiedStamps;
@@ -38,7 +38,7 @@ contract VCOnboarderShaman is ReentrancyGuard, Initializable {
         address _tributeToken,
         uint256 _minTribute
     ) initializer external {
-        baal = IBAAL(_moloch);
+        baal = IBaal(_moloch);
         vcVerifier = IDIDStampVcVerifier(_vcVerifier);
         shares = _shares;
         amountPerCredential = _amountPerCredential;
