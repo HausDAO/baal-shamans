@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-import "../interfaces/IBAAL.sol";
 
 // Made for use with Baal(Molochv3)
 // Example use of Manager shamans
 // Any account can claim some amount of shares or loot per period
 // this shaman must be set as a manager role in the dao
 contract ExampleManagerShaman {
-    IBAAL public baal;
+    IBaal public baal;
     IERC20 public token;
 
     mapping(address => uint256) public claims;
@@ -22,7 +21,7 @@ contract ExampleManagerShaman {
     event Claim(address account, uint256 timestamp);
 
     constructor(address _moloch, bool _shares, uint256 _perPeriod, uint256 _period) {
-        baal = IBAAL(_moloch);
+        baal = IBaal(_moloch);
         shares = _shares;
         // get shares or loot token address from dao based on 'shares' flag
         if (shares) {
