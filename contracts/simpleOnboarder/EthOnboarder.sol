@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
-import "../interfaces/IBAAL.sol";
-
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 // tribute eth for loot or shares
 contract EthOnboarderShaman is ReentrancyGuard, Initializable {
@@ -30,7 +29,7 @@ contract EthOnboarderShaman is ReentrancyGuard, Initializable {
     address[] public cuts;
     uint256[] public amounts;
 
-    IBAAL public baal;
+    IBaal public baal;
 
     constructor() initializer {}
 
@@ -44,7 +43,7 @@ contract EthOnboarderShaman is ReentrancyGuard, Initializable {
         uint256[] memory _amounts // % amount eth to send to each address (1e6)
     ) initializer external {
         require(_cuts.length == _amounts.length, "cuts != amounts");
-        baal = IBAAL(_moloch);
+        baal = IBaal(_moloch);
         expiery = _expiery;
         multiply = _multiply;
         minTribute = _minTribute;
@@ -84,7 +83,7 @@ contract EthOnboarderShaman is ReentrancyGuard, Initializable {
         // transfer cut to each cut address
         for (uint256 i = 0; i < amounts.length; i++) {
             uint256 _cut = (msg.value / PERC_POINTS) * amounts[i];
-            console.log("cut", _cut);
+            // console.log("cut", _cut);
             (bool success, ) = cuts[i].call{value: _cut}(
                 ""
             );
