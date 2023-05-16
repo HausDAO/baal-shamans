@@ -8,5 +8,18 @@ typechain-types
 #Hardhat files
 cache
 artifacts
+src/types/
+dist/
+abi/
+export/
 
+.DS_Store
+.openzeppelin/
 *.txt
+*.swp
+*.txt
+yarn-error.log
+
+.env
+.env.production
+.env.staging

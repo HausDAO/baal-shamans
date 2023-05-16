@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-
-import "../interfaces/IBAAL.sol";
 
 import "hardhat/console.sol";
 
@@ -25,7 +24,7 @@ contract SimpleOnboarderShaman is ReentrancyGuard, Initializable {
     address[] public cuts;
     uint256[] public amounts;
 
-    IBAAL public baal;
+    IBaal public baal;
     IERC20 public token;
 
     constructor() initializer {}
@@ -38,7 +37,7 @@ contract SimpleOnboarderShaman is ReentrancyGuard, Initializable {
         address[] memory _cuts,
         uint256[] memory _amounts
     ) initializer external {
-        baal = IBAAL(_moloch);
+        baal = IBaal(_moloch);
         token = IERC20(_token);
         expiery = _expiery;
         shares = _shares;
