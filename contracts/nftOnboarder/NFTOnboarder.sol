@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-
-import "../interfaces/IBAAL.sol";
 
 // import "hardhat/console.sol";
 
@@ -16,7 +15,7 @@ interface INFTDelegate {
     function safeMint(address) external;
 }
 
-contract OnboarderShaman is ReentrancyGuard, Initializable {
+contract NFTOnboarderShaman is ReentrancyGuard, Initializable {
     event YeetReceived(
         address indexed contributorAddress,
         uint256 amount,
@@ -33,7 +32,7 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     address[] public cuts;
     uint256[] public amounts;
 
-    IBAAL public baal;
+    IBaal public baal;
     IERC20 public token;
 
     address nftTemplate;
@@ -51,7 +50,7 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
         address[] memory _cuts,
         uint256[] memory _amounts
     ) initializer external {
-        baal = IBAAL(_moloch);
+        baal = IBaal(_moloch);
         token = IERC20(_token);
         nftTemplate = _nftTemplate;
         pricePerUnit = _pricePer;
@@ -165,7 +164,7 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     }
 }
 
-contract OnboarderShamanSummoner {
+contract NFTOnboarderShamanSummoner {
     address payable public template;
     address public nftTemplate;
 
@@ -199,7 +198,7 @@ contract OnboarderShamanSummoner {
         address[] memory _cuts,
         uint256[] memory _amounts
     ) public returns (address) {
-        OnboarderShaman onboarder = OnboarderShaman(payable(Clones.clone(template)));
+        NFTOnboarderShaman onboarder = NFTOnboarderShaman(payable(Clones.clone(template)));
 
         onboarder.init(
             _moloch,

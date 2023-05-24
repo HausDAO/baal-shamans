@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
+import "@daohaus/baal-contracts/contracts/interfaces/IBaalToken.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
-import "../interfaces/IBAAL.sol";
-import "../interfaces/IBAALToken.sol";
 
 contract ERC721Delegate is Initializable, ERC721Upgradeable, PausableUpgradeable, OwnableUpgradeable {
 
@@ -41,13 +40,13 @@ contract ERC721Delegate is Initializable, ERC721Upgradeable, PausableUpgradeable
     // baal interface
 
     function vote(address _moloch, uint32 id, bool approved) public {
-        IBAAL moloch = IBAAL(_moloch);
+        IBaal moloch = IBaal(_moloch);
         moloch.submitVote(id, approved);
     }
 
     function delegate(address _moloch, address delegatee) public {
-        IBAAL moloch = IBAAL(_moloch);
-        IBAALToken shares = IBAALToken(moloch.sharesToken());
+        IBaal moloch = IBaal(_moloch);
+        IBaalToken shares = IBaalToken(moloch.sharesToken());
         shares.delegate(delegatee);
     }
 
@@ -58,7 +57,7 @@ contract ERC721Delegate is Initializable, ERC721Upgradeable, PausableUpgradeable
         uint256 lootToBurn,
         address[] calldata tokens
     ) public {
-        IBAAL moloch = IBAAL(_moloch);
+        IBaal moloch = IBaal(_moloch);
         moloch.ragequit(to, sharesToBurn, lootToBurn, tokens);
     }
 }
