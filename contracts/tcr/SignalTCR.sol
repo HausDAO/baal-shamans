@@ -1,27 +1,12 @@
-pragma solidity ^0.8.7;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.4 <0.9.0;
 
-import "hardhat/console.sol";
-
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
+import "@daohaus/baal-contracts/contracts/interfaces/IBaalToken.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
-pragma solidity >=0.8.4 <0.9.0;
-
-//SPDX-License-Identifier: MIT
-
-interface IBAAL {
-    function sharesToken() external returns (address);
-
-    function lootToken() external returns (address);
-}
-
-interface IBAALTOKEN {
-    function getCurrentSnapshotId() external returns (uint256);
-
-    function balanceOfAt(address account, uint256 snapshotId)
-        external
-        returns (uint256);
-}
+// import "hardhat/console.sol";
 
 //*********************************************************************//
 // --------------------------- custom errors ------------------------- //
@@ -61,9 +46,9 @@ contract DhSignalTCR is Initializable {
     event Init(uint256 sharesSnapshotId, uint256 lootSnapshotId);
 
     /// @notice dao staking token contract instance.
-    IBAAL public baal;
-    IBAALTOKEN public baalShares;
-    IBAALTOKEN public baalLoot;
+    IBaal public baal;
+    IBaalToken public baalShares;
+    IBaalToken public baalLoot;
     uint256 public sharesSnapshotId;
     uint256 public lootSnapshotId;
     uint256 public endDate;
@@ -110,9 +95,9 @@ contract DhSignalTCR is Initializable {
     @param _baalAddress dao staking baal address.
     */
     function setUp(address _baalAddress, uint256 _endDate) public initializer {
-        baal = IBAAL(_baalAddress);
-        baalShares = IBAALTOKEN(baal.sharesToken());
-        baalLoot = IBAALTOKEN(baal.lootToken());
+        baal = IBaal(_baalAddress);
+        baalShares = IBaalToken(baal.sharesToken());
+        baalLoot = IBaalToken(baal.lootToken());
         // get current snapshot ids
         sharesSnapshotId = baalShares.getCurrentSnapshotId();
         lootSnapshotId = baalLoot.getCurrentSnapshotId();
@@ -253,7 +238,7 @@ contract DhSignalTCR is Initializable {
     }
 }
 
-contract DhSignalTCRSumoner {
+contract DhSignalTCRSummoner {
     address public immutable _template;
 
     event SummonDaoStake(
