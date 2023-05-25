@@ -120,13 +120,13 @@ const rgDates = rgaddrsUnsorted.map(() => Math.floor(Date.now() / 1000) - 60 * 6
 
 const gasStats = async (name: string, tx: ContractTransaction) => {
   const rec = await tx.wait();
-  console.log(
-    name,
-    "used",
-    rec.gasUsed.toString(),
-    "cost@15",
-    ethers.utils.formatEther(rec.gasUsed.mul(15000000000))
-  );
+  // console.log(
+  //   name,
+  //   "used",
+  //   rec.gasUsed.toString(),
+  //   "cost@15",
+  //   ethers.utils.formatEther(rec.gasUsed.mul(15000000000))
+  // );
 }
 
 const newBatchMemberAndProcess = async (
@@ -344,7 +344,7 @@ describe("PGRegistry", function () {
     await setShamanProposal(baal, multisend, memberRegistry.address, shamanPermissions);
   });
 
-  describe.only("member registry", function () {
+  describe("member registry", function () {
 
     it("adds new member", async () => {
       const proposalId = await newMemberAndProcess(
@@ -385,7 +385,7 @@ describe("PGRegistry", function () {
 
       const calculate = await memberRegistry.calculate(addrList);
 
-      console.log('calculate', calculate);
+      // console.log('calculate', calculate);
 
       // const total = Math.floor(memberList.reduce((acc: any, item: any) => {
       //   return acc + Math.sqrt(item.secondsActive);
@@ -491,7 +491,7 @@ describe("PGRegistry", function () {
       // TODO: test
       const s2Balance = await sharesToken.balanceOf(s2RegistryMembera.account);
       const s1Balance = await sharesToken.balanceOf(s1RegistryMember.account);
-      console.log('balances', s2Balance.toString(), s1Balance.toString());
+      // console.log('balances', s2Balance.toString(), s1Balance.toString());
     });
   });
 });

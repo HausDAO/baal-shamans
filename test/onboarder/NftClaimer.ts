@@ -4,9 +4,9 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
 import { BigNumberish } from '@ethersproject/bignumber';
 
-import { MultiSend, MyNft, NFTClaimerShaman } from '../src/types';
-import { NFTClaimerShamanSummoner } from '../src/types/contracts/nftClaimer/NFTClaimer.sol';
-import { SHAMAN_PERMISSIONS, Signer, baalSetup, setShamanProposal } from './utils';
+import { MultiSend, MyNft, NFTClaimerShaman } from '../../src/types';
+import { NFTClaimerShamanSummoner } from '../../src/types/contracts/onboarder/ERC721/NFTClaimer.sol';
+import { SHAMAN_PERMISSIONS, Signer, baalSetup, setShamanProposal } from '../utils';
 
 type NFTClaimerSetup = {
   nft: MyNft,

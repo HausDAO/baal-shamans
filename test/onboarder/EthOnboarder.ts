@@ -4,8 +4,8 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
 import { BigNumberish } from '@ethersproject/bignumber';
 
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from './utils';
-import { EthOnboarderShamanSummoner, MultiSend, TestERC20 } from '../src/types';
+import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '../utils';
+import { EthOnboarderShamanSummoner, MultiSend, TestERC20 } from '../../src/types';
 
 type OnboarderSetup = {
   onboarderSummoner: EthOnboarderShamanSummoner;
@@ -113,7 +113,7 @@ describe("EthOnboarderShaman", function () {
 
   });
 
-  describe.only("onboarder", function () {
+  describe("onboarder", function () {
 
     it("mint shares on sending eth", async () => {
       const amount = ethers.utils.parseUnits("5.250", "ether");

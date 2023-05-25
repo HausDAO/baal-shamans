@@ -4,8 +4,8 @@ import { deployments, ethers } from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, MultiSend, Shares } from '@daohaus/baal-contracts';
 
-import { baalSetup, setShamanProposal, Signer, SHAMAN_PERMISSIONS } from './utils';
-import { OnboarderShamanSummoner, TestERC20 } from '../src/types';
+import { baalSetup, setShamanProposal, Signer, SHAMAN_PERMISSIONS } from '../utils';
+import { OnboarderShamanSummoner, TestERC20 } from '../../src/types';
 
 type OnboarderSetup = {
   onboarderSummoner: OnboarderShamanSummoner;

@@ -27,4 +27,4 @@ const deployFn: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 }
 
 export default deployFn;
-deployFn.tags = ['Shaman', 'DhSignalTCR'];
+deployFn.tags = ['DhSignalTCR'];

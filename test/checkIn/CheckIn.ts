@@ -4,10 +4,9 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
 import { BigNumberish } from '@ethersproject/bignumber';
 
-import { MultiSend, TestERC20 } from '../src/types';
-import { CheckInShaman } from '../src/types/contracts/checkIn/CheckIn.sol';
-import { CheckInSummoner } from '../src/types/contracts/checkIn/CheckIn.sol/CheckInSummoner';
-import { SHAMAN_PERMISSIONS, Signer, baalSetup, setShamanProposal } from './utils';
+import { MultiSend, TestERC20 } from '../../src/types';
+import { CheckInShaman, CheckInSummoner } from '../../src/types/contracts/checkIn/CheckIn.sol';
+import { SHAMAN_PERMISSIONS, Signer, baalSetup, setShamanProposal } from '../utils';
 
 const SECONDS = {
   MINUTE: 60,

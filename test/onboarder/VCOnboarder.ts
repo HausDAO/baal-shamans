@@ -5,10 +5,10 @@ import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
 import { BigNumber } from '@ethersproject/bignumber';
 
 // Credential issued by by 0xd6fc34345bc8c8e5659a35bed9629d5558d48c4e
-import DIDKitSignedCredential from './mocks/BrightIDSignedCredential.json';
-import { baalSetup, SHAMAN_PERMISSIONS, setShamanProposal, Signer } from './utils';
-import { DocumentStruct, normalizeDIDCredential } from './utils/credentials';
-import { DIDStampVcVerifier, MultiSend, TestERC20, VCOnboarderShamanSummoner } from '../src/types';
+import DIDKitSignedCredential from '../mocks/BrightIDSignedCredential.json';
+import { baalSetup, SHAMAN_PERMISSIONS, setShamanProposal, Signer } from '../utils';
+import { DocumentStruct, normalizeDIDCredential } from '../utils/credentials';
+import { DIDStampVcVerifier, MultiSend, TestERC20, VCOnboarderShamanSummoner } from '../../src/types';
 
 type VerifierSetup = {
   stampVerifier: DIDStampVcVerifier;

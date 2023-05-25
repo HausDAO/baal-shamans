@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { deployments, ethers, upgrades } from 'hardhat';
+import { deployments, ethers/*, upgrades*/ } from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
@@ -35,7 +35,7 @@ const summonDhSignalTCR = async function (
   if (
     result?.events[2]?.args?.signal
   ) {
-    console.log('signal', result.events[2].args.signal);
+    // console.log('signal', result.events[2].args.signal);
     signalAddress = result.events[2].args.signal;
   }  
   return signalAddress;
@@ -143,23 +143,23 @@ describe('Signal TCR', function () {
   });
 
   describe('signal TCR', function () {
-    it.only('setup', async () => {
+    it('setup', async () => {
 
       users.summoner.baal &&
         await setSnapShot(users.summoner.baal, multisend);
 
       const snid = await sharesToken.getCurrentSnapshotId();
-      console.log('snid', snid);
+      // console.log('snid', snid);
       
       const sum = await sharesToken.balanceOf(users.summoner.address);
-      console.log('sum', sum);
+      // console.log('sum', sum);
       
       const signalTCRAddress = await summonDhSignalTCR(
         baal,
         dhSignalTCRSummoner,
         defaultTCRArgs
       );
-      console.log(signalTCRAddress);
+      // console.log(signalTCRAddress);
       
       const signalTCR = (
         await ethers.getContractAt(
@@ -173,23 +173,23 @@ describe('Signal TCR', function () {
 
       const balance = await signalTCR.voterBalances(users.summoner.address);
 
-      console.log(balance);
+      // console.log(balance);
 
       signalTCR.vote([{choiceId: '0x1234', amount: '100'}, {choiceId: '0x3456', amount: '50'}])
 
       const balance1 = await signalTCR.voterBalances(users.summoner.address);
 
-      console.log(balance1);
+      // console.log(balance1);
 
       signalTCR.vote([{choiceId: '0x1234', amount: '10'}, {choiceId: '0x3456', amount: '10'}])
 
       const balance2 = await signalTCR.voterBalances(users.summoner.address);
 
-      console.log(balance2);
+      // console.log(balance2);
 
       const votes = await signalTCR.getVotesForAddress(users.summoner.address);
 
-      console.log(votes);
+      // console.log(votes);
     });
 
     it('mint loot on ...', async () => {
