@@ -9,6 +9,10 @@ import { OnboarderShaman } from './types/contracts/onboarder/Onboarder.sol/Onboa
 import { OnboarderShaman__factory as OnboarderShamanFactory } from './types/factories/contracts/onboarder/Onboarder.sol/OnboarderShaman__factory';
 import { OnboarderShamanSummoner } from './types/contracts/onboarder/Onboarder.sol/OnboarderShamanSummoner';
 import { OnboarderShamanSummoner__factory as OnboarderShamanSummonerFactory } from './types/factories/contracts/onboarder/Onboarder.sol/OnboarderShamanSummoner__factory';
+import { VCOnboarderShaman } from './types/contracts/onboarder/VCOnboarder.sol/VCOnboarderShaman';
+import { VCOnboarderShaman__factory as VCOnboarderShamanFactory } from './types/factories/contracts/onboarder/VCOnboarder.sol/VCOnboarderShaman__factory';
+import { VCOnboarderShamanSummoner } from './types/contracts/onboarder/VCOnboarder.sol/VCOnboarderShamanSummoner';
+import { VCOnboarderShamanSummoner__factory as VCOnboarderShamanSummonerFactory } from './types/factories/contracts/onboarder/VCOnboarder.sol/VCOnboarderShamanSummoner__factory';
 import { SimpleOnboarderShaman } from './types/contracts/simpleOnboarder/SimpleOnboarder.sol/SimpleOnboarderShaman';
 import { SimpleOnboarderShaman__factory as SimpleOnboarderShamanFactory } from './types/factories/contracts/simpleOnboarder/SimpleOnboarder.sol/SimpleOnboarderShaman__factory';
 import { SimpleOnboarderShamanSummoner } from './types/contracts/simpleOnboarder/SimpleOnboarder.sol/SimpleOnboarderShamanSummoner';
@@ -31,4 +35,8 @@ export {
     SubscriptionShamanFactory,
     SubscriptionShamanSummoner,
     SubscriptionShamanSummonerFactory,
+    VCOnboarderShaman,
+    VCOnboarderShamanFactory,
+    VCOnboarderShamanSummoner,
+    VCOnboarderShamanSummonerFactory,
 };

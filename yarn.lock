@@ -784,6 +784,11 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.8.3.tgz#6b076a7b751811b90fe3a172a7faeaa603e13a3f"
   integrity sha512-SXDRl7HKpl2WDoJpn7CK/M9U4Z8gNXDHHChAKh0Iz+Wew3wu6CmFYBeie3je8V0GSXZAIYYwUktSrnW/kwVPtg==
 
+"@openzeppelin/contracts-upgradeable@^4.8.0":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.8.0.tgz#26688982f46969018e3ed3199e72a07c8d114275"
+  integrity sha512-5GeFgqMiDlqGT8EdORadp1ntGF0qzWZLmEY7Wbp/yVhN7/B3NNzCxujuI77ktlyG81N3CUZP8cZe3ZAQ/cW10w==
+
 "@openzeppelin/contracts@^4.2.0", "@openzeppelin/contracts@^4.3.2", "@openzeppelin/contracts@^4.7.3":
   version "4.8.3"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.3.tgz#cbef3146bfc570849405f59cba18235da95a252a"
@@ -824,18 +829,10 @@
     proper-lockfile "^4.1.1"
     solidity-ast "^0.4.15"
 
-"@openzeppelin/upgrades-core@^1.26.2":
-  version "1.26.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/upgrades-core/-/upgrades-core-1.26.2.tgz#6ac3d16dca21d9bd76bd55a8a34121b4a78dd2c2"
-  integrity sha512-TJORrgyun5qflPos/47P3j61gDw+7W+tEirSBOYRxfVL1WGjX1n8iaLrijPIqzyeS1MKguN1nckAMspQ4SKrxw==
-  dependencies:
-    cbor "^8.0.0"
-    chalk "^4.1.0"
-    compare-versions "^5.0.0"
-    debug "^4.1.1"
-    ethereumjs-util "^7.0.3"
-    proper-lockfile "^4.1.1"
-    solidity-ast "^0.4.15"
+"@prb/math@^3.1.0":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@prb/math/-/math-3.3.1.tgz#ace7bb7f2f6ae8dcdf20c5ddd858b0bb97ac94c9"
+  integrity sha512-k1nnpZwCvvztainqJfvkYpBQuZ3pHKnS6vovUAp+i1hSzlcSWluM+nRxxZbb6wsXqyCJAxrw8Vd7bAG/VeMIUA==
 
 "@scure/base@~1.1.0":
   version "1.1.1"
@@ -933,6 +930,11 @@
   integrity sha512-6dKnHZn7fg/iQATVEzqyUOyEidbn05q7YA2mQ9hC0MMXhhV3/JrsxmFSYZAcr7j1yUP700LLhTruvJ3MiQmjJg==
   dependencies:
     antlr4ts "^0.5.0-alpha.4"
+
+"@spruceid/didkit-wasm-node@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@spruceid/didkit-wasm-node/-/didkit-wasm-node-0.2.1.tgz#85f7023979b4ef84bd6de16c79c67b6e9a08e1db"
+  integrity sha512-c8e3u5FIRS/2Gf6UHnRPnfRozgKgby4avZzlvIiaJRDVLl1LaX1SE13vEvKV2rAq6NMfZrV4YG908M4uVlT90Q==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
