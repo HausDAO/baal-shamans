@@ -39,18 +39,18 @@ If you have implemented a new Shaman contract that can be useful for the communi
 
 ## Shaman Modules
 
-* **OnboarderShaman**: Yeeter shaman
-* **SimpleOnboarderShaman**: Convert tokens 1:1 shares or loot
+* **OnboarderShaman**: yeeter-style shaman
+* **SimpleOnboarderShaman**: convert tokens 1:1 shares or loot
 * **EthOnboarderShaman**: tribute eth for loot or shares
-* **VCOnboarderShaman**: A sibling-resistant DAO onboarder using BrightID and on-chain verifiable credentials
+* **VCOnboarderShaman**: a sibling-resistant DAO onboarder using BrightID and on-chain verifiable credentials
 * **NFTClaimerShaman**: manager shaman where any account can claim some amount of shares if they hold an nft
-* **NFTOnboarderShaman**: 
+* **NFTOnboarderShaman**: *TBD*
 * **CheckInShaman**: manager shaman where any account can claim some amount of shares or loot per checkInInterval. There's also a V2 of the contract
 * **SubscriptionShaman**: allows a DAO with a subscription model
 
 ### Other Modules that integrates with Baal
 
-* **DhSignalTCR**: Signal with a snapshot of current loot and shares on a MolochV3 DAO naive TCR implementation
+* **DhSignalTCR**: signal with a snapshot of current loot and shares on a MolochV3 DAO naive TCR implementation
 * **PGRegistry**: *TBD*
 
 ## LICENSE
