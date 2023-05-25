@@ -189,10 +189,10 @@ const config: HardhatUserConfig = {
     deployer: 0,
   },
   abiExporter: {
-    path: './abi',
+    path: "./abi",
     clear: true,
     flat: true,
-    except: ['@gnosis.pm', '@openzeppelin'],
+    except: ["@gnosis.pm", "@openzeppelin"],
   },
   typechain: {
     outDir: 'src/types',
