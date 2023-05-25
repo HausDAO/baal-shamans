@@ -59,7 +59,8 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
-    "@daohaus/baal-contracts": "^1.2.6",
+    "@openzeppelin/contracts-upgradeable": "^4.8.0",
+    "@daohaus/baal-contracts": "^1.2.7",
     "@gnosis.pm/safe-contracts": "^1.3.0",
     "@gnosis.pm/zodiac": "^2.1.2"
   }

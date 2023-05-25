@@ -12,7 +12,7 @@ dotenv.config();
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
-const defaultNetwork = "localhost";
+const defaultNetwork = 'localhost';
 
 const infuraKey = () => {
   return process.env.INFURA_API_KEY || '' // <---- YOUR INFURA ID! (or it won't work)
@@ -22,13 +22,13 @@ const mnemonic = () => {
   try {
     return process.env.MNEMONIC || fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
-    if (defaultNetwork !== "localhost") {
+    if (defaultNetwork !== 'localhost') {
       console.log(
-        "☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`."
+        '☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`.'
       );
     }
   }
-  return "";
+  return '';
 }
 
 const explorerApiKey = (networkName: string) => {
@@ -54,7 +54,7 @@ const explorerApiKey = (networkName: string) => {
 const config: HardhatUserConfig = {
   networks: {
     localhost: {
-      url: "http://localhost:8545",
+      url: 'http://localhost:8545',
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -175,28 +175,28 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: "0.8.7",
+        version: '0.8.7',
         settings: {
           optimizer: {
             enabled: true,
             runs: 100,
           },
         },
-      }
+      },
     ],
   },
   namedAccounts: {
     deployer: 0,
   },
   abiExporter: {
-    path: './abi',
+    path: "./abi",
     clear: true,
     flat: true,
-    except: ['@gnosis.pm', '@openzeppelin'],
+    except: ["@gnosis.pm", "@openzeppelin"],
   },
   typechain: {
-    outDir: "src/types",
-    target: "ethers-v5",
+    outDir: 'src/types',
+    target: 'ethers-v5',
   },
   gasReporter: {
     currency: "USD",
