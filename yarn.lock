@@ -785,6 +785,11 @@
     proper-lockfile "^4.1.1"
     solidity-ast "^0.4.15"
 
+"@prb/math@^3.1.0":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@prb/math/-/math-3.3.1.tgz#ace7bb7f2f6ae8dcdf20c5ddd858b0bb97ac94c9"
+  integrity sha512-k1nnpZwCvvztainqJfvkYpBQuZ3pHKnS6vovUAp+i1hSzlcSWluM+nRxxZbb6wsXqyCJAxrw8Vd7bAG/VeMIUA==
+
 "@scure/base@~1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
