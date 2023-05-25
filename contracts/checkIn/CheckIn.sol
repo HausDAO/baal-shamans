@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
-import "../interfaces/IBAAL.sol";
 
 // Made for use with Baal(Molochv3)
 // Example use of Manager shamans
 // Any account can claim some amount of shares or loot per checkInInterval
 // this shaman must be set as a manager role in the dao
 contract CheckInShaman is ReentrancyGuard, Initializable {
-    IBAAL public baal;
+    IBaal public baal;
     IERC20 public token;
 
     mapping(address => uint256) public timeLedger;
@@ -37,7 +36,7 @@ contract CheckInShaman is ReentrancyGuard, Initializable {
         uint256 _sharesPerSecond,
         uint256 _checkInInterval
     ) external initializer {
-        baal = IBAAL(_baal);
+        baal = IBaal(_baal);
         sharesOrLoot = _sharesOrLoot;
 
         // get shares or loot token address from dao based on 'shares' flag

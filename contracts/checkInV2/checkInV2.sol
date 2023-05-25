@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "hardhat/console.sol";
-import "../interfaces/IBAAL.sol";
+
+// import "hardhat/console.sol";
 
 contract CheckInShamanV2 is ReentrancyGuard, Initializable {
-    IBAAL public baal;
+    IBaal public baal;
     IERC20 public token;
 
     mapping(address => uint256) public timeLedger;
@@ -54,7 +55,7 @@ contract CheckInShamanV2 is ReentrancyGuard, Initializable {
         uint256 _checkInInterval,
         uint32[5] calldata _valueScalePercs
     ) external initializer {
-        baal = IBAAL(_baal);
+        baal = IBaal(_baal);
 
         sharesOrLoot = _sharesOrLoot;
         teamLead = _teamLead;
