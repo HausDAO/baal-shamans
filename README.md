@@ -37,6 +37,22 @@ Before sending any PR, add your contract typings on both `./src/types` and `tsco
 
 If you have implemented a new Shaman contract that can be useful for the community, write a corresponding deployment script under `./deploy` folder.
 
+## Shaman Modules
+
+* **OnboarderShaman**: Yeeter shaman
+* **SimpleOnboarderShaman**: Convert tokens 1:1 shares or loot
+* **EthOnboarderShaman**: tribute eth for loot or shares
+* **VCOnboarderShaman**: A sibling-resistant DAO onboarder using BrightID and on-chain verifiable credentials
+* **NFTClaimerShaman**: manager shaman where any account can claim some amount of shares if they hold an nft
+* **NFTOnboarderShaman**: 
+* **CheckInShaman**: manager shaman where any account can claim some amount of shares or loot per checkInInterval. There's also a V2 of the contract
+* **SubscriptionShaman**: allows a DAO with a subscription model
+
+### Other Modules that integrates with Baal
+
+* **DhSignalTCR**: Signal with a snapshot of current loot and shares on a MolochV3 DAO naive TCR implementation
+* **PGRegistry**: *TBD*
+
 ## LICENSE
 
 [GNU GPLv3](LICENSE)
