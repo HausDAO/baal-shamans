@@ -20,7 +20,7 @@ const infuraKey = () => {
 
 const mnemonic = () => {
   try {
-    return fs.readFileSync('./mnemonic.txt').toString().trim();
+    return process.env.MNEMONIC || fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
     if (defaultNetwork !== 'localhost') {
       console.log(
