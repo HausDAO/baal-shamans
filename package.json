@@ -38,6 +38,7 @@
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@openzeppelin/contracts": "^4.7.3",
+    "@spruceid/didkit-wasm-node": "^0.2.1",
     "@typechain/ethers-v5": "^10.2.0",
     "@typechain/hardhat": "^6.1.5",
     "@types/chai": "^4.3.3",
@@ -59,7 +60,8 @@
   },
   "dependencies": {
     "@prb/math": "^3.1.0",
-    "@daohaus/baal-contracts": "^1.2.6",
+    "@openzeppelin/contracts-upgradeable": "^4.8.0",
+    "@daohaus/baal-contracts": "^1.2.7",
     "@gnosis.pm/safe-contracts": "^1.3.0",
     "@gnosis.pm/zodiac": "^2.1.2"
   }
