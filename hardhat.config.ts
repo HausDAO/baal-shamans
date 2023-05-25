@@ -1,12 +1,12 @@
-import dotenv from "dotenv";
-import * as fs from "fs";
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
-import "@openzeppelin/hardhat-upgrades";
-import "solidity-coverage";
-import "hardhat-contract-sizer";
-import "hardhat-abi-exporter";
-import "hardhat-deploy";
+import dotenv from 'dotenv';
+import * as fs from 'fs';
+import { HardhatUserConfig } from 'hardhat/config';
+import '@nomicfoundation/hardhat-toolbox';
+// import '@openzeppelin/hardhat-upgrades';
+import 'solidity-coverage';
+import 'hardhat-contract-sizer';
+import 'hardhat-abi-exporter';
+import 'hardhat-deploy';
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ const infuraKey = () => {
 
 const mnemonic = () => {
   try {
-    return process.env.MNEMONIC || fs.readFileSync("./mnemonic.txt").toString().trim();
+    return process.env.MNEMONIC || fs.readFileSync('./mnemonic.txt').toString().trim();
   } catch (e) {
     if (defaultNetwork !== 'localhost') {
       console.log(
@@ -35,15 +35,15 @@ const mnemonic = () => {
 const explorerApiKey = (networkName: string) => {
   const fromEnv = () => {
     switch (networkName) {
-      case "ethereum":
+      case 'ethereum':
         return process.env.ETHERSCAN_API_KEY;
-      case "gnosis":
+      case 'gnosis':
         return process.env.GNOSISSCAN_API_KEY;
-      case "polygon":
+      case 'polygon':
         return process.env.POLYGONSCAN_API_KEY;
-      case "optimism":
+      case 'optimism':
         return process.env.OPTIMISTICSCAN_API_KEY;
-      case "arbitrumOne":
+      case 'arbitrumOne':
         return process.env.ARBISCAN_API_KEY;
       default:
         break;
@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
       },
     },
     gnosis: {
-      url: "https://rpc.gnosischain.com/",
+      url: 'https://rpc.gnosischain.com/',
       gas: 5000000,
       gasPrice: 8000000000,
       accounts: {
@@ -151,7 +151,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    // apiKey: "61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY" // etherscan
+    // apiKey: '61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY' // etherscan
     apiKey: {
       gnosis: explorerApiKey('gnosis'),
       xdai: explorerApiKey('gnosis'),
@@ -164,11 +164,11 @@ const config: HardhatUserConfig = {
     },
     customChains: [
       {
-        network: "gnosis",
+        network: 'gnosis',
         chainId: 100,
         urls: {
-          apiURL: "https://api.gnosisscan.io/api",
-          browserURL: "https://gnosisscan.io/",
+          apiURL: 'https://api.gnosisscan.io/api',
+          browserURL: 'https://gnosisscan.io/',
         },
       },
     ]
@@ -185,7 +185,7 @@ const config: HardhatUserConfig = {
         },
       },
       {
-        version: "0.8.13",
+        version: '0.8.13',
         settings: {
           optimizer: {
             enabled: true,
@@ -199,20 +199,20 @@ const config: HardhatUserConfig = {
     deployer: 0,
   },
   abiExporter: {
-    path: "./abi",
+    path: './abi',
     clear: true,
     flat: true,
-    except: ["@gnosis.pm", "@openzeppelin"],
+    except: ['@gnosis.pm', '@openzeppelin'],
   },
   typechain: {
     outDir: 'src/types',
     target: 'ethers-v5',
   },
   gasReporter: {
-    currency: "USD",
+    currency: 'USD',
     enabled: process.env.REPORT_GAS === 'true',
     excludeContracts: [],
-    src: "./contracts",
+    src: './contracts',
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   external: {

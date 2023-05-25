@@ -55,17 +55,3 @@ export const hashOperation = (transactions: string): string => {
 
   return hashed
 }
-
-export const blockTime = async () => {
-  const block = await ethers.provider.getBlock("latest");
-  return block.timestamp;
-}
-
-export const moveForwardPeriods = async (periods: number, extra?: number) => {
-  const goToTime =
-    (await blockTime()) +
-    periods +
-    (extra ? extra : 0);
-  await ethers.provider.send("evm_mine", [goToTime]);
-  return true;
-}
