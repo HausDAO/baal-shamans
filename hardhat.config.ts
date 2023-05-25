@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import * as fs from "fs";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
 import "hardhat-contract-sizer";
 import "hardhat-abi-exporter";
