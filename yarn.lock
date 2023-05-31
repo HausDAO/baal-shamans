@@ -82,10 +82,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@daohaus/baal-contracts@^1.2.7":
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/@daohaus/baal-contracts/-/baal-contracts-1.2.7.tgz#9dc9a96ea848d4195f6c66aa13150dedecd1df63"
-  integrity sha512-Q+zcS9A9upXM5H80QiKRooBN2X00elKcQj0cs21gnsmctICSTWWWr4i4rTouJP3dRrycnhTFaniS2jlymgm3QQ==
+"@daohaus/baal-contracts@^1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@daohaus/baal-contracts/-/baal-contracts-1.2.8.tgz#b909f0305eeac0c71624a3bb87304c1dec2b89b8"
+  integrity sha512-pPL+LK40mn9QLyNMRYl1m8mvEtBmA4pg5UVoN+fmSfDB7r8AkgkfxSR9mf7xDaeGU92QZG2SeNKiIfvYzZ7Z+A==
   dependencies:
     "@gnosis.pm/zodiac" "^2.1.2"
     "@opengsn/contracts" "2.2.5"
