@@ -7,19 +7,17 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
-contract OnboarderShaman is ReentrancyGuard, Initializable {
-    event YeetReceived(
+// Convert tokens 1:1 shares or loot
+contract SimpleOnboarderShaman is ReentrancyGuard, Initializable {
+    event ObReceived(
         address indexed contributorAddress,
         uint256 amount,
         address baal,
-        uint256 lootToGive,
-        uint256 lootToPlatform
+        uint256 lootToCuts
     );
 
-    uint256 public pricePerUnit;
-    uint256 public lootPerUnit;
     uint256 public expiery;
     bool public shares;
 
@@ -33,9 +31,7 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
 
     function init(
         address _moloch,
-        address payable _token, // use 0 address if token only 
-        uint256 _pricePer,
-        uint256 _unitPerUnit,
+        address payable _token, 
         uint256 _expiery,
         bool _shares,
         address[] memory _cuts,
@@ -43,8 +39,6 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
     ) initializer external {
         baal = IBaal(_moloch);
         token = IERC20(_token);
-        pricePerUnit = _pricePer;
-        lootPerUnit = _unitPerUnit;
         expiery = _expiery;
         shares = _shares;
         cuts = _cuts;
@@ -65,22 +59,16 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
         }
     }
 
-    function onboarder20(uint256 _value) public nonReentrant {
+    function onboarder(uint256 _value) public nonReentrant {
         require(address(baal) != address(0), "!init");
         require(expiery > block.timestamp, "expiery");
-
         require(baal.isManager(address(this)), "Shaman not manager");
 
-        require(_value % pricePerUnit == 0, "!valid amount"); // require value as multiple of units
-
-        uint256 numUnits = _value / pricePerUnit;
+        // uint256 units = (_value * 1e18)  / price; 
 
         // send to dao
         require(token.transferFrom(msg.sender, baal.target(), _value), "Transfer failed");
-
-        uint256 lootToGive = (numUnits * lootPerUnit);
-
-        _mintTokens(msg.sender, lootToGive);
+        _mintTokens(msg.sender, _value);
         
         address[] memory _receivers = new address[](cuts.length);
         for (uint256 i = 0; i < cuts.length; i++) {
@@ -91,89 +79,31 @@ contract OnboarderShaman is ReentrancyGuard, Initializable {
         uint256 lootToCuts = 0;
         uint256[] memory _amounts = new uint256[](amounts.length);
         for (uint256 i = 0; i < amounts.length; i++) {
-            lootToCuts = lootToCuts + (amounts[i] * numUnits);
-            _amounts[i] = amounts[i] * numUnits;
+            lootToCuts = lootToCuts + (amounts[i] * _value);
+            _amounts[i] = amounts[i] * _value;
         }
 
         // mint loot to cuts
         baal.mintLoot(_receivers, _amounts);
 
         // amount of loot? fees?
-        emit YeetReceived(
+        emit ObReceived(
             msg.sender,
             _value,
             address(baal),
-            lootToGive,
             lootToCuts
         );
     }
 
-    function onboarder() public payable nonReentrant {
-        require(address(token) == address(0), "!native");
-        require(expiery > block.timestamp, "expiery");
-        require(address(baal) != address(0), "!init");
-        require(msg.value >= pricePerUnit, "< minimum");
-        require(baal.isManager(address(this)), "Shaman not whitelisted");
-
-        uint256 numUnits = msg.value / pricePerUnit; // floor units
-        uint256 newValue = numUnits * pricePerUnit;
-
-        // send to dao
-        (bool success, ) = baal.target().call{value: newValue}("");
-        require(success, "Transfer failed");
-
-        if (msg.value > newValue) {
-            // Return the extra money to the minter.
-            (bool success2, ) = msg.sender.call{value: msg.value - newValue}(
-                ""
-            );
-            require(success2, "Transfer failed");
-        }
-
-        uint256 lootToGive = (numUnits * lootPerUnit);
-
-        _mintTokens(msg.sender, lootToGive);
-        
-        address[] memory _receivers = new address[](cuts.length);
-        for (uint256 i = 0; i < cuts.length; i++) {
-            _receivers[i] = cuts[i];
-        }
-
-        // loop to fill amount per cut
-        uint256 lootToCuts = 0;
-        uint256[] memory _amounts = new uint256[](amounts.length);
-        for (uint256 i = 0; i < amounts.length; i++) {
-            lootToCuts = lootToCuts + (amounts[i] * numUnits);
-            _amounts[i] = amounts[i] * numUnits;
-        }
-
-        // mint loot to cuts
-        baal.mintLoot(_receivers, _amounts);
-
-        // amount of loot? fees?
-        emit YeetReceived(
-            msg.sender,
-            newValue,
-            address(baal),
-            lootToGive,
-            lootToCuts
-        );
-    }
-
-    receive() external payable {
-        onboarder();
-    }
 }
 
-contract OnboarderShamanSummoner {
+contract SimpleOnboarderShamanSummoner {
     address payable public template;
 
-    event SummonOnbShamanoarderComplete(
+    event SummonSimpleOnboarder(
         address indexed baal,
         address onboarder,
         address token,
-        uint256 pricePerUnit,
-        uint256 lootPerUnit,
         uint256 expiery,
         string details,
         bool _shares,
@@ -188,21 +118,17 @@ contract OnboarderShamanSummoner {
     function summonOnboarder(
         address _moloch,
         address payable _token,
-        uint256 _pricePer,
-        uint256 _unitPerUnit,
         uint256 _expiery,
-        string calldata _details,
         bool _shares,
         address[] memory _cuts,
-        uint256[] memory _amounts
+        uint256[] memory _amounts,
+        string calldata _details
     ) public returns (address) {
-        OnboarderShaman onboarder = OnboarderShaman(payable(Clones.clone(template)));
+        SimpleOnboarderShaman onboarder = SimpleOnboarderShaman(payable(Clones.clone(template)));
 
         onboarder.init(
             _moloch,
             _token,
-            _pricePer,
-            _unitPerUnit,
             _expiery,
             _shares,
             _cuts,
@@ -210,12 +136,10 @@ contract OnboarderShamanSummoner {
         );
 
 
-        emit SummonOnbShamanoarderComplete(
+        emit SummonSimpleOnboarder(
             _moloch,
             address(onboarder),
             _token,
-            _pricePer,
-            _unitPerUnit,
             _expiery,
             _details,
             _shares,
