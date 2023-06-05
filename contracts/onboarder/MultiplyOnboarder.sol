@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.7;
 
+import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
-import "../interfaces/IBAAL.sol";
-
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 /// @title MultiplyOnboarderShaman
 /// @notice Convert tokens 1:multiplier shares or loot
@@ -25,7 +24,7 @@ contract MultiplyOnboarderShaman is ReentrancyGuard, Initializable {
     uint256 public multiplier;
     bool public isShares;
 
-    IBAAL public baal;
+    IBaal public baal;
     IERC20 public token;
 
     constructor() initializer {}
@@ -46,7 +45,7 @@ contract MultiplyOnboarderShaman is ReentrancyGuard, Initializable {
         require(_moloch != address(0), "!moloch");
         require(_multiplier != 0, "!multiplier");
         require(_expiery > block.timestamp, "expiery");
-        baal = IBAAL(_moloch);
+        baal = IBaal(_moloch);
         token = IERC20(_token);
         expiery = _expiery;
         multiplier = _multiplier;
