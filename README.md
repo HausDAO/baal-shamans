@@ -42,6 +42,7 @@ If you have implemented a new Shaman contract that can be useful for the communi
 * **OnboarderShaman**: yeeter-style shaman
 * **SimpleOnboarderShaman**: convert tokens 1:1 shares or loot
 * **EthOnboarderShaman**: tribute eth for loot or shares
+* **MultiplyOnboarderShaman**: convert tokens 1:multiplier shares or loot
 * **VCOnboarderShaman**: a sibling-resistant DAO onboarder using BrightID and on-chain verifiable credentials
 * **NFTClaimerShaman**: manager shaman where any account can claim some amount of shares if they hold an nft
 * **NFTOnboarderShaman**: *TBD*
