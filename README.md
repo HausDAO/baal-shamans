@@ -7,7 +7,9 @@ You can learn more about What & Why of Shamans [here](https://moloch.daohaus.fun
 
 ## Setup Environment
 
-`yarn install` - to install all of the components for the project
+- `yarn install` - to install all of the components for the project
+
+- Copy `.env.sample` onto `.env` and setup the required environment variables.
 
 ## Building
 
@@ -27,7 +29,11 @@ It uses [hardhat-deploy](https://www.npmjs.com/package/hardhat-deploy) to easily
 
 Copy `.env.sample` file and specify the required environment variables.
 
-`yarn hardhat deploy --tags Shaman[,<other_tags>] --network <YOUR_NETWORK> [<deploy_script.ts>]` will deploy contracts on the specified chain. See scripts under `./deploy` for `<other_tags>` available tags.
+`yarn hardhat deploy --tags [Shaman,<other_tags>] --network <YOUR_NETWORK> [<deploy_script.ts>]` will deploy contracts on the specified chain. See scripts under `./deploy` for `<other_tags>` available tags.
+
+## Verify Contracts
+
+`yarn hardhat --network <YOUR_NETWORK> etherscan-verify [--contract-name <CONTRACT_NAME>]`
 
 ## Contributing
 
