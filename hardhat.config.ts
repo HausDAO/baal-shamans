@@ -36,15 +36,15 @@ const explorerApiKey = (networkName: string) => {
   const fromEnv = () => {
     switch (networkName) {
       case 'ethereum':
-        return process.env.ETHERSCAN_API_KEY;
+        return process.env.ETHERSCAN_APIKEY;
       case 'gnosis':
-        return process.env.GNOSISSCAN_API_KEY;
+        return process.env.GNOSISSCAN_APIKEY;
       case 'polygon':
-        return process.env.POLYGONSCAN_API_KEY;
+        return process.env.POLYGONSCAN_APIKEY;
       case 'optimism':
-        return process.env.OPTIMISTICSCAN_API_KEY;
+        return process.env.OPTIMISTICSCAN_APIKEY;
       case 'arbitrumOne':
-        return process.env.ARBISCAN_API_KEY;
+        return process.env.ARBISCAN_APIKEY;
       default:
         break;
     }
@@ -148,31 +148,31 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    // apiKey: '61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY' // etherscan
-    apiKey: {
-      gnosis: explorerApiKey('gnosis'),
-      xdai: explorerApiKey('gnosis'),
-      goerli: explorerApiKey('ethereum'),
-      mainnet: explorerApiKey('ethereum'),
-      polygon: explorerApiKey('polygon'),
-      polygonMumbai: explorerApiKey('polygon'),
-      arbitrumOne: explorerApiKey('arbitrumOne'),
-      optimisticEthereum: explorerApiKey('optimism'),
-    },
-    customChains: [
-      {
-        network: 'gnosis',
-        chainId: 100,
-        urls: {
-          apiURL: 'https://api.gnosisscan.io/api',
-          browserURL: 'https://gnosisscan.io/',
-        },
-      },
-    ]
-  },
+  // etherscan: {
+  //   // Your API key for Etherscan
+  //   // Obtain one at https://etherscan.io/
+  //   // apiKey: '61ED96HQAY6PASTEWRXN6AMYQEKM8SYTRY' // etherscan
+  //   apiKey: {
+  //     gnosis: explorerApiKey('gnosis'),
+  //     xdai: explorerApiKey('gnosis'),
+  //     goerli: explorerApiKey('ethereum'),
+  //     mainnet: explorerApiKey('ethereum'),
+  //     polygon: explorerApiKey('polygon'),
+  //     polygonMumbai: explorerApiKey('polygon'),
+  //     arbitrumOne: explorerApiKey('arbitrumOne'),
+  //     optimisticEthereum: explorerApiKey('optimism'),
+  //   },
+  //   customChains: [
+  //     {
+  //       network: 'gnosis',
+  //       chainId: 100,
+  //       urls: {
+  //         apiURL: 'https://api.gnosisscan.io/api',
+  //         browserURL: 'https://gnosisscan.io/',
+  //       },
+  //     },
+  //   ]
+  // },
   solidity: {
     compilers: [
       {

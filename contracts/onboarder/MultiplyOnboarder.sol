@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
 import "@daohaus/baal-contracts/contracts/interfaces/IBaal.sol";

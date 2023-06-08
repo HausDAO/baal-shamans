@@ -27,7 +27,7 @@ It uses [hardhat-deploy](https://www.npmjs.com/package/hardhat-deploy) to easily
 
 Copy `.env.sample` file and specify the required environment variables.
 
-`yarn deploy --tags Shaman[,<other_tags>] --network <YOUR_NETWORK> [<deploy_script.ts>]` will deploy contracts on the specified chain. See scripts under `./deploy` for `<other_tags>` available tags.
+`yarn hardhat deploy --tags Shaman[,<other_tags>] --network <YOUR_NETWORK> [<deploy_script.ts>]` will deploy contracts on the specified chain. See scripts under `./deploy` for `<other_tags>` available tags.
 
 ## Contributing
 
