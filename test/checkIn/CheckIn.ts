@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import { deployments, ethers } from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
+import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, TestERC20 } from '../../src/types';
 import { CheckInShaman, CheckInSummoner } from '../../src/types/contracts/checkIn/CheckIn.sol';
-import { SHAMAN_PERMISSIONS, Signer, baalSetup, setShamanProposal } from '../utils';
 
 const SECONDS = {
   MINUTE: 60,

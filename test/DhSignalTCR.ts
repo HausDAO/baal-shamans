@@ -2,12 +2,11 @@ import { expect } from 'chai';
 import { deployments, ethers/*, upgrades*/ } from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
+import { baalSetup, encodeMultiAction, Signer, submitAndProcessProposal } from '@daohaus/baal-contracts';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, TestERC20, DhSignalTCR } from '../src/types';
 import { DhSignalTCRSummoner } from '../src/types/contracts/tcr/SignalTCR.sol/DhSignalTCRSummoner';
-import { encodeMultiAction } from '../src/utils';
-import { Signer, baalSetup, submitAndProcessProposal } from './utils';
 
 type TCRSummonerSetup = {
   tcrSummoner: DhSignalTCRSummoner;

@@ -3,8 +3,8 @@ import { deployments, ethers } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { BigNumberish } from "@ethersproject/bignumber";
 import { Baal, Loot, MultiSend, Shares } from '@daohaus/baal-contracts';
+import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from "./utils";
 import { SubscriptionShamanSummoner, TestERC20 } from '../src/types';
 
 type SubscriptionSetup = {

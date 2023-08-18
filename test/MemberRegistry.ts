@@ -7,19 +7,19 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import {
   baalSetup,
+  encodeMultiAction,
   ProposalType,
   setShamanProposal,
   SHAMAN_PERMISSIONS,
   Signer,
   submitAndProcessProposal,
-} from './utils';
+} from '@daohaus/baal-contracts';
 import {
   GnosisSafe,
   MultiSend,
   TestERC20,
   PGRegistry,
 } from '../src/types';
-import { encodeMultiAction } from '../src/utils';
 
 type RegistrySetup = {
   memberRegistry: PGRegistry;

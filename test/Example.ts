@@ -1,11 +1,9 @@
-import { deployments, ethers, getNamedAccounts } from "hardhat";
 import { expect } from "chai";
-
+import { deployments, ethers, getNamedAccounts } from "hardhat";
 import { Baal } from '@daohaus/baal-contracts';
+import { baalSetup, Signer } from '@daohaus/baal-contracts';
 
 import { ExampleManagerShaman, TestERC20 } from "../src/types";
-
-import { baalSetup, Signer } from './utils/fixtures';
 
 describe("ExampleManagerShaman", function () {
   let baal: Baal;
