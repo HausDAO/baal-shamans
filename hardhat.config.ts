@@ -137,10 +137,12 @@ const config: HardhatUserConfig = {
       },
     },
     optimisticEthereum: {
-      url: `https://optimism-mainnet.infura.io/v3/${infuraKey()}`,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      url: `https://mainnet.optimism.io`,
+      accounts: process.env.ACCOUNT_PK
+        ? [process.env.ACCOUNT_PK]
+        : {
+          mnemonic: mnemonic(),
+        },
       verify: {
         etherscan: {
           apiKey: explorerApiKey('optimism'),
