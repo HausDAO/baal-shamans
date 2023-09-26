@@ -1,8 +1,7 @@
 import { expect } from 'chai';
-import { deployments, ethers } from 'hardhat';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import { ethers, getNamedAccounts } from 'hardhat';
+import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
+import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, TestERC20 } from '../../src/types';
@@ -84,6 +83,8 @@ describe('CheckIn Shaman Initialize', function () {
     checkInInterval: SECONDS.DAY,
   };
 
+  let proposalHelpers: ProposalHelpers;
+
   beforeEach(async function () {
     const {
       Baal,
@@ -91,8 +92,19 @@ describe('CheckIn Shaman Initialize', function () {
       Shares,
       MultiSend,
       DAI,
-      signers
-    } = await baalSetup({});
+      signers,
+      helpers,
+    } = await baalSetup({
+      fixtureTags: ['CheckInShaman'],
+      setupBaalOverride: async (params: NewBaalParams) => {
+        console.log('OVERRIDE baal setup ******');
+        const { deployer } = await getNamedAccounts();
+        checkInSummoner =
+          (await ethers.getContract('CheckInSummoner', deployer)) as CheckInSummoner;
+        
+        return setupBaal(params);
+      }
+    });
 
     baal = Baal;
     lootToken = Loot;
@@ -100,21 +112,8 @@ describe('CheckIn Shaman Initialize', function () {
     multisend = MultiSend;
     token = DAI;
     users = signers;
-    
-    const onboarderSetup = deployments.createFixture<CheckInSetup, any>(
-      async (hre: HardhatRuntimeEnvironment, options?: any
-    ) => {
-        const { getNamedAccounts } = hre;
-        const { deployer } = await getNamedAccounts();
-        await deployments.fixture(['CheckInShaman']);
-        const summoner =
-          (await ethers.getContract('CheckInSummoner', deployer)) as CheckInSummoner;
-        return {
-          summoner: summoner,
-        };
-    });
-    const setup = await onboarderSetup();
-    checkInSummoner = setup.summoner;
+
+    proposalHelpers = helpers;
   });
 
   describe('CheckIn Shaman Claim', function () {
@@ -137,7 +136,7 @@ describe('CheckIn Shaman Initialize', function () {
       ) as CheckInShaman;
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
 
       const s1SharesBefore = await sharesToken.balanceOf(users.applicant.address);
       const s1LootBefore = await lootToken.balanceOf(users.applicant.address);
@@ -186,7 +185,7 @@ describe('CheckIn Shaman Initialize', function () {
       ) as CheckInShaman;
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
 
       const s1SharesBefore = await sharesToken.balanceOf(users.applicant.address);
       const s1LootBefore = await lootToken.balanceOf(users.applicant.address);
@@ -233,7 +232,7 @@ describe('CheckIn Shaman Initialize', function () {
       ) as CheckInShaman;
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
       await daoMemberCheckIn.claim(THREE_HOURS_WORKED, METADATA);
@@ -262,7 +261,7 @@ describe('CheckIn Shaman Initialize', function () {
       ) as CheckInShaman;
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
 
       const THREE_HOURS_WORKED = 3 * SECONDS.HOUR;
       await expect(
@@ -291,7 +290,7 @@ describe('CheckIn Shaman Initialize', function () {
       ) as CheckInShaman;
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, checkInAddress, shamanPermissions);
 
       await expect(
         daoMemberCheckIn.claim(SECONDS.DAY, METADATA)

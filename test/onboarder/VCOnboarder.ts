@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { deployments, ethers } from 'hardhat';
+import { deployments, ethers, getNamedAccounts } from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
+import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 import { BigNumber } from '@ethersproject/bignumber';
 
 // Credential issued by by 0xd6fc34345bc8c8e5659a35bed9629d5558d48c4e
@@ -122,6 +122,8 @@ describe("PassportVCVerifier", function () {
       tributeToken: ethers.constants.AddressZero,
       minTribute: "0",
     };
+
+    let proposalHelpers: ProposalHelpers;
   
     beforeEach(async function () {
       const {
@@ -131,7 +133,20 @@ describe("PassportVCVerifier", function () {
         MultiSend,
         DAI,
         signers,
-      } = await baalSetup({});
+        helpers,
+      } = await baalSetup({
+        fixtureTags: ['DIDStampVcVerifier', 'VCOnboarder'],
+        setupBaalOverride: async (params: NewBaalParams) => {
+          console.log('OVERRIDE baal setup ******');
+          const { deployer } = await getNamedAccounts();
+          credentialOwnerAddress = deployer;
+          didStampVCVerifier = (await ethers.getContract('DIDStampVcVerifier', deployer) as DIDStampVcVerifier);
+          onboarderSummoner =
+            (await ethers.getContract('VCOnboarderShamanSummoner', deployer)) as VCOnboarderShamanSummoner;
+          
+          return setupBaal(params);
+        },
+      });
   
       baal = Baal;
       lootToken = Loot;
@@ -139,29 +154,31 @@ describe("PassportVCVerifier", function () {
       multisend = MultiSend;
       users = signers;
 
-      const onboarderSetup = deployments.createFixture<OnboarderSetup, any>(
-        async (hre: HardhatRuntimeEnvironment, options?: any
-      ) => {
-          const { getNamedAccounts } = hre;
-          const { deployer } = await getNamedAccounts();
-          await deployments.fixture(['DIDStampVcVerifier', 'VCOnboarder']);
-          const stampVerifier = (await ethers.getContract('DIDStampVcVerifier', deployer) as DIDStampVcVerifier);
-          const summoner =
-            (await ethers.getContract('VCOnboarderShamanSummoner', deployer)) as VCOnboarderShamanSummoner;
-          return {
-            credentialOwnerAddress: deployer,
-            onboarderSummoner: summoner,
-            stampVerifier,
-          };
+      // const onboarderSetup = deployments.createFixture<OnboarderSetup, any>(
+      //   async (hre: HardhatRuntimeEnvironment, options?: any
+      // ) => {
+      //     const { getNamedAccounts } = hre;
+      //     const { deployer } = await getNamedAccounts();
+      //     await deployments.fixture(['DIDStampVcVerifier', 'VCOnboarder']);
+      //     const stampVerifier = (await ethers.getContract('DIDStampVcVerifier', deployer) as DIDStampVcVerifier);
+      //     const summoner =
+      //       (await ethers.getContract('VCOnboarderShamanSummoner', deployer)) as VCOnboarderShamanSummoner;
+      //     return {
+      //       credentialOwnerAddress: deployer,
+      //       onboarderSummoner: summoner,
+      //       stampVerifier,
+      //     };
           
-      });
-      const setup = await onboarderSetup();
-      // NOTICE: Mock Signed credential is owned by the deployer address
-      credentialOwnerAddress = setup.credentialOwnerAddress;
-      onboarderSummoner = setup.onboarderSummoner;
-      didStampVCVerifier = setup.stampVerifier;
+      // });
+      // const setup = await onboarderSetup();
+      // // NOTICE: Mock Signed credential is owned by the deployer address
+      // credentialOwnerAddress = setup.credentialOwnerAddress;
+      // onboarderSummoner = setup.onboarderSummoner;
+      // didStampVCVerifier = setup.stampVerifier;
 
       token = DAI.connect(await ethers.getSigner(credentialOwnerAddress));
+
+      proposalHelpers = helpers;
     });
 
     it("mint shares on sending eth", async () => {
@@ -177,7 +194,7 @@ describe("PassportVCVerifier", function () {
       );
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const baalTotalSupplyBefore = await baal.totalSupply();
       const sharesBefore = await sharesToken.balanceOf(credentialOwnerAddress);
@@ -220,7 +237,7 @@ describe("PassportVCVerifier", function () {
       );
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const onboaderShaman = await ethers.getContractAt(
         'VCOnboarderShaman',
@@ -254,7 +271,7 @@ describe("PassportVCVerifier", function () {
       );
 
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const baalTotalSupplyBefore = await baal.totalSupply();
       const sharesBefore = await lootToken.balanceOf(credentialOwnerAddress);
@@ -297,7 +314,7 @@ describe("PassportVCVerifier", function () {
         onboarderSummoner,
       );
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const balanceBefore = await token.balanceOf(credentialOwnerAddress);
       const baalTotalSupplyBefore = await baal.totalSupply();
@@ -346,7 +363,7 @@ describe("PassportVCVerifier", function () {
         onboarderSummoner,
       );
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const onboaderShaman = await ethers.getContractAt(
         'VCOnboarderShaman',
@@ -382,7 +399,7 @@ describe("PassportVCVerifier", function () {
         onboarderSummoner,
       );
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const balanceBefore = await token.balanceOf(credentialOwnerAddress);
       const baalTotalSupplyBefore = await baal.totalSupply();
@@ -435,7 +452,7 @@ describe("PassportVCVerifier", function () {
       );
 
       users.summoner.baal &&
-        await setShamanProposal(baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(baal, multisend, onboarderAddress, shamanPermissions);
 
       const balanceBefore = await token.balanceOf(credentialOwnerAddress);
       const baalTotalSupplyBefore = await baal.totalSupply();

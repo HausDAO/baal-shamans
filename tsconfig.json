@@ -14,10 +14,10 @@
     "skipLibCheck": true
   },
   "include": [
+    "hardhat.config.ts",
     "deploy",
     "src/**/*",
     "tasks/**/*",
-    "test/**/*",
-    "hardhat.config.ts"
+    "test/**/*"
   ]
 }
