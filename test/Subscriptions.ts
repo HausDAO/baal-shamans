@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { deployments, ethers } from "hardhat";
+import { deployments, ethers, getNamedAccounts } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { BigNumberish } from "@ethersproject/bignumber";
-import { Baal, Loot, MultiSend, Shares } from '@daohaus/baal-contracts';
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import { Baal, Loot, MultiSend, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
+import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 
 import { SubscriptionShamanSummoner, TestERC20 } from '../src/types';
 
@@ -85,6 +85,8 @@ describe("SubscriptionShaman", function () {
     amounts: [],
   };
 
+  let proposalHelpers: ProposalHelpers;
+
   beforeEach(async function () {
     const {
       Baal,
@@ -92,8 +94,18 @@ describe("SubscriptionShaman", function () {
       Shares,
       MultiSend,
       DAI,
-      signers
-    } = await baalSetup({});
+      signers,
+      helpers,
+    } = await baalSetup({
+      fixtureTags: ['Subscriptions'],
+      setupBaalOverride: async (params: NewBaalParams) => {
+        console.log('OVERRIDE baal setup ******');
+        const { deployer } = await getNamedAccounts();
+        subscriptionSummoner =
+          (await ethers.getContract('SubscriptionShamanSummoner', deployer)) as SubscriptionShamanSummoner;
+        return setupBaal(params);
+      },
+    });
 
     baal = Baal;
     lootToken = Loot;
@@ -102,20 +114,7 @@ describe("SubscriptionShaman", function () {
     token = DAI;
     users = signers;
     
-    const onboarderSetup = deployments.createFixture<SubscriptionSetup, any>(
-      async (hre: HardhatRuntimeEnvironment, options?: any
-    ) => {
-        const { getNamedAccounts } = hre;
-        const { deployer } = await getNamedAccounts();
-        await deployments.fixture(['Subscriptions']);
-        const summoner =
-          (await ethers.getContract('SubscriptionShamanSummoner', deployer)) as SubscriptionShamanSummoner;
-        return {
-          subscriptionSummoner: summoner,
-        };
-    });
-    const setup = await onboarderSetup();
-    subscriptionSummoner = setup.subscriptionSummoner;
+    proposalHelpers = helpers;
   });
 
   describe("subscription", function () {
@@ -159,7 +158,7 @@ describe("SubscriptionShaman", function () {
         );
         
         users.summoner.baal &&
-          await setShamanProposal(users.summoner.baal, multisend, subscriptionAddress, shamanPermissions);
+          await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, subscriptionAddress, shamanPermissions);
   
     });
   });

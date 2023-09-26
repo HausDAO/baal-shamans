@@ -1,8 +1,9 @@
 import { expect } from 'chai';
-import { deployments, ethers/*, upgrades*/ } from 'hardhat';
+import { deployments, ethers,/*, upgrades*/ 
+getNamedAccounts} from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
-import { baalSetup, encodeMultiAction, Signer, submitAndProcessProposal } from '@daohaus/baal-contracts';
+import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
+import { baalSetup, encodeMultiAction, Signer } from '@daohaus/baal-contracts';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, TestERC20, DhSignalTCR } from '../src/types';
@@ -62,6 +63,8 @@ describe('Signal TCR', function () {
     details: 'SignalTCR'
   };
 
+  let proposalHelpers: ProposalHelpers;
+
   const setSnapShot = async (baal: Baal, multisend: MultiSend) => {
     const sharesSnapshot = sharesToken.interface.encodeFunctionData(
       'snapshot'
@@ -88,7 +91,7 @@ describe('Signal TCR', function () {
 
     const proposalId = await baal.proposalCount() + 1;
 
-    await submitAndProcessProposal({
+    await proposalHelpers.submitAndProcessProposal({
       baal,
       encodedAction,
       proposal: {
@@ -115,8 +118,18 @@ describe('Signal TCR', function () {
       Shares,
       MultiSend,
       DAI,
-      signers
-    } = await baalSetup({});
+      signers,
+      helpers,
+    } = await baalSetup({
+      fixtureTags: ['DhSignalTCR'],
+      setupBaalOverride: async (params: NewBaalParams) => {
+        console.log('OVERRIDE baal setup ******');
+        const { deployer } = await getNamedAccounts();
+        dhSignalTCRSummoner =
+          (await ethers.getContract('DhSignalTCRSummoner', deployer)) as DhSignalTCRSummoner;
+        return setupBaal(params);
+      },
+    });
 
     baal = Baal;
     lootToken = Loot;
@@ -125,20 +138,7 @@ describe('Signal TCR', function () {
     token = DAI;
     users = signers;
 
-    const onboarderSetup = deployments.createFixture<TCRSummonerSetup, any>(
-      async (hre: HardhatRuntimeEnvironment, options?: any
-    ) => {
-        const { getNamedAccounts } = hre;
-        const { deployer } = await getNamedAccounts();
-        await deployments.fixture(['DhSignalTCR']);
-        const summoner =
-          (await ethers.getContract('DhSignalTCRSummoner', deployer)) as DhSignalTCRSummoner;
-        return {
-          tcrSummoner: summoner,
-        };
-    });
-    const setup = await onboarderSetup();
-    dhSignalTCRSummoner = setup.tcrSummoner;
+    proposalHelpers = helpers;
   });
 
   describe('signal TCR', function () {

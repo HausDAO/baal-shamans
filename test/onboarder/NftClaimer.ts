@@ -1,17 +1,11 @@
 import { expect } from 'chai';
-import { deployments, ethers } from 'hardhat';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import { deployments, ethers, getNamedAccounts, getUnnamedAccounts } from 'hardhat';
+import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
+import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, MyNft, NFTClaimerShaman } from '../../src/types';
 import { NFTClaimerShamanSummoner } from '../../src/types/contracts/onboarder/ERC721/NFTClaimer.sol';
-
-type NFTClaimerSetup = {
-  nft: MyNft,
-  nftClaimerSummoner: NFTClaimerShamanSummoner;
-};
 
 type NFTClaimerArgs = {
   nftAddress: string;
@@ -71,28 +65,23 @@ describe('NFTClaimerShaman', function () {
 
   const shamanPermissions = SHAMAN_PERMISSIONS.ADMIN_MANAGER; // 3
 
+  let proposalHelpers: ProposalHelpers;
+
   beforeEach(async function () {
     const {
       Baal,
       Loot,
       Shares,
       MultiSend,
-      signers
-    } = await baalSetup({});
-
-    baal = Baal;
-    lootToken = Loot;
-    sharesToken = Shares;
-    multisend = MultiSend;
-    users = signers;
-    
-    const onboarderSetup = deployments.createFixture<NFTClaimerSetup, any>(
-      async (hre: HardhatRuntimeEnvironment, options?: any
-    ) => {
-        const { getNamedAccounts } = hre;
+      signers,
+      helpers,
+    } = await baalSetup({
+      fixtureTags: ['NFTClaimer'],
+      setupBaalOverride: async (params: NewBaalParams) => {
+        console.log('OVERRIDE baal setup ******');
         const { deployer } = await getNamedAccounts();
-        await deployments.fixture(['NFTClaimer']);
-        const summoner =
+        const [summoner, applicant] = await getUnnamedAccounts();
+        nftClaimerSummoner =
           (await ethers.getContract('NFTClaimerShamanSummoner', deployer)) as NFTClaimerShamanSummoner;
         
         await deployments.deploy('MyNft', {
@@ -101,18 +90,49 @@ describe('NFTClaimerShaman', function () {
           args: ['12345'],
           log: true,
         });
-        const nft = (await ethers.getContract('MyNft', deployer)) as MyNft;
-        await nft.mint(users.summoner.address, '23456');
-        await nft.mint(users.applicant.address, '34567');
+        nftToken = (await ethers.getContract('MyNft', deployer)) as MyNft;
+        await nftToken.mint(summoner, '23456');
+        await nftToken.mint(applicant, '34567');
 
-        return {
-          nft: nft,
-          nftClaimerSummoner: summoner,
-        };
+        return setupBaal(params);
+      },
     });
-    const setup = await onboarderSetup();
-    nftToken = setup.nft;
-    nftClaimerSummoner = setup.nftClaimerSummoner;
+
+    baal = Baal;
+    lootToken = Loot;
+    sharesToken = Shares;
+    multisend = MultiSend;
+    users = signers;
+
+    proposalHelpers = helpers;
+    
+    // const onboarderSetup = deployments.createFixture<NFTClaimerSetup, any>(
+    //   async (hre: HardhatRuntimeEnvironment, options?: any
+    // ) => {
+    //     const { getNamedAccounts } = hre;
+    //     const { deployer } = await getNamedAccounts();
+    //     await deployments.fixture(['NFTClaimer']);
+    //     const summoner =
+    //       (await ethers.getContract('NFTClaimerShamanSummoner', deployer)) as NFTClaimerShamanSummoner;
+        
+    //     await deployments.deploy('MyNft', {
+    //       contract: 'MyNft',
+    //       from: deployer,
+    //       args: ['12345'],
+    //       log: true,
+    //     });
+    //     const nft = (await ethers.getContract('MyNft', deployer)) as MyNft;
+    //     await nft.mint(users.summoner.address, '23456');
+    //     await nft.mint(users.applicant.address, '34567');
+
+    //     return {
+    //       nft: nft,
+    //       nftClaimerSummoner: summoner,
+    //     };
+    // });
+    // const setup = await onboarderSetup();
+    // nftToken = setup.nft;
+    // nftClaimerSummoner = setup.nftClaimerSummoner;
   });
 
   describe('nftClaim', function () {
@@ -129,7 +149,7 @@ describe('NFTClaimerShaman', function () {
       );
   
       users.summoner.baal &&
-        await setShamanProposal(baal, multisend, nftClaimerAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(baal, multisend, nftClaimerAddress, shamanPermissions);
 
       const memberBalance = await sharesToken.balanceOf(users.summoner.address);
       const memberTokenId = '23456';

@@ -1,15 +1,18 @@
 import { expect } from 'chai';
-import { deployments, ethers } from 'hardhat';
-import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { ethers, getNamedAccounts } from 'hardhat';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { Baal, Loot, MultiSend, Shares } from '@daohaus/baal-contracts';
-import { baalSetup, setShamanProposal, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import {
+  Baal,
+  Loot,
+  MultiSend,
+  NewBaalParams,
+  ProposalHelpers,
+  Shares,
+  setupBaal
+} from '@daohaus/baal-contracts';
+import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
 
 import { SimpleOnboarderShamanSummoner, TestERC20 } from '../../src/types';
-
-type OnboarderSetup = {
-  onboarderSummoner: SimpleOnboarderShamanSummoner;
-};
 
 type OnboarderArgs = {
   amounts: Array<BigNumberish>;
@@ -82,6 +85,8 @@ describe('SimpleOnboarderShaman', function () {
     price: ethers.utils.parseUnits('1.0', 'ether'),
   };
 
+  let proposalHelpers: ProposalHelpers;
+
   beforeEach(async function () {
     const {
       Baal,
@@ -89,8 +94,18 @@ describe('SimpleOnboarderShaman', function () {
       Shares,
       MultiSend,
       DAI,
-      signers
-    } = await baalSetup({});
+      signers,
+      helpers,
+    } = await baalSetup({
+      fixtureTags: ['SimpleOnboarder'],
+      setupBaalOverride: async (params: NewBaalParams) => {
+        console.log('OVERRIDE baal setup ******');
+        const { deployer } = await getNamedAccounts();
+        onboarderSummoner =
+          (await ethers.getContract('SimpleOnboarderShamanSummoner', deployer)) as SimpleOnboarderShamanSummoner;
+        return setupBaal(params);
+      },
+    });
 
     baal = Baal;
     lootToken = Loot;
@@ -99,20 +114,7 @@ describe('SimpleOnboarderShaman', function () {
     token = DAI;
     users = signers;
 
-    const onboarderSetup = deployments.createFixture<OnboarderSetup, any>(
-      async (hre: HardhatRuntimeEnvironment, options?: any
-    ) => {
-        const { getNamedAccounts } = hre;
-        const { deployer } = await getNamedAccounts();
-        await deployments.fixture(['SimpleOnboarder']);
-        const summoner =
-          (await ethers.getContract('SimpleOnboarderShamanSummoner', deployer)) as SimpleOnboarderShamanSummoner;
-        return {
-          onboarderSummoner: summoner,
-        };
-    });
-    const setup = await onboarderSetup();
-    onboarderSummoner = setup.onboarderSummoner;
+    proposalHelpers = helpers;
   });
 
   describe('onboarder', function () {
@@ -132,7 +134,7 @@ describe('SimpleOnboarderShaman', function () {
         onboarderArgs
       );      
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const applicantOnboarder = await ethers.getContractAt(
         'SimpleOnboarderShaman',
@@ -175,7 +177,7 @@ describe('SimpleOnboarderShaman', function () {
         onboarderArgs
       );
       users.summoner.baal &&
-        await setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
+        await proposalHelpers.setShamanProposal(users.summoner.baal, multisend, onboarderAddress, shamanPermissions);
 
       const applicantOnboarder = await ethers.getContractAt(
         'SimpleOnboarderShaman',
