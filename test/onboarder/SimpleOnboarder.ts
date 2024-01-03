@@ -5,12 +5,16 @@ import {
   Baal,
   Loot,
   MultiSend,
+  Shares
+} from '@daohaus/baal-contracts';
+import {
+  baalSetup,
   NewBaalParams,
   ProposalHelpers,
-  Shares,
+  SHAMAN_PERMISSIONS,
+  Signer,
   setupBaal
-} from '@daohaus/baal-contracts';
-import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+} from '@daohaus/baal-contracts/hardhat';
 
 import { SimpleOnboarderShamanSummoner, TestERC20 } from '../../src/types';
 

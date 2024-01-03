@@ -13,7 +13,7 @@ import {
   SHAMAN_PERMISSIONS,
   Signer,
   submitAndProcessProposal,
-} from '@daohaus/baal-contracts';
+} from '@daohaus/baal-contracts/hardhat';
 import {
   GnosisSafe,
   MultiSend,

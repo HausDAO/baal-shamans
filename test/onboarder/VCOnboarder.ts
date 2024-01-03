@@ -1,8 +1,15 @@
 import { expect } from 'chai';
 import { deployments, ethers, getNamedAccounts } from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
-import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
+import {
+  baalSetup,
+  NewBaalParams,
+  ProposalHelpers,
+  SHAMAN_PERMISSIONS,
+  Signer,
+  setupBaal
+} from '@daohaus/baal-contracts/hardhat';
 import { BigNumber } from '@ethersproject/bignumber';
 
 // Credential issued by by 0xd6fc34345bc8c8e5659a35bed9629d5558d48c4e

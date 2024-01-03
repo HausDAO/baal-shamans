@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { deployments, ethers, getNamedAccounts } from "hardhat";
 import { Baal } from '@daohaus/baal-contracts';
-import { baalSetup, Signer } from '@daohaus/baal-contracts';
+import { baalSetup, Signer } from '@daohaus/baal-contracts/hardhat';
 
 import { ExampleManagerShaman, TestERC20 } from "../src/types";
 

@@ -1,7 +1,15 @@
 import { expect } from 'chai';
 import { ethers, getNamedAccounts } from 'hardhat';
-import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
-import { baalSetup, encodeMultiAction, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
+import {
+  baalSetup,
+  encodeMultiAction,
+  NewBaalParams,
+  ProposalHelpers,
+  SHAMAN_PERMISSIONS,
+  Signer,
+  setupBaal
+} from '@daohaus/baal-contracts/hardhat';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, TestERC20 } from '../../src/types';

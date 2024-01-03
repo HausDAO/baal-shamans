@@ -1,16 +1,17 @@
 import { expect } from 'chai';
 import { ethers, getNamedAccounts } from 'hardhat';
+import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
 import {
-  Baal,
-  Loot,
+  baalSetup,
   NewBaalParams,
   ProposalHelpers,
   SetupUsersParams,
-  Shares,
   setupBaal,
-  setupUsersDefault
-} from '@daohaus/baal-contracts';
-import { baalSetup, SHAMAN_PERMISSIONS, Signer } from '@daohaus/baal-contracts';
+  setupUsersDefault,
+  SHAMAN_PERMISSIONS,
+  Signer
+} from '@daohaus/baal-contracts/hardhat';
+
 import { BigNumberish } from '@ethersproject/bignumber';
 
 import { EthOnboarderShamanSummoner, MultiSend, TestERC20 } from '../../src/types';

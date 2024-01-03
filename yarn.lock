@@ -83,15 +83,16 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@daohaus/baal-contracts@^1.2.13":
-  version "1.2.13"
-  resolved "https://registry.yarnpkg.com/@daohaus/baal-contracts/-/baal-contracts-1.2.13.tgz#233e2f90473b31af62cfdb16e779d95499ee7a59"
-  integrity sha512-5sZ0rhWorA3cZKYzlXPJKaQtrjCWNNw9RX/ToZoAXji1R9CWPrL5+2UoqgRY/AW3GIZqUVXpuDq386eQNTo+vQ==
+"@daohaus/baal-contracts@^1.2.17":
+  version "1.2.17"
+  resolved "https://registry.yarnpkg.com/@daohaus/baal-contracts/-/baal-contracts-1.2.17.tgz#8d42fd3ae37677bd91e856902485f6f0c5c3aeb0"
+  integrity sha512-6DR0YNK62Gh+W+eGm8XA1OZiBhnUD870/bfmem/0KUR10NExqTEVTwm6BYSIPtkFBQKlD//w/ZiAWb3lUX1NQw==
   dependencies:
     "@gnosis.pm/zodiac" "^3.3.7"
     "@opengsn/contracts" "2.2.5"
     "@openzeppelin/contracts" "^4.8.0"
     "@openzeppelin/contracts-upgradeable" "^4.8.0"
+    safe-deployments "^1.26.0"
 
 "@ethereumjs/rlp@^4.0.1":
   version "4.0.1"
@@ -4448,6 +4449,13 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
 
+safe-deployments@^1.26.0:
+  version "1.26.0"
+  resolved "https://registry.yarnpkg.com/safe-deployments/-/safe-deployments-1.26.0.tgz#ac93849dfe187d5abe4f448a113ffac5ca2bd4b6"
+  integrity sha512-JuUfoN86/JPmmGAxxVj73Q0G7Pkon3tZMu7IgWWd4SSPk4bvoSJCaQBOHFKRu10x2+KQUtK+xz0JIua6QB6niA==
+  dependencies:
+    semver "^7.3.7"
+
 safe-regex-test@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/safe-regex-test/-/safe-regex-test-1.0.0.tgz#793b874d524eb3640d1873aad03596db2d4f2295"
@@ -4511,7 +4519,7 @@ semver@^6.3.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
-semver@^7.3.4:
+semver@^7.3.4, semver@^7.3.7:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
   integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==

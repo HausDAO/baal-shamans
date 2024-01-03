@@ -2,8 +2,15 @@ import { expect } from 'chai';
 import { deployments, ethers,/*, upgrades*/ 
 getNamedAccounts} from 'hardhat';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { Baal, Loot, NewBaalParams, ProposalHelpers, Shares, setupBaal } from '@daohaus/baal-contracts';
-import { baalSetup, encodeMultiAction, Signer } from '@daohaus/baal-contracts';
+import { Baal, Loot, Shares } from '@daohaus/baal-contracts';
+import {
+  baalSetup,
+  encodeMultiAction,
+  NewBaalParams,
+  ProposalHelpers,
+  Signer,
+  setupBaal
+} from '@daohaus/baal-contracts/hardhat';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import { MultiSend, TestERC20, DhSignalTCR } from '../src/types';
